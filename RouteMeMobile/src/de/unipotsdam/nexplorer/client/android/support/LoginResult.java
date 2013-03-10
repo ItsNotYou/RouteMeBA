@@ -1,4 +1,4 @@
-package de.unipotsdam.nexplorer.client.android.net;
+package de.unipotsdam.nexplorer.client.android.support;
 
 public class LoginResult {
 

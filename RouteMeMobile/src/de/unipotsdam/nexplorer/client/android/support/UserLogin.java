@@ -1,8 +1,6 @@
-package de.unipotsdam.nexplorer.client.android.tasks;
+package de.unipotsdam.nexplorer.client.android.support;
 
 import android.os.AsyncTask;
-import de.unipotsdam.nexplorer.client.android.callbacks.LoginCallback;
-import de.unipotsdam.nexplorer.client.android.net.Connection;
 
 public class UserLogin extends AsyncTask<String, Void, Connection> {
 

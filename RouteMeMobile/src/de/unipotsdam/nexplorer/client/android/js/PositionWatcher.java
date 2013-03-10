@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import de.unipotsdam.nexplorer.client.android.net.Location;
+import de.unipotsdam.nexplorer.client.android.support.Location;
 
 public interface PositionWatcher {
 

@@ -1,6 +1,5 @@
-package de.unipotsdam.nexplorer.client.android.callbacks;
+package de.unipotsdam.nexplorer.client.android.support;
 
-import de.unipotsdam.nexplorer.client.android.net.Connection;
 
 public interface LoginCallback {
 

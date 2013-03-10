@@ -16,7 +16,7 @@ import static java.lang.Integer.parseInt;
 import java.util.Date;
 import java.util.HashMap;
 
-import de.unipotsdam.nexplorer.client.android.net.Location;
+import de.unipotsdam.nexplorer.client.android.support.Location;
 
 /**
  * mainly legacy code from Tobias Moebert has been adapted to work with a java backend and gwt client wrapper

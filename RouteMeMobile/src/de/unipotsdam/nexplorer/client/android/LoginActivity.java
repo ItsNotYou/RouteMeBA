@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.unipotsdam.nexplorer.client.android.callbacks.LoginCallback;
-import de.unipotsdam.nexplorer.client.android.net.Connection;
-import de.unipotsdam.nexplorer.client.android.tasks.UserLogin;
+import de.unipotsdam.nexplorer.client.android.support.Connection;
+import de.unipotsdam.nexplorer.client.android.support.LoginCallback;
+import de.unipotsdam.nexplorer.client.android.support.UserLogin;
 
 public class LoginActivity extends Activity implements LoginCallback {
 

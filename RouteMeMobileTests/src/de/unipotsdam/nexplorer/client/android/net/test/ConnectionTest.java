@@ -1,10 +1,10 @@
 package de.unipotsdam.nexplorer.client.android.net.test;
 
 import android.test.AndroidTestCase;
-import de.unipotsdam.nexplorer.client.android.net.Connection;
-import de.unipotsdam.nexplorer.client.android.net.GameStatus;
-import de.unipotsdam.nexplorer.client.android.net.Location;
-import de.unipotsdam.nexplorer.client.android.net.Status;
+import de.unipotsdam.nexplorer.client.android.support.Connection;
+import de.unipotsdam.nexplorer.client.android.support.GameStatus;
+import de.unipotsdam.nexplorer.client.android.support.Location;
+import de.unipotsdam.nexplorer.client.android.support.Status;
 
 public class ConnectionTest extends AndroidTestCase {
 
