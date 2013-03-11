@@ -1,31 +1,37 @@
 package de.unipotsdam.nexplorer.client.android;
 
-import java.util.Date;
-
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
+import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
+import de.unipotsdam.nexplorer.client.android.support.MapRotator;
 
 public class MapActivity extends FragmentActivity {
 
-	GoogleMap mMap = null;
+	private FunctionsMobile js;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-		setUpMapIfNeeded();
+
+		new MapRotator(this, R.id.map).setUpMapIfNeeded();
+		js = new FunctionsMobile();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		LoginDialog login = new LoginDialog(this);
+		login.setOnLoginListener(new LoginDialog.LoginCallback() {
+
+			@Override
+			public void onLogin(String name) {
+				finish();
+			}
+		});
+		login.show();
 	}
 
 	@Override
@@ -33,51 +39,5 @@ public class MapActivity extends FragmentActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_map, menu);
 		return true;
-	}
-
-	private void setUpMapIfNeeded() {
-		SensorEventListener listener = new SensorEventListener() {
-
-			private Date last = new Date();
-
-			@Override
-			public void onSensorChanged(SensorEvent event) {
-				// Handle the events for which we registered
-				switch (event.sensor.getType()) {
-				case Sensor.TYPE_ORIENTATION:
-					Date now = new Date();
-					float angle = event.values[1];
-					float newAngle = -angle;
-					newAngle = Math.min(90, newAngle);
-					newAngle = Math.max(0, newAngle);
-
-					float bearing = event.values[0];
-					if (now.getTime() - last.getTime() > 5000) {
-						Toast.makeText(MapActivity.this, "Changed to " + newAngle + " degrees", Toast.LENGTH_SHORT).show();
-						last = now;
-					}
-
-					if (mMap != null) {
-						CameraPosition pos = new CameraPosition.Builder().target(new LatLng(37.4, -122.1)) // Sets the center of the map to Mountain View
-								.zoom(25) // Sets the zoom
-								.bearing(bearing) // Sets the orientation of the camera to east
-								.tilt(newAngle) // Sets the tilt of the camera to 30 degrees
-								.build(); // Creates a CameraPosition from the builder
-						mMap.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
-					}
-
-					break;
-				}
-			}
-
-			@Override
-			public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			}
-		};
-
-		SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		sensorManager.registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
-
-		mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 	}
 }
