@@ -24,6 +24,8 @@ public class Window {
 
 	public static Button collectItemButton = null;
 
+	public static Geolocation geolocation = null;
+
 	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText) {
 		collectItemButton = new Button(collectItem);
 		loginButton = new Button(login);
@@ -36,6 +38,8 @@ public class Window {
 		location = new Location(host);
 
 		beginDialog = new Dialog(beginText);
+
+		geolocation = new Geolocation(host);
 	}
 
 	public static void clearInterval(Interval interval) {

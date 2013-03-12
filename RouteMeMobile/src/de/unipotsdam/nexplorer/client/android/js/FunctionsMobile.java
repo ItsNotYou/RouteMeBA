@@ -4,6 +4,7 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.ajax;
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
 import static de.unipotsdam.nexplorer.client.android.js.Window.clearInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.each;
+import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
 import static de.unipotsdam.nexplorer.client.android.js.Window.location;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
@@ -15,7 +16,9 @@ import static java.lang.Integer.parseInt;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimerTask;
 
+import de.unipotsdam.nexplorer.client.android.js.Geolocation.ActiveGeolocator;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
 /**
@@ -24,8 +27,6 @@ import de.unipotsdam.nexplorer.client.android.support.Location;
  * @author Julian Dehne
  */
 public class FunctionsMobile implements PositionWatcher {
-
-	Navigator navigator = new Navigator();
 
 	SenchaMap senchaMap;
 	Object playerMaker;
@@ -55,7 +56,7 @@ public class FunctionsMobile implements PositionWatcher {
 	long updatePositionIntervalTime = 300;
 	long updateDisplayIntervalTime = 300;
 
-	Object positionWatch = null;
+	ActiveGeolocator positionWatch = null;
 
 	// Toolbars
 
@@ -294,7 +295,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 * @param name
 	 * @param isMobile
 	 */
-	private void loginPlayer(final String name, final boolean isMobile) {
+	public void loginPlayer(final String name, final boolean isMobile) {
 		if (name != "") {
 			loginButton.label("melde an...");
 
@@ -341,25 +342,43 @@ public class FunctionsMobile implements PositionWatcher {
 		clearInterval(localisationInterval);
 		localisationInterval = null;
 
-		navigator.geolocation.clearWatch(positionWatch);
+		geolocation.clearWatch(positionWatch);
 		positionWatch = null;
 	}
 
 	private void startGameStatusInterval() {
 		if (gameStatusInterval == undefined || gameStatusInterval == null) {
-			gameStatusInterval = setInterval("updateGameStatus(true)", updateDisplayIntervalTime);
+			gameStatusInterval = setInterval(new TimerTask() {
+
+				@Override
+				public void run() {
+					updateGameStatus(true);
+				}
+			}, updateDisplayIntervalTime);
 		}
 	}
 
 	private void startLocalisationInterval() {
 		if (localisationInterval == undefined || localisationInterval == null) {
-			localisationInterval = setInterval("updatePosition()", updatePositionIntervalTime);
+			localisationInterval = setInterval(new TimerTask() {
+
+				@Override
+				public void run() {
+					updatePosition();
+				}
+			}, updatePositionIntervalTime);
 		}
 	}
 
 	private void startDisplayInterval() {
 		if (displayMarkerInterval == undefined || displayMarkerInterval == null) {
-			displayMarkerInterval = setInterval("updateDisplay()", 1);
+			displayMarkerInterval = setInterval(new TimerTask() {
+
+				@Override
+				public void run() {
+					updateDisplay();
+				}
+			}, 1);
 		}
 	}
 
@@ -644,7 +663,7 @@ public class FunctionsMobile implements PositionWatcher {
 	private void updateDisplay() {
 		// console.log("updateDisplay");
 		if (positionWatch == null) {
-			positionWatch = navigator.geolocation.watchPosition(this, new NavigatorOptions() {
+			positionWatch = geolocation.watchPosition(this, new NavigatorOptions() {
 
 				boolean enableHighAccuracy = true;
 				int maximumAge = 0;
