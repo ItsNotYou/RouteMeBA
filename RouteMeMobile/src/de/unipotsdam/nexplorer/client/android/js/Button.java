@@ -2,24 +2,30 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 public class Button {
 
+	private final android.widget.Button button;
+
+	public Button(android.widget.Button button) {
+		this.button = button;
+	}
+
 	public void label(String string) {
-		// TODO Auto-generated method stub
+		button.setText(string);
 	}
 
 	public boolean isDisabled() {
-		// TODO Auto-generated method stub
-		return true;
+		return !button.isEnabled();
 	}
 
 	public void enable() {
-		// TODO Auto-generated method stub
+		button.setEnabled(true);
 	}
 
 	public void disable() {
-		// TODO Auto-generated method stub
+		button.setEnabled(false);
 	}
 
 	public void html(String string) {
-		// TODO Auto-generated method stub
+		// TODO Change HTML
+		button.setText(string);
 	}
 }
