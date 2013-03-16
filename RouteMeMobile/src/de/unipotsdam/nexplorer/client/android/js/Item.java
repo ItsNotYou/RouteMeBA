@@ -2,19 +2,31 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 public class Item {
 
+	private String itemType;
+	private double latitude;
+	private double longitude;
+
 	public String getItemType() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.itemType;
 	}
 
 	public double getLatitude() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.latitude;
 	}
 
 	public double getLongitude() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.longitude;
 	}
 
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 }
