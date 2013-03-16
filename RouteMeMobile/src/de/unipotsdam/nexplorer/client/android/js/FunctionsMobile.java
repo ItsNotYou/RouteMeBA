@@ -116,176 +116,6 @@ public class FunctionsMobile implements PositionWatcher {
 
 	Marker playerMarker;
 
-	// TODO Port layout
-	// Ext
-	// .setup({
-	// icon : 'icon.png',
-	// glossOnIcon : false,
-	// tabletStartupScreen : 'tablet_startup.png',
-	// phoneStartupScreen : 'phone_startup.png',
-	// onReady : private void() {
-	// Object loginOverlayToolbar = new Ext.Toolbar({
-	// dock : 'top',
-	// title : 'Anmeldung'
-	// });
-	//
-	// loginOverlay = new Ext.Panel({
-	// floating : true,
-	// modal : true,
-	// centered : true,
-	// width : 300,
-	// height : 300,
-	// styleHtmlContent : true,
-	// dockedItems : loginOverlayToolbar,
-	// hideOnMaskTap : false,
-	// scroll : 'vertical',
-	// contentEl : 'login',
-	// cls : 'htmlcontent'
-	// });
-	//
-	// waitingForGameOverlay = new Ext.Panel({
-	// floating : true,
-	// modal : true,
-	// centered : true,
-	// width : 150,
-	// height : 150,
-	// styleHtmlContent : true,
-	// hideOnMaskTap : false,
-	// scroll : 'vertical',
-	// contentEl : 'waiting',
-	// cls : 'htmlcontent'
-	// });
-	//
-	// noPositionOverlay = new Ext.Panel({
-	// floating : true,
-	// modal : true,
-	// centered : true,
-	// width : 150,
-	// height : 150,
-	// styleHtmlContent : true,
-	// hideOnMaskTap : false,
-	// scroll : 'vertical',
-	// contentEl : 'noPosition',
-	// cls : 'htmlcontent'
-	// });
-	//
-	// Object showLoginOverlay = private void(btn, event) {
-	// loginOverlay.show();
-	// };
-	//
-	// Object hideLoginOverlay = private void(btn, event) {
-	// loginOverlay.hide();
-	// }
-	//
-	// mainPanelToolbar = new Ext.Toolbar({
-	// dock : 'top',
-	// items : [ {
-	// iconMask : false,
-	// ui : 'plain',
-	// text : "0",
-	// icon : "media/images/icons/point.png",
-	// disabled : true,
-	// disabledCls : ''
-	// }, {
-	// xtype : 'spacer'
-	// }, {
-	// iconMask : false,
-	// ui : 'plain',
-	// text : "0",
-	// icon : "media/images/icons/neighborhood.png",
-	// disabled : true,
-	// disabledCls : ''
-	// }, {
-	// xtype : 'spacer'
-	// }, {
-	// iconMask : false,
-	// ui : 'plain',
-	// text : "0",
-	// icon : "media/images/icons/clock.png",
-	// disabled : true,
-	// disabledCls : ''
-	// }, {
-	// xtype : 'spacer'
-	// }, {
-	// iconMask : false,
-	// ui : 'plain',
-	// text : "0%",
-	// icon : "media/images/icons/battery-full.png",
-	// disabled : true,
-	// disabledCls : ''
-	// } ]
-	// });
-	//
-	// Object image = new google.maps.MarkerImage(
-	// 'media/images/icons/home-network.png',
-	// new google.maps.Size(16, 16), new google.maps.Point(0,
-	// 0), new google.maps.Point(8, 8));
-	//
-	// Object position = new google.maps.LatLng(37.44885, -122.158592)
-	//
-	// senchaMap = new Ext.Map({
-	// useCurrentLocation : false,
-	// mapOptions : {
-	// zoom : 19,
-	// mapTypeId : google.maps.MapTypeId.ROADMAP,
-	// navigationControl : false,
-	// disableDefaultUI : true,
-	// disableDoubleClickZoom : true,
-	// draggable : false,
-	// scrollwheel : false
-	// }
-	// });
-	//
-	// playerMarker = new google.maps.Marker({
-	// title : 'My Current Location',
-	// icon : image,
-	// zIndex : 1
-	// })
-	//
-	// playerRadius = new google.maps.Circle({
-	// strokeColor : "#0000FF",
-	// strokeOpacity : 0.35,
-	// strokeWeight : 2,
-	// fillColor : "#0000FF",
-	// fillOpacity : 0.20
-	// });
-	//
-	// collectionRadius = new google.maps.Circle({
-	// strokeColor : "#FF0000",
-	// strokeOpacity : 0.35,
-	// strokeWeight : 1,
-	// fillColor : "#FF0000",
-	// fillOpacity : 0.25
-	// });
-	//
-	// Object mainContent = {
-	// style : "width:100%; background-color:#C9DAEF; font-size:12px; text-align: center; padding: 3px",
-	// title : "mainContent",
-	// id : "mainContent",
-	// html : "<div id='nextItemDistance' style='width:100%'></div><div id='activeItems' style='width:100%'></div><div style='width:100%'><button id='collectItemButton' type='button' disabled='disabled' onclick='collectItem()' />Gegenstand einsammeln</button></div><div class='ui-state-highlight ui-corner-all' style='width:100%'><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span><span id='hint'></span></div>",
-	// flex : 0.5
-	// };
-	//
-	// mainPanel = new Ext.Panel({
-	// fullscreen : true,
-	// dockedItems : [ mainPanelToolbar ],
-	// items : [ senchaMap, mainContent ],
-	// layoutOnOrientationChange : false,
-	// layout : {
-	// type : "vbox",
-	// align : "stretch",
-	// pack : "center"
-	// },
-	// defaults : {
-	// flex : 1
-	// }
-	// })
-	//
-	// showLoginOverlay();
-	// $("button").button();
-	// }
-	// });
-
 	/**
 	 * Dise Funktion wird zunächst aufgerufen sie loggt den spier ein und zeigt bei existierenden Spiel eine Karte
 	 * 
@@ -298,9 +128,12 @@ public class FunctionsMobile implements PositionWatcher {
 
 			ajax(new Options<LoginAnswer>() {
 
-				String type = "POST";
-				String url = "../rest/loginManager/login_player_mobile";
-				String data = "name=" + name + "&isMobile=" + isMobile;
+				@Override
+				protected void setData() {
+					this.type = "POST";
+					this.url = "../rest/loginManager/login_player_mobile";
+					this.data = "name=" + name + "&isMobile=" + isMobile;
+				}
 
 				public void success(LoginAnswer data) {
 					if (!isNaN(parseInt(data.id))) {
@@ -386,12 +219,15 @@ public class FunctionsMobile implements PositionWatcher {
 		if (positionRequestExecutes == false && gpsLatitude != undefined && gpsLongitude != undefined) {
 			positionRequestExecutes = true;
 			updatePositionStartTime = new Date().getTime();
-			ajax(new Options() {
+			ajax(new Options<Object>() {
 
-				String type = "POST";
-				String url = "../rest/mobile/update_player_position";
-				String data = "latitude=" + gpsLatitude + "&longitude=" + gpsLongitude + "&accuracy=" + gpsAccuracy + "&playerId=" + playerId + "&speed=" + gpsSpeed + "&heading=" + gpsHeading;
-				long timeout = 5000;
+				@Override
+				protected void setData() {
+					this.type = "POST";
+					this.url = "../rest/mobile/update_player_position";
+					this.data = "latitude=" + gpsLatitude + "&longitude=" + gpsLongitude + "&accuracy=" + gpsAccuracy + "&playerId=" + playerId + "&speed=" + gpsSpeed + "&heading=" + gpsHeading;
+					this.timeout = 5000;
+				}
 
 				public void success(Object result) {
 					latencyCount++;
@@ -447,11 +283,13 @@ public class FunctionsMobile implements PositionWatcher {
 			updateGameStatusStartTime = new Date().getTime();
 			ajax(new Options<GameStatus>() {
 
-				String dataType = "json";
-				String url = "../rest/mobile/get_game_status";
-				boolean async = isAsync;
-				String data = "playerId=" + playerId;
-				long timeout = 5000;
+				protected void setData() {
+					this.dataType = "json";
+					this.url = "../rest/mobile/get_game_status";
+					this.async = isAsync;
+					this.data = "playerId=" + playerId;
+					this.timeout = 5000;
+				}
 
 				public void success(GameStatus data) {
 					latencyCount++;
@@ -573,11 +411,13 @@ public class FunctionsMobile implements PositionWatcher {
 		if (neighbourMarkersArray.get(playerId) == undefined) {
 			Marker marker = new Marker() {
 
-				LatLng position = latlng;
-				Map map = senchaMap.map;
-				String title = "(" + playerId + ") " /* + name */;
-				MarkerImage icon = image;
-				int zIndex = 1;
+				protected void setData() {
+					this.position = latlng;
+					this.map = senchaMap.map;
+					this.title = "(" + playerId + ") ";
+					this.icon = image;
+					this.zIndex = 1;
+				}
 			};
 
 			neighbourMarkersArray.put(playerId, marker);
@@ -618,10 +458,12 @@ public class FunctionsMobile implements PositionWatcher {
 		if (nearbyItemMarkersArray.get(itemId) == undefined) {
 			Marker marker = new Marker() {
 
-				LatLng position = latlng;
-				Map map = senchaMap.map;
-				MarkerImage icon = image;
-				int zIndex = 1;
+				protected void setData() {
+					this.position = latlng;
+					this.map = senchaMap.map;
+					this.icon = image;
+					this.zIndex = 1;
+				}
 			};
 
 			nearbyItemMarkersArray.put(itemId, marker);
@@ -745,14 +587,16 @@ public class FunctionsMobile implements PositionWatcher {
 	/**
 	 * collect items
 	 */
-	private void collectItem() {
+	public void collectItem() {
 		Window.collectItemButton.disable();
 		Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
-		ajax(new Options() {
+		ajax(new Options<Object>() {
 
-			String type = "POST";
-			String url = "../rest/mobile/collect_item";
-			String data = "playerId=" + playerId;
+			protected void setData() {
+				this.type = "POST";
+				this.url = "../rest/mobile/collect_item";
+				this.data = "playerId=" + playerId;
+			}
 
 			public void success() {
 				updateDisplay();

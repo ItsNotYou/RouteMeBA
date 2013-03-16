@@ -2,7 +2,18 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 public class Marker {
 
-	public Object map;
+	public Map map;
+	protected LatLng position;
+	protected String title;
+	protected MarkerImage icon;
+	protected int zIndex;
+
+	public Marker() {
+		setData();
+	}
+
+	protected void setData() {
+	}
 
 	public void setPosition(LatLng latlng) {
 		// TODO Auto-generated method stub
