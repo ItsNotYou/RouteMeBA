@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.client.android.js;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.widget.TextView;
 
 public class Window {
 
@@ -26,7 +27,11 @@ public class Window {
 
 	public static Geolocation geolocation = null;
 
-	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText) {
+	public static MainPanelToolbar mainPanelToolbar = null;
+
+	public static LoginOverlay loginOverlay = null;
+
+	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog) {
 		collectItemButton = new Button(collectItem);
 		loginButton = new Button(login);
 
@@ -40,6 +45,10 @@ public class Window {
 		beginDialog = new Dialog(beginText);
 
 		geolocation = new Geolocation(host);
+
+		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery);
+
+		loginOverlay = new LoginOverlay(loginDialog);
 	}
 
 	public static void clearInterval(Interval interval) {
@@ -56,13 +65,14 @@ public class Window {
 		// TODO Port
 	}
 
-	public static <T> void each(java.util.Map<?, T> objects, Call<T> callback) {
-		// TODO Port
+	public static <S, T> void each(java.util.Map<S, T> objects, Call<S, T> callback) {
+		for (S key : objects.keySet()) {
+			callback.call(key, objects.get(key));
+		}
 	}
 
 	public static boolean isNaN(double result) {
-		// TODO Port
-		return true;
+		return Double.isNaN(result);
 	}
 
 	public static double parseFloat(String value) {

@@ -8,6 +8,8 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
 import static de.unipotsdam.nexplorer.client.android.js.Window.location;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
+import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
+import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
@@ -58,13 +60,8 @@ public class FunctionsMobile implements PositionWatcher {
 
 	ActiveGeolocator positionWatch = null;
 
-	// Toolbars
-
-	MainPanelToolbar mainPanelToolbar;
-
 	// Overlays
 
-	LoginOverlay loginOverlay;
 	WaitingForGameOverlay waitingForGameOverlay;
 	NoPositionOverlay noPositionOverlay;
 
@@ -491,18 +488,18 @@ public class FunctionsMobile implements PositionWatcher {
 					hasRangeBooster = parseInt(data.node.getHasRangeBooster()) != 0 ? true : false;
 					hint = data.getHint();
 
-					each(neighbourMarkersArray, new Call() {
+					each(neighbourMarkersArray, new Call<Integer, Marker>() {
 
-						public void call(int key, Object theMarker) {
+						public void call(Integer key, Marker theMarker) {
 							if (theMarker != undefined && neighbours.get(key) == undefined) {
 								neighbourMarkersArray.get(key).setMap(null);
 							}
 						}
 					});
 
-					each(nearbyItemMarkersArray, new Call() {
+					each(nearbyItemMarkersArray, new Call<Integer, Marker>() {
 
-						public void call(int key, Object theMarker) {
+						public void call(Integer key, Marker theMarker) {
 							if (theMarker != undefined && nearbyItems.get(key) == undefined) {
 								nearbyItemMarkersArray.get(key).setMap(null);
 							}
@@ -725,20 +722,20 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 
 		if (neighbours != undefined) {
-			each(neighbours, new Call<Neighbour>() {
+			each(neighbours, new Call<Integer, Neighbour>() {
 
 				@Override
-				public void call(int key, Neighbour value) {
+				public void call(Integer key, Neighbour value) {
 					drawNeighbourMarkerAtLatitudeLongitude(key, value.getLatitude(), value.getLongitude());
 				}
 			});
 		}
 
 		if (nearbyItems != undefined) {
-			each(nearbyItems, new Call<Item>() {
+			each(nearbyItems, new Call<Integer, Item>() {
 
 				@Override
-				public void call(int key, Item value) {
+				public void call(Integer key, Item value) {
 					drawNearbyItemMarkerAtLatitudeLongitude(key, value.getItemType(), value.getLatitude(), value.getLongitude());
 				}
 			});

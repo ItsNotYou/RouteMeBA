@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-public interface Call<T> {
+public interface Call<S, T> {
 
-	public void call(int key, T object);
+	public void call(S key, T object);
 }
