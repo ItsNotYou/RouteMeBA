@@ -1,8 +1,11 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
+import com.google.android.gms.maps.model.MarkerOptions;
+
 public class Marker {
 
 	public Map map;
+	private com.google.android.gms.maps.model.Marker inner = null;
 	protected LatLng position;
 	protected String title;
 	protected MarkerImage icon;
@@ -16,14 +19,24 @@ public class Marker {
 	}
 
 	public void setPosition(LatLng latlng) {
-		// TODO Auto-generated method stub
+		this.position = latlng;
+		if (inner != null) {
+			inner.setPosition(latlng.create());
+		}
 	}
 
 	public void setMap(Map map2) {
-		// TODO Auto-generated method stub
+		if (map2 == null && inner != null) {
+			inner.remove();
+		} else if (map2 != null) {
+			inner = map.getMap().addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()));
+		}
 	}
 
 	public void setTitle(String string) {
-		// TODO Auto-generated method stub
+		this.title = string;
+		if (inner != null) {
+			inner.setTitle(title);
+		}
 	}
 }

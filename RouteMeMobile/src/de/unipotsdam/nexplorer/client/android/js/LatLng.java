@@ -10,19 +10,7 @@ public class LatLng {
 		this.longitude = longitude;
 	}
 
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+	public com.google.android.gms.maps.model.LatLng create() {
+		return new com.google.android.gms.maps.model.LatLng(latitude, longitude);
 	}
 }
