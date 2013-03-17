@@ -504,9 +504,11 @@ public class FunctionsMobile implements PositionWatcher {
 		if (positionWatch == null) {
 			positionWatch = geolocation.watchPosition(this, new NavigatorOptions() {
 
-				boolean enableHighAccuracy = true;
-				int maximumAge = 0;
-				int timeout = 9000;
+				protected void setData() {
+					this.enableHighAccuracy = true;
+					this.maximumAge = 0;
+					this.timeout = 9000;
+				}
 			});
 		}
 		if (!isNaN(score))
