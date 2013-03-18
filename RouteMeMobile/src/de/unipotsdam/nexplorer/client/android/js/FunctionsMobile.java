@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TimerTask;
 
+import de.unipotsdam.nexplorer.client.android.R;
 import de.unipotsdam.nexplorer.client.android.js.Geolocation.ActiveGeolocator;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
@@ -402,7 +403,7 @@ public class FunctionsMobile implements PositionWatcher {
 	private void drawNeighbourMarkerAtLatitudeLongitude(final int playerId, double latitude, double longitude) {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
-		final MarkerImage image = new MarkerImage("media/images/icons/network-wireless-small.png", new Size(16, 16),
+		final MarkerImage image = new MarkerImage(R.drawable.network_wireless_small, new Size(16, 16),
 		// The origin for this image is 0,0.
 				new Point(0, 0),
 				// The anchor for this image is the base of the flagpole at 0,32.
@@ -442,11 +443,11 @@ public class FunctionsMobile implements PositionWatcher {
 	private void drawNearbyItemMarkerAtLatitudeLongitude(int itemId, String type, double latitude, double longitude) {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
-		String imagePath = null;
+		int imagePath = 0;
 		if (type == "BATTERY") {
-			imagePath = "media/images/icons/battery-charge.png";
+			imagePath = R.drawable.battery_charge;
 		} else {
-			imagePath = "media/images/icons/mobile-phone-cast.png";
+			imagePath = R.drawable.mobile_phone_cast;
 		}
 
 		final MarkerImage image = new MarkerImage(imagePath, new Size(16, 16),
