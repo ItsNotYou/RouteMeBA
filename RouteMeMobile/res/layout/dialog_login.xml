@@ -12,13 +12,17 @@
 
     <EditText
         android:id="@+id/login_name"
+        android:imeActionId="@+id/login_attempt"
+        android:imeOptions="actionUnspecified"
+        android:imeActionLabel="@string/login_action"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="20dp"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="@string/login_name_hint" >
+        android:hint="@string/login_name_hint"
+        android:inputType="textPersonName" >
 
         <requestFocus />
     </EditText>
