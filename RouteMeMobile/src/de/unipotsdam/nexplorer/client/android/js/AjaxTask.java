@@ -4,7 +4,7 @@ import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
 
-public class AjaxTask<T> extends AsyncTask<Void, Void, Void> {
+public class AjaxTask<T> extends AsyncTask<Void, Void, Object> {
 
 	private String host;
 	private RestTemplate template;
@@ -17,21 +17,17 @@ public class AjaxTask<T> extends AsyncTask<Void, Void, Void> {
 	}
 
 	@Override
-	protected Void doInBackground(Void... params) {
+	protected Object doInBackground(Void... params) {
 		String url = host + options.url;
 
 		try {
-			T result = null;
 			if (options.type.equals("POST")) {
-				result = (T) template.postForObject(url, options.data, options.responseType);
+				return (T) template.postForObject(url, options.data, options.responseType);
 			} else {
-				result = (T) template.getForObject(host, options.responseType);
+				return (T) template.getForObject(host, options.responseType);
 			}
-			options.success(result);
 		} catch (Exception e) {
-			options.error(e);
+			return e;
 		}
-
-		return null;
 	}
 }

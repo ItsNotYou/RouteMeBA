@@ -2,6 +2,7 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import java.util.TimerTask;
 
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,6 +38,8 @@ public class Window {
 	public static WaitingForGameOverlay waitingForGameOverlay = null;
 	public static NoPositionOverlay noPositionOverlay = null;
 
+	private static Activity ui = null;
+
 	private static RestTemplate template;
 	private static String host;
 
@@ -62,7 +65,11 @@ public class Window {
 		waitingForGameOverlay = new WaitingForGameOverlay(waitingForGameDialog);
 		noPositionOverlay = new NoPositionOverlay(noPositionDialog);
 
-		template = new RestTemplate(true);
+		ui = host;
+
+		SimpleClientHttpRequestFactory http = new SimpleClientHttpRequestFactory();
+		http.setConnectTimeout(8000);
+		template = new RestTemplate(true, http);
 		template.getMessageConverters().add(new GsonHttpMessageConverter());
 		Window.host = hostAdress;
 	}
@@ -77,14 +84,36 @@ public class Window {
 		return interval;
 	}
 
-	public static <T> void ajax(Options<T> options) {
-		AjaxTask<T> task = new AjaxTask<T>(host, template, options);
+	public static <T> void ajax(final Options<T> options) {
+		final AjaxTask<T> task = new AjaxTask<T>(host, template, options);
 
 		if (options.async) {
-			task.execute();
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					Object result = task.doInBackground();
+					finishOnUiThread(options, result);
+				}
+			}).start();
 		} else {
-			task.doInBackground();
+			Object result = task.doInBackground();
+			finishOnUiThread(options, result);
 		}
+	}
+
+	private static <T> void finishOnUiThread(final Options<T> options, final Object result) {
+		ui.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (result instanceof Exception) {
+					options.error((Exception) result);
+				} else {
+					options.success((T) result);
+				}
+			}
+		});
 	}
 
 	public static <S, T> void each(java.util.Map<S, T> objects, Call<S, T> callback) {

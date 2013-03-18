@@ -23,10 +23,9 @@ public class MapRotator {
 	public MapRotator(FragmentActivity host, int mapId) {
 		this.host = host;
 		this.mapId = mapId;
-		setUpMapIfNeeded();
 	}
 
-	public void setUpMapIfNeeded() {
+	public void setUpMapIfNeeded(boolean in3d) {
 		SensorEventListener listener = new SensorEventListener() {
 
 			@Override
@@ -59,8 +58,10 @@ public class MapRotator {
 			}
 		};
 
-		SensorManager sensorManager = (SensorManager) host.getSystemService(MapActivity.SENSOR_SERVICE);
-		sensorManager.registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
+		if (in3d) {
+			SensorManager sensorManager = (SensorManager) host.getSystemService(MapActivity.SENSOR_SERVICE);
+			sensorManager.registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
+		}
 
 		mMap = ((SupportMapFragment) host.getSupportFragmentManager().findFragmentById(mapId)).getMap();
 	}
