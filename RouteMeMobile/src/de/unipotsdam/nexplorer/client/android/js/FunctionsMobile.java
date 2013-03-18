@@ -81,7 +81,7 @@ public class FunctionsMobile implements PositionWatcher {
 	java.util.Map<Integer, Neighbour> neighbours;
 	int neighbourCount = 0;
 	int score;
-	Object playerRange;
+	int playerRange;
 	java.util.Map<Integer, Item> nearbyItems;
 	Object nearbyItemsCount;
 	Object nextItemDistance;
@@ -99,7 +99,7 @@ public class FunctionsMobile implements PositionWatcher {
 	int remainingPlayingTime;
 	Object baseNodeRange;
 	Object gameDifficulty = 0;
-	Object itemCollectionRange;
+	int itemCollectionRange;
 	boolean gameDidEnd = false;
 
 	// Time Tracking

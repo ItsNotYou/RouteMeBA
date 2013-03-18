@@ -26,6 +26,7 @@ public class Marker {
 	}
 
 	public void setMap(Map map2) {
+		this.map = map2;
 		if (map2 == null && inner != null) {
 			inner.remove();
 		} else if (map2 != null) {
