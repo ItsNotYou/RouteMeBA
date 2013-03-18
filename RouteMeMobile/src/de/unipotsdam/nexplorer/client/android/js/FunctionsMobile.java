@@ -127,12 +127,12 @@ public class FunctionsMobile implements PositionWatcher {
 		if (name != "") {
 			loginButton.label("melde an...");
 
-			ajax(new Options<LoginAnswer>() {
+			ajax(new Options<LoginAnswer>(LoginAnswer.class) {
 
 				@Override
 				protected void setData() {
 					this.type = "POST";
-					this.url = "../rest/loginManager/login_player_mobile";
+					this.url = "/rest/loginManager/login_player_mobile";
 					this.data = "name=" + name + "&isMobile=" + isMobile;
 				}
 
@@ -220,12 +220,12 @@ public class FunctionsMobile implements PositionWatcher {
 		if (positionRequestExecutes == false && gpsLatitude != undefined && gpsLongitude != undefined) {
 			positionRequestExecutes = true;
 			updatePositionStartTime = new Date().getTime();
-			ajax(new Options<Object>() {
+			ajax(new Options<Object>(Object.class) {
 
 				@Override
 				protected void setData() {
 					this.type = "POST";
-					this.url = "../rest/mobile/update_player_position";
+					this.url = "/rest/mobile/update_player_position";
 					this.data = "latitude=" + gpsLatitude + "&longitude=" + gpsLongitude + "&accuracy=" + gpsAccuracy + "&playerId=" + playerId + "&speed=" + gpsSpeed + "&heading=" + gpsHeading;
 					this.timeout = 5000;
 				}
@@ -282,11 +282,11 @@ public class FunctionsMobile implements PositionWatcher {
 			// console.log("gameStatusRequestExecutes == false");
 			gameStatusRequestExecutes = true;
 			updateGameStatusStartTime = new Date().getTime();
-			ajax(new Options<GameStatus>() {
+			ajax(new Options<GameStatus>(GameStatus.class) {
 
 				protected void setData() {
 					this.dataType = "json";
-					this.url = "../rest/mobile/get_game_status";
+					this.url = "/rest/mobile/get_game_status";
 					this.async = isAsync;
 					this.data = "playerId=" + playerId;
 					this.timeout = 5000;
@@ -593,11 +593,11 @@ public class FunctionsMobile implements PositionWatcher {
 	public void collectItem() {
 		Window.collectItemButton.disable();
 		Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
-		ajax(new Options<Object>() {
+		ajax(new Options<Object>(Object.class) {
 
 			protected void setData() {
 				this.type = "POST";
-				this.url = "../rest/mobile/collect_item";
+				this.url = "/rest/mobile/collect_item";
 				this.data = "playerId=" + playerId;
 			}
 

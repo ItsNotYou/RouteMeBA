@@ -2,6 +2,9 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import java.util.TimerTask;
 
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
 import android.app.Activity;
 import android.widget.TextView;
 
@@ -31,7 +34,10 @@ public class Window {
 
 	public static LoginOverlay loginOverlay = null;
 
-	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog) {
+	private static RestTemplate template;
+	private static String host;
+
+	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress) {
 		collectItemButton = new Button(collectItem);
 		loginButton = new Button(login);
 
@@ -49,6 +55,10 @@ public class Window {
 		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery);
 
 		loginOverlay = new LoginOverlay(loginDialog);
+
+		template = new RestTemplate(true);
+		template.getMessageConverters().add(new GsonHttpMessageConverter());
+		Window.host = hostAdress;
 	}
 
 	public static void clearInterval(Interval interval) {
@@ -61,8 +71,14 @@ public class Window {
 		return interval;
 	}
 
-	public static void ajax(Options options) {
-		// TODO Port
+	public static <T> void ajax(Options<T> options) {
+		AjaxTask<T> task = new AjaxTask<T>(host, template, options);
+
+		if (options.async) {
+			task.execute();
+		} else {
+			task.doInBackground();
+		}
 	}
 
 	public static <S, T> void each(java.util.Map<S, T> objects, Call<S, T> callback) {

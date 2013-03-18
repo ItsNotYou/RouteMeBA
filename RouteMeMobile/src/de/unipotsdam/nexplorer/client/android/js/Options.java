@@ -8,14 +8,16 @@ public class Options<T> {
 	protected String data;
 	protected long timeout;
 	protected String type;
+	protected Class<T> responseType;
 
-	public Options() {
+	public Options(Class<T> responseType) {
 		this.dataType = "";
 		this.url = "";
 		this.async = true;
 		this.data = "";
 		this.timeout = 1000;
 		this.type = "GET";
+		this.responseType = responseType;
 		setData();
 	}
 
