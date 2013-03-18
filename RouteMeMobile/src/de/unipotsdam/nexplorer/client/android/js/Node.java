@@ -4,54 +4,94 @@ import java.util.Map;
 
 public class Node {
 
+	private String batterieLevel;
+	private String neighbourCount;
+	private String score;
+	private String range;
+	private Map<Integer, Neighbour> neighbours;
+	private String nearbyItemsCount;
+	private Map<Integer, Item> nearbyItems;
+	private String nextItemDistance;
+	private boolean itemInCollectionRange;
+	private String hasRangeBooster;
+
 	public String getBatterieLevel() {
-		// TODO Auto-generated method stub
-		return null;
+		return batterieLevel;
+	}
+
+	public void setBatterieLevel(String batterieLevel) {
+		this.batterieLevel = batterieLevel;
 	}
 
 	public String getNeighbourCount() {
-		// TODO Auto-generated method stub
-		return null;
+		return neighbourCount;
+	}
+
+	public void setNeighbourCount(String neighbourCount) {
+		this.neighbourCount = neighbourCount;
 	}
 
 	public String getScore() {
-		// TODO Auto-generated method stub
-		return null;
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
 	}
 
 	public String getRange() {
-		// TODO Auto-generated method stub
-		return null;
+		return range;
 	}
 
-	public java.util.Map<Integer, Neighbour> getNeighbours() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setRange(String range) {
+		this.range = range;
+	}
+
+	public Map<Integer, Neighbour> getNeighbours() {
+		return neighbours;
+	}
+
+	public void setNeighbours(Map<Integer, Neighbour> neighbours) {
+		this.neighbours = neighbours;
 	}
 
 	public String getNearbyItemsCount() {
-		// TODO Auto-generated method stub
-		return null;
+		return nearbyItemsCount;
+	}
+
+	public void setNearbyItemsCount(String nearbyItemsCount) {
+		this.nearbyItemsCount = nearbyItemsCount;
 	}
 
 	public Map<Integer, Item> getNearbyItems() {
-		// TODO Auto-generated method stub
-		return null;
+		return nearbyItems;
+	}
+
+	public void setNearbyItems(Map<Integer, Item> nearbyItems) {
+		this.nearbyItems = nearbyItems;
 	}
 
 	public String getNextItemDistance() {
-		// TODO Auto-generated method stub
-		return null;
+		return nextItemDistance;
+	}
+
+	public void setNextItemDistance(String nextItemDistance) {
+		this.nextItemDistance = nextItemDistance;
 	}
 
 	public boolean getItemInCollectionRange() {
-		// TODO Auto-generated method stub
-		return false;
+		return itemInCollectionRange;
+	}
+
+	public void setItemInCollectionRange(boolean itemInCollectionRange) {
+		this.itemInCollectionRange = itemInCollectionRange;
 	}
 
 	public String getHasRangeBooster() {
-		// TODO Auto-generated method stub
-		return null;
+		return hasRangeBooster;
 	}
 
+	public void setHasRangeBooster(String hasRangeBooster) {
+		this.hasRangeBooster = hasRangeBooster;
+	}
 }

@@ -2,19 +2,31 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 public class Settings {
 
+	private String isRunning;
+	private String itemCollectionRange;
+	private String updateDisplayIntervalTime;
+
 	public String getIsRunning() {
-		// TODO Auto-generated method stub
-		return null;
+		return isRunning;
+	}
+
+	public void setIsRunning(String isRunning) {
+		this.isRunning = isRunning;
 	}
 
 	public String getItemCollectionRange() {
-		// TODO Auto-generated method stub
-		return null;
+		return itemCollectionRange;
+	}
+
+	public void setItemCollectionRange(String itemCollectionRange) {
+		this.itemCollectionRange = itemCollectionRange;
 	}
 
 	public String getUpdateDisplayIntervalTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return updateDisplayIntervalTime;
 	}
 
+	public void setUpdateDisplayIntervalTime(String updateDisplayIntervalTime) {
+		this.updateDisplayIntervalTime = updateDisplayIntervalTime;
+	}
 }

@@ -2,14 +2,22 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 public class Neighbour {
 
+	private double latitude;
+	private double longitude;
+
 	public double getLatitude() {
-		// TODO Auto-generated method stub
-		return 0;
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
 
 	public double getLongitude() {
-		// TODO Auto-generated method stub
-		return 0;
+		return longitude;
 	}
 
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 }

@@ -4,39 +4,67 @@ public class Stats {
 
 	protected Settings settings;
 
+	private String remainingPlayingTime;
+	private String gameExists;
+	private String baseNodeRange;
+	private String gameDifficulty;
+	private String didEnd;
+	private String playingFieldCenterLatitude;
+	private String playingFieldCenterLongitude;
+
 	public String getRemainingPlayingTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return remainingPlayingTime;
+	}
+
+	public void setRemainingPlayingTime(String remainingPlayingTime) {
+		this.remainingPlayingTime = remainingPlayingTime;
 	}
 
 	public String getGameExists() {
-		// TODO Auto-generated method stub
-		return null;
+		return gameExists;
+	}
+
+	public void setGameExists(String gameExists) {
+		this.gameExists = gameExists;
 	}
 
 	public String getBaseNodeRange() {
-		// TODO Auto-generated method stub
-		return null;
+		return baseNodeRange;
+	}
+
+	public void setBaseNodeRange(String baseNodeRange) {
+		this.baseNodeRange = baseNodeRange;
 	}
 
 	public String getGameDifficulty() {
-		// TODO Auto-generated method stub
-		return null;
+		return gameDifficulty;
+	}
+
+	public void setGameDifficulty(String gameDifficulty) {
+		this.gameDifficulty = gameDifficulty;
 	}
 
 	public String getDidEnd() {
-		// TODO Auto-generated method stub
-		return null;
+		return didEnd;
+	}
+
+	public void setDidEnd(String didEnd) {
+		this.didEnd = didEnd;
 	}
 
 	public String getPlayingFieldCenterLatitude() {
-		// TODO Auto-generated method stub
-		return null;
+		return playingFieldCenterLatitude;
+	}
+
+	public void setPlayingFieldCenterLatitude(String playingFieldCenterLatitude) {
+		this.playingFieldCenterLatitude = playingFieldCenterLatitude;
 	}
 
 	public String getPlayingFieldCenterLongitude() {
-		// TODO Auto-generated method stub
-		return null;
+		return playingFieldCenterLongitude;
 	}
 
+	public void setPlayingFieldCenterLongitude(String playingFieldCenterLongitude) {
+		this.playingFieldCenterLongitude = playingFieldCenterLongitude;
+	}
 }
