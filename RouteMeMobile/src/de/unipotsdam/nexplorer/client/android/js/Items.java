@@ -3,17 +3,18 @@ package de.unipotsdam.nexplorer.client.android.js;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.widget.TextView;
 
 public class Items {
 
 	private List<Text> items;
 
-	public Items(TextView... views) {
+	public Items(Activity host, TextView... views) {
 		items = new ArrayList<Text>(views.length);
 		for (int count = 0; count < views.length; count++) {
 			if (views[count] != null)
-				items.add(new Text(views[count]));
+				items.add(new Text(views[count], host));
 			else
 				items.add(null);
 		}

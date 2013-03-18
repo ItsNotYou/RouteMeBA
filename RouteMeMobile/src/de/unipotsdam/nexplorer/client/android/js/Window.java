@@ -44,26 +44,26 @@ public class Window {
 	private static String host;
 
 	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog) {
-		collectItemButton = new Button(collectItem);
-		loginButton = new Button(login);
+		collectItemButton = new Button(collectItem, host);
+		loginButton = new Button(login, host);
 
-		activeItems = new Text(activeItemsText);
-		hint = new Text(hintText);
-		nextItemDistance = new Text(nextItemDistanceText);
-		waitingText = new Text(waitingTextText);
+		activeItems = new Text(activeItemsText, host);
+		hint = new Text(hintText, host);
+		nextItemDistance = new Text(nextItemDistanceText, host);
+		waitingText = new Text(waitingTextText, host);
 
 		location = new Location(host);
 
-		beginDialog = new Dialog(beginText);
+		beginDialog = new Dialog(beginText, host);
 
 		geolocation = new Geolocation(host);
 
-		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery);
+		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host);
 
-		loginOverlay = new LoginOverlay(loginDialog);
+		loginOverlay = new LoginOverlay(loginDialog, host);
 
 		waitingForGameOverlay = new WaitingForGameOverlay(waitingForGameDialog);
-		noPositionOverlay = new NoPositionOverlay(noPositionDialog);
+		noPositionOverlay = new NoPositionOverlay(noPositionDialog, host);
 
 		ui = host;
 
@@ -87,33 +87,24 @@ public class Window {
 	public static <T> void ajax(final Options<T> options) {
 		final AjaxTask<T> task = new AjaxTask<T>(host, template, options);
 
-		if (options.async) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					Object result = task.doInBackground();
-					finishOnUiThread(options, result);
-				}
-			}).start();
-		} else {
-			Object result = task.doInBackground();
-			finishOnUiThread(options, result);
-		}
-	}
-
-	private static <T> void finishOnUiThread(final Options<T> options, final Object result) {
-		ui.runOnUiThread(new Runnable() {
+		Runnable job = new Runnable() {
 
 			@Override
 			public void run() {
+				Object result = task.doInBackground();
 				if (result instanceof Exception) {
 					options.error((Exception) result);
 				} else {
 					options.success((T) result);
 				}
 			}
-		});
+		};
+
+		if (options.async) {
+			new Thread(job).start();
+		} else {
+			job.run();
+		}
 	}
 
 	public static <S, T> void each(java.util.Map<S, T> objects, Call<S, T> callback) {
