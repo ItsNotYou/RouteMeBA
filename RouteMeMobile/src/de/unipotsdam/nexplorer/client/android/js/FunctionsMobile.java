@@ -67,19 +67,16 @@ public class FunctionsMobile implements PositionWatcher {
 
 	// Panels
 
-	Object mainPanel;
-
 	// Player data
 
-	Object playerName;
-	Object playerId;
-	Object serverLatitude;
-	Object serverLongitude;
+	int playerId;
+	double serverLatitude;
+	double serverLongitude;
 	Double gpsLatitude; // fixed error with gps latitude
 	Double gpsLongitude;
-	Object gpsAccuracy;
-	Object gpsSpeed;
-	Object gpsHeading;
+	Double gpsAccuracy;
+	Double gpsSpeed;
+	Double gpsHeading;
 	double battery = 100;
 	java.util.Map<Integer, Neighbour> neighbours;
 	int neighbourCount = 0;
@@ -258,9 +255,8 @@ public class FunctionsMobile implements PositionWatcher {
 		gpsLatitude = location.getLatitude();
 		gpsLongitude = location.getLongitude();
 		gpsAccuracy = location.getAccuracy();
-		// TODO Port
-		// gpsSpeed = location.getSpeed();
-		// gpsHeading = location.getHeading();
+		gpsSpeed = location.getSpeed();
+		gpsHeading = location.getHeading();
 	}
 
 	/**

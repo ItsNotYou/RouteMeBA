@@ -51,8 +51,15 @@ public class Geolocation {
 		}
 
 		@Override
-		public void onLocationChanged(Location arg0) {
-			callback.positionReceived(null);
+		public void onLocationChanged(Location location) {
+			de.unipotsdam.nexplorer.client.android.support.Location result = new de.unipotsdam.nexplorer.client.android.support.Location();
+			result.setLatitude(location.getLatitude());
+			result.setLongitude(location.getLongitude());
+			result.setAccuracy(location.getAccuracy());
+			result.setHeading(location.getBearing());
+			result.setSpeed(location.getSpeed());
+
+			callback.positionReceived(result);
 		}
 
 		@Override

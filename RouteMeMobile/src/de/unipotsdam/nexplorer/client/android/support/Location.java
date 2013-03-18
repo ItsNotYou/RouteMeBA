@@ -5,6 +5,8 @@ public class Location {
 	private double latitude;
 	private double longitude;
 	private double accuracy;
+	private double heading;
+	private double speed;
 
 	public double getLatitude() {
 		return latitude;
@@ -28,5 +30,21 @@ public class Location {
 
 	public void setAccuracy(double accuracy) {
 		this.accuracy = accuracy;
+	}
+
+	public double getHeading() {
+		return heading;
+	}
+
+	public void setHeading(double heading) {
+		this.heading = heading;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
 	}
 }
