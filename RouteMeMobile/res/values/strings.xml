@@ -8,5 +8,7 @@
     <string name="default_logingreeting">Bitte geben Sie ihren gewünschten Spielernamen ein. Wenn sie ein unterbrochenes Spiel wieder aufnehmen wollen, benutzen Sie bitte den gleichen Namen wie zuvor.</string>
     <string name="login_name_hint">Spielername</string>
     <string name="login_button">anmelden</string>
+    <string name="default_waiting">Warte auf Spielstart.</string>
+    <string name="default_noposition">Bitte warten. Position konnte nicht ermittelt werden.</string>
 
 </resources>

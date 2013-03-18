@@ -4,10 +4,11 @@
     android:orientation="vertical">
     
     <TextView
+        android:id="@+id/login_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/default_logingreeting"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:text="@string/default_logingreeting" />
 
     <EditText
         android:id="@+id/login_name"
