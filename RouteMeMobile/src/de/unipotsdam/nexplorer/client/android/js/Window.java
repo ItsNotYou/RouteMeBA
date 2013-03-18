@@ -34,10 +34,13 @@ public class Window {
 
 	public static LoginOverlay loginOverlay = null;
 
+	public static WaitingForGameOverlay waitingForGameOverlay = null;
+	public static NoPositionOverlay noPositionOverlay = null;
+
 	private static RestTemplate template;
 	private static String host;
 
-	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress) {
+	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog) {
 		collectItemButton = new Button(collectItem);
 		loginButton = new Button(login);
 
@@ -55,6 +58,9 @@ public class Window {
 		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery);
 
 		loginOverlay = new LoginOverlay(loginDialog);
+
+		waitingForGameOverlay = new WaitingForGameOverlay(waitingForGameDialog);
+		noPositionOverlay = new NoPositionOverlay(noPositionDialog);
 
 		template = new RestTemplate(true);
 		template.getMessageConverters().add(new GsonHttpMessageConverter());

@@ -10,9 +10,11 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.location;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
+import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
+import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingText;
 import static java.lang.Integer.parseInt;
 
@@ -62,9 +64,6 @@ public class FunctionsMobile implements PositionWatcher {
 	ActiveGeolocator positionWatch = null;
 
 	// Overlays
-
-	WaitingForGameOverlay waitingForGameOverlay;
-	NoPositionOverlay noPositionOverlay;
 
 	// Panels
 
