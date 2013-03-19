@@ -4,6 +4,7 @@ import static android.location.LocationManager.GPS_PROVIDER;
 
 import java.io.IOException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,17 +14,21 @@ import android.os.Bundle;
 public class Geolocation {
 
 	private Context context;
+	private Activity host;
 
-	public Geolocation(Context context) {
+	public Geolocation(Context context, Activity host) {
 		this.context = context;
+		this.host = host;
 	}
 
 	public void clearWatch(ActiveGeolocator positionWatch) {
-		positionWatch.clear();
+		if (positionWatch != null) {
+			positionWatch.clear();
+		}
 	}
 
 	public ActiveGeolocator watchPosition(FunctionsMobile functionsMobile, NavigatorOptions navigatorOptions) {
-		return new ActiveGeolocator(context, functionsMobile);
+		return new ActiveGeolocator(context, functionsMobile, host);
 	}
 
 	public class ActiveGeolocator implements LocationListener {
@@ -31,10 +36,16 @@ public class Geolocation {
 		private LocationManager manager;
 		private FunctionsMobile callback;
 
-		public ActiveGeolocator(Context context, FunctionsMobile callback) {
+		public ActiveGeolocator(Context context, FunctionsMobile callback, Activity host) {
 			this.callback = callback;
 			this.manager = registerManager(context);
-			manager.requestLocationUpdates(GPS_PROVIDER, 0, 0, this);
+			host.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					manager.requestLocationUpdates(GPS_PROVIDER, 0, 0, ActiveGeolocator.this);
+				}
+			});
 		}
 
 		public void clear() {

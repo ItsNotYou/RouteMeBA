@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.GoogleMap;
+
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.support.MapRotator;
@@ -21,7 +24,9 @@ public class MapActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 
-		new MapRotator(this, R.id.map).setUpMapIfNeeded(false);
+		MapRotator map = new MapRotator(this, R.id.map);
+		map.setUpMapIfNeeded(false);
+		GoogleMap googleMap = map.getMap();
 
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
@@ -53,7 +58,7 @@ public class MapActivity extends FragmentActivity {
 
 		String hostAdress = "http://routeme.dnsdynamic.com:8080";
 
-		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, hostAdress, waitingForGameDialog, noPositionDialog);
+		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, hostAdress, waitingForGameDialog, noPositionDialog, googleMap);
 		js = new FunctionsMobile();
 	}
 

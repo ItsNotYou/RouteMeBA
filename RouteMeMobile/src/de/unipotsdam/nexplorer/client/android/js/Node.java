@@ -10,9 +10,9 @@ public class Node {
 	private String range;
 	private Map<Integer, Neighbour> neighbours;
 	private String nearbyItemsCount;
-	private Map<Integer, Item> nearbyItems;
+	private NearbyItems nearbyItems;
 	private String nextItemDistance;
-	private boolean itemInCollectionRange;
+	private int itemInCollectionRange;
 	private String hasRangeBooster;
 
 	public String getBatterieLevel() {
@@ -63,11 +63,11 @@ public class Node {
 		this.nearbyItemsCount = nearbyItemsCount;
 	}
 
-	public Map<Integer, Item> getNearbyItems() {
+	public NearbyItems getNearbyItems() {
 		return nearbyItems;
 	}
 
-	public void setNearbyItems(Map<Integer, Item> nearbyItems) {
+	public void setNearbyItems(NearbyItems nearbyItems) {
 		this.nearbyItems = nearbyItems;
 	}
 
@@ -79,11 +79,11 @@ public class Node {
 		this.nextItemDistance = nextItemDistance;
 	}
 
-	public boolean getItemInCollectionRange() {
+	public int getItemInCollectionRange() {
 		return itemInCollectionRange;
 	}
 
-	public void setItemInCollectionRange(boolean itemInCollectionRange) {
+	public void setItemInCollectionRange(int itemInCollectionRange) {
 		this.itemInCollectionRange = itemInCollectionRange;
 	}
 

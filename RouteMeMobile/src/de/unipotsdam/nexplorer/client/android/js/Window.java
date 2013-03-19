@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import android.app.Activity;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+
 public class Window {
 
 	public static Object undefined = null;
@@ -17,7 +19,7 @@ public class Window {
 
 	public static Button loginButton = null;
 
-	public static Dialog beginDialog = null;
+	public static Text beginDialog = null;
 
 	public static Text waitingText = null;
 
@@ -33,17 +35,19 @@ public class Window {
 
 	public static MainPanelToolbar mainPanelToolbar = null;
 
-	public static LoginOverlay loginOverlay = null;
+	public static Overlay loginOverlay = null;
 
-	public static WaitingForGameOverlay waitingForGameOverlay = null;
-	public static NoPositionOverlay noPositionOverlay = null;
+	public static Overlay waitingForGameOverlay = null;
+	public static Overlay noPositionOverlay = null;
+
+	public static SenchaMap senchaMap = null;
 
 	private static Activity ui = null;
 
 	private static RestTemplate template;
 	private static String host;
 
-	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog) {
+	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map) {
 		collectItemButton = new Button(collectItem, host);
 		loginButton = new Button(login, host);
 
@@ -54,16 +58,18 @@ public class Window {
 
 		location = new Location(host);
 
-		beginDialog = new Dialog(beginText, host);
+		beginDialog = new Text(beginText, host);
 
-		geolocation = new Geolocation(host);
+		geolocation = new Geolocation(host, host);
 
 		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host);
 
-		loginOverlay = new LoginOverlay(loginDialog, host);
+		loginOverlay = new Overlay(loginDialog, host);
 
-		waitingForGameOverlay = new WaitingForGameOverlay(waitingForGameDialog);
-		noPositionOverlay = new NoPositionOverlay(noPositionDialog, host);
+		waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
+		noPositionOverlay = new Overlay(noPositionDialog, host);
+
+		senchaMap = new SenchaMap(map);
 
 		ui = host;
 
@@ -75,7 +81,9 @@ public class Window {
 	}
 
 	public static void clearInterval(Interval interval) {
-		interval.clear();
+		if (interval != null) {
+			interval.clear();
+		}
 	}
 
 	public static Interval setInterval(TimerTask callback, long timeMillis) {
@@ -119,5 +127,12 @@ public class Window {
 
 	public static double parseFloat(String value) {
 		return Double.parseDouble(value);
+	}
+
+	public static Integer parseInt(String value) {
+		if (value == null) {
+			return null;
+		}
+		return Integer.parseInt(value);
 	}
 }

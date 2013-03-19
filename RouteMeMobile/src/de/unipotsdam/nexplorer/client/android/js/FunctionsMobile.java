@@ -12,11 +12,12 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
 import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
+import static de.unipotsdam.nexplorer.client.android.js.Window.parseInt;
+import static de.unipotsdam.nexplorer.client.android.js.Window.senchaMap;
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingText;
-import static java.lang.Integer.parseInt;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +34,6 @@ import de.unipotsdam.nexplorer.client.android.support.Location;
  */
 public class FunctionsMobile implements PositionWatcher {
 
-	SenchaMap senchaMap;
 	Object playerMaker;
 	PlayerRadius playerRadius;
 	PlayerRadius collectionRadius;
@@ -314,11 +314,9 @@ public class FunctionsMobile implements PositionWatcher {
 					playerRange = parseInt(data.node.getRange());
 					neighbours = data.node.getNeighbours();
 					nearbyItemsCount = parseInt(data.node.getNearbyItemsCount());
-					nearbyItems = data.node.getNearbyItems();
-					// TODO Check formate
-					// nearbyItems = nearbyItems.items;
+					nearbyItems = data.node.getNearbyItems().getItems();
 					nextItemDistance = parseInt(data.node.getNextItemDistance());
-					itemInCollectionRange = data.node.getItemInCollectionRange();
+					itemInCollectionRange = data.node.getItemInCollectionRange() == 0 ? false : true;
 					hasRangeBooster = parseInt(data.node.getHasRangeBooster()) != 0 ? true : false;
 					hint = data.getHint();
 

@@ -64,5 +64,24 @@ public class MapRotator {
 		}
 
 		mMap = ((SupportMapFragment) host.getSupportFragmentManager().findFragmentById(mapId)).getMap();
+		mMap.setMyLocationEnabled(false);
+		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+		mMap.moveCamera(CameraUpdateFactory.zoomTo(19));
+
+		// useCurrentLocation : false,
+		// mapOptions : {
+		// zoom : 19,
+		// mapTypeId : google.maps.MapTypeId.ROADMAP,
+		// navigationControl : false,
+		// disableDefaultUI : true,
+		// disableDoubleClickZoom : true,
+		// draggable : false,
+		// scrollwheel : false
+		// }
+	}
+
+	public GoogleMap getMap() {
+		return mMap;
 	}
 }
