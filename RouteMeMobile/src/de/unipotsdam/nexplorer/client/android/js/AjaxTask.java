@@ -24,7 +24,7 @@ public class AjaxTask<T> extends AsyncTask<Void, Void, Object> {
 			if (options.type.equals("POST")) {
 				return (T) template.postForObject(url, options.data, options.responseType);
 			} else {
-				return (T) template.getForObject(host, options.responseType);
+				return (T) template.getForObject(url + "?" + options.data, options.responseType);
 			}
 		} catch (Exception e) {
 			return e;
