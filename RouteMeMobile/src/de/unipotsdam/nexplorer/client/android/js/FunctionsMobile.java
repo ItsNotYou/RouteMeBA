@@ -154,7 +154,7 @@ public class FunctionsMobile implements PositionWatcher {
 	}
 
 	private void showLoginError(Object data) {
-		beginDialog.html("Kein Spiel da. Versuchen Sie es später noch einmal!");
+		beginDialog.setText("Kein Spiel da. Versuchen Sie es später noch einmal!");
 		loginButton.label("anmelden ");
 	}
 
@@ -358,7 +358,7 @@ public class FunctionsMobile implements PositionWatcher {
 					// Spiel entsprechend der erhaltenen Informationen
 					// anpassen
 					if (gameDidEnd) {
-						waitingText.html("Das Spiel ist zu Ende. Vielen Dank fürs Mitspielen.");
+						waitingText.setText("Das Spiel ist zu Ende. Vielen Dank fürs Mitspielen.");
 						stopIntervals();
 						waitingForGameOverlay.show();
 					} else {
@@ -366,12 +366,12 @@ public class FunctionsMobile implements PositionWatcher {
 							if (!gameExists && gameDidExist) {
 								location.reload();
 							} else if (!gameExists && !gameDidExist) {
-								waitingText.html("Warte auf Spielstart");
+								waitingText.setText("Warte auf Spielstart");
 								stopIntervals();
 								startGameStatusInterval();
 								waitingForGameOverlay.show();
 							} else if (gameExists && gameDidExist && !gameIsRunning) {
-								waitingText.html("Das Spiel wurde Pausiert");
+								waitingText.setText("Das Spiel wurde Pausiert");
 								stopIntervals();
 								startGameStatusInterval();
 								waitingForGameOverlay.show();
@@ -381,7 +381,7 @@ public class FunctionsMobile implements PositionWatcher {
 								waitingForGameOverlay.hide();
 							}
 						} else {
-							waitingText.html("Dein Akku ist alle :( Vielen Dank fürs Mitspielen.");
+							waitingText.setText("Dein Akku ist alle :( Vielen Dank fürs Mitspielen.");
 							stopIntervals();
 							waitingForGameOverlay.show();
 						}
@@ -531,7 +531,7 @@ public class FunctionsMobile implements PositionWatcher {
 		if (!isNaN(battery))
 			mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
 
-		Window.hint.html(hint);
+		Window.hint.setText(hint);
 
 		if (gpsLatitude != null && gpsLongitude != null) {
 			// Karte zentrieren
@@ -556,18 +556,18 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 
 		if (nextItemDistance != null)
-			Window.nextItemDistance.html("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
+			Window.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
 		else
-			Window.nextItemDistance.html("Keine Gegenstände in der Nähe.");
+			Window.nextItemDistance.setText("Keine Gegenstände in der Nähe.");
 
-		String boosterImageElement = null;
+		int boosterImageElement;
 		if (hasRangeBooster) {
-			boosterImageElement = "<img src='media/images/icons/mobile-phone-cast.png' />";
+			boosterImageElement = R.drawable.mobile_phone_cast;
 		} else {
-			boosterImageElement = "<img src='media/images/icons/mobile-phone-cast-gray.png' />";
+			boosterImageElement = R.drawable.mobile_phone_cast_gray;
 		}
 
-		Window.activeItems.html("Aktive Gegenstände: " + boosterImageElement);
+		Window.activeItems.html("Aktive Gegenstände: ", boosterImageElement);
 
 		boolean isDisabled = Window.collectItemButton.isDisabled();
 		if (itemInCollectionRange && isDisabled) {
