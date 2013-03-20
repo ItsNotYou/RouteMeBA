@@ -16,6 +16,9 @@ public class Marker extends UIElement {
 	public Marker(Activity context) {
 		super(context);
 		setData();
+		if (map != null) {
+			setMap(map);
+		}
 	}
 
 	protected void setData() {

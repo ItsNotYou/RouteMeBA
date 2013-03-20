@@ -454,7 +454,7 @@ public class FunctionsMobile implements PositionWatcher {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
 		int imagePath = 0;
-		if (type == "BATTERY") {
+		if ("BATTERY".equals(type)) {
 			imagePath = R.drawable.battery_charge;
 		} else {
 			imagePath = R.drawable.mobile_phone_cast;
