@@ -42,7 +42,9 @@ public class Window {
 
 	public static SenchaMap senchaMap = null;
 
-	private static Activity ui = null;
+	public static Marker playerMarker = null;
+
+	public static Activity ui = null;
 
 	private static RestTemplate template;
 	private static String host;
@@ -69,7 +71,8 @@ public class Window {
 		waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		noPositionOverlay = new Overlay(noPositionDialog, host);
 
-		senchaMap = new SenchaMap(map);
+		senchaMap = new SenchaMap(map, host);
+		playerMarker = new Marker(host);
 
 		ui = host;
 
