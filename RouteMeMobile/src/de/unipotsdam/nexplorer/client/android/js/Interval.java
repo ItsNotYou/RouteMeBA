@@ -18,6 +18,6 @@ public class Interval {
 		clear();
 
 		timer = new Timer();
-		timer.schedule(task, millisecond);
+		timer.schedule(task, millisecond, millisecond);
 	}
 }
