@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.client.android.js;
 import static de.unipotsdam.nexplorer.client.android.js.Window.ajax;
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
 import static de.unipotsdam.nexplorer.client.android.js.Window.clearInterval;
+import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
 import static de.unipotsdam.nexplorer.client.android.js.Window.each;
 import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
@@ -13,18 +14,22 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
 import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseInt;
+import static de.unipotsdam.nexplorer.client.android.js.Window.playerMarker;
+import static de.unipotsdam.nexplorer.client.android.js.Window.playerRadius;
 import static de.unipotsdam.nexplorer.client.android.js.Window.senchaMap;
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
+import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingText;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimerTask;
 
 import de.unipotsdam.nexplorer.client.android.R;
-import de.unipotsdam.nexplorer.client.android.js.Geolocation.ActiveGeolocator;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
 /**
@@ -35,8 +40,7 @@ import de.unipotsdam.nexplorer.client.android.support.Location;
 public class FunctionsMobile implements PositionWatcher {
 
 	Object playerMaker;
-	PlayerRadius playerRadius;
-	PlayerRadius collectionRadius;
+
 	// TODO: Parameter flexibilisieren
 	double minAccuracy = 11;
 
@@ -61,7 +65,7 @@ public class FunctionsMobile implements PositionWatcher {
 	long updatePositionIntervalTime = 300;
 	long updateDisplayIntervalTime = 300;
 
-	ActiveGeolocator positionWatch = null;
+	Geolocator positionWatch = null;
 
 	// Overlays
 
@@ -110,8 +114,6 @@ public class FunctionsMobile implements PositionWatcher {
 
 	long latencyTotal = 0;
 	int latencyCount = 0;
-
-	Marker playerMarker;
 
 	/**
 	 * Dise Funktion wird zunächst aufgerufen sie loggt den spier ein und zeigt bei existierenden Spiel eine Karte
@@ -179,7 +181,11 @@ public class FunctionsMobile implements PositionWatcher {
 
 				@Override
 				public void run() {
-					updateGameStatus(true);
+					try {
+						updateGameStatus(true);
+					} catch (Throwable e) {
+						e.toString();
+					}
 				}
 			}, updateDisplayIntervalTime);
 		}
@@ -191,7 +197,11 @@ public class FunctionsMobile implements PositionWatcher {
 
 				@Override
 				public void run() {
-					updatePosition();
+					try {
+						updatePosition();
+					} catch (Throwable e) {
+						e.toString();
+					}
 				}
 			}, updatePositionIntervalTime);
 		}
@@ -203,9 +213,16 @@ public class FunctionsMobile implements PositionWatcher {
 
 				@Override
 				public void run() {
-					updateDisplay();
+					try {
+						updateDisplay();
+					} catch (Throwable e) {
+						StringWriter w = new StringWriter();
+						e.printStackTrace(new PrintWriter(w));
+						String message = w.toString();
+						e.toString();
+					}
 				}
-			}, 1);
+			}, 500);
 		}
 	}
 
@@ -359,7 +376,7 @@ public class FunctionsMobile implements PositionWatcher {
 								startGameStatusInterval();
 								waitingForGameOverlay.show();
 							} else {
-								stopIntervals();
+								// stopIntervals();
 								startIntervals();
 								waitingForGameOverlay.hide();
 							}
@@ -403,7 +420,7 @@ public class FunctionsMobile implements PositionWatcher {
 				new Point(8, 8));
 
 		if (neighbourMarkersArray.get(playerId) == undefined) {
-			Marker marker = new Marker() {
+			Marker marker = new Marker(ui) {
 
 				protected void setData() {
 					this.position = latlng;
@@ -450,7 +467,7 @@ public class FunctionsMobile implements PositionWatcher {
 				new Point(8, 8));
 
 		if (nearbyItemMarkersArray.get(itemId) == undefined) {
-			Marker marker = new Marker() {
+			Marker marker = new Marker(ui) {
 
 				protected void setData() {
 					this.position = latlng;

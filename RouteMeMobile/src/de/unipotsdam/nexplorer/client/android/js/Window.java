@@ -7,9 +7,12 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+
+import de.unipotsdam.nexplorer.client.android.R;
 
 public class Window {
 
@@ -43,6 +46,8 @@ public class Window {
 	public static SenchaMap senchaMap = null;
 
 	public static Marker playerMarker = null;
+	public static PlayerRadius playerRadius = null;
+	public static PlayerRadius collectionRadius = null;
 
 	public static Activity ui = null;
 
@@ -72,7 +77,26 @@ public class Window {
 		noPositionOverlay = new Overlay(noPositionDialog, host);
 
 		senchaMap = new SenchaMap(map, host);
-		playerMarker = new Marker(host);
+		playerMarker = new Marker(host) {
+
+			protected void setData() {
+				MarkerImage image = new MarkerImage(R.drawable.home_network, new Size(16, 16),
+				// The origin for this image is 0,0.
+						new Point(0, 0),
+						// The anchor for this image is the base of the flagpole at 0,32.
+						new Point(8, 8));
+				this.icon = image;
+			};
+		};
+
+		int strokeColor = Color.parseColor("#5A0000FF");
+		int strokeWeight = 2;
+		int fillColor = Color.parseColor("#330000FF");
+		playerRadius = new PlayerRadius(host, strokeColor, strokeWeight, fillColor);
+		strokeColor = Color.parseColor("#5AFF0000");
+		strokeWeight = 1;
+		fillColor = Color.parseColor("#40FF0000");
+		collectionRadius = new PlayerRadius(host, strokeColor, strokeWeight, fillColor);
 
 		ui = host;
 

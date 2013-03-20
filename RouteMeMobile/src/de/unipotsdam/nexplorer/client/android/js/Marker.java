@@ -9,7 +9,7 @@ public class Marker extends UIElement {
 	public Map map;
 	private com.google.android.gms.maps.model.Marker inner = null;
 	protected LatLng position;
-	protected String title;
+	protected String title = "";
 	protected MarkerImage icon;
 	protected int zIndex;
 
@@ -43,7 +43,7 @@ public class Marker extends UIElement {
 				if (map2 == null && inner != null) {
 					inner.remove();
 				} else if (map2 != null) {
-					inner = map.getMap().addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()));
+					inner = map2.getMap().addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()));
 				}
 			}
 		});
