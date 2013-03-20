@@ -6,13 +6,17 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
+import de.unipotsdam.nexplorer.client.android.support.MapRotator;
+
 public class Map extends UIElement {
 
 	private GoogleMap map;
+	private MapRotator rotator;
 
-	public Map(GoogleMap map, Activity context) {
+	public Map(GoogleMap map, Activity context, MapRotator rotator) {
 		super(context);
 		this.map = map;
+		this.rotator = rotator;
 	}
 
 	public void setCenter(final LatLng latLng) {
@@ -20,8 +24,12 @@ public class Map extends UIElement {
 
 			@Override
 			public void run() {
-				CameraUpdate update = CameraUpdateFactory.newLatLng(latLng.create());
-				map.moveCamera(update);
+				if (rotator != null) {
+					rotator.setCurrentLocation(latLng.create());
+				} else {
+					CameraUpdate update = CameraUpdateFactory.newLatLng(latLng.create());
+					map.moveCamera(update);
+				}
 			}
 		});
 	}

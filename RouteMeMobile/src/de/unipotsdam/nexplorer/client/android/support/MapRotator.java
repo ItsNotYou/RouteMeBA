@@ -19,10 +19,15 @@ public class MapRotator {
 	private GoogleMap mMap = null;
 	private FragmentActivity host;
 	private int mapId;
+	private LatLng currentLocation = null;
 
 	public MapRotator(FragmentActivity host, int mapId) {
 		this.host = host;
 		this.mapId = mapId;
+	}
+
+	public void setCurrentLocation(LatLng location) {
+		this.currentLocation = location;
 	}
 
 	public void setUpMapIfNeeded(boolean in3d) {
@@ -40,11 +45,9 @@ public class MapRotator {
 
 					float bearing = event.values[0];
 
-					if (mMap != null) {
-						CameraPosition pos = new CameraPosition.Builder().target(new LatLng(37.4, -122.1)) // Sets the center of the map to Mountain View
-								.zoom(25) // Sets the zoom
-								.bearing(bearing) // Sets the orientation of the camera to east
-								.tilt(newAngle) // Sets the tilt of the camera to 30 degrees
+					if (mMap != null && currentLocation != null) {
+						CameraPosition pos = new CameraPosition.Builder().target(currentLocation).bearing(bearing) // Sets the orientation of the camera to east
+								.zoom(19).tilt(newAngle) // Sets the tilt of the camera to 30 degrees
 								.build(); // Creates a CameraPosition from the builder
 						mMap.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
 					}

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import de.unipotsdam.nexplorer.client.android.R;
+import de.unipotsdam.nexplorer.client.android.support.MapRotator;
 
 public class Window {
 
@@ -54,7 +55,7 @@ public class Window {
 	private static RestTemplate template;
 	private static String host;
 
-	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map) {
+	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator) {
 		collectItemButton = new Button(collectItem, host);
 		loginButton = new Button(login, host);
 
@@ -76,7 +77,7 @@ public class Window {
 		waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		noPositionOverlay = new Overlay(noPositionDialog, host);
 
-		senchaMap = new SenchaMap(map, host);
+		senchaMap = new SenchaMap(map, host, rotator);
 		playerMarker = new Marker(host) {
 
 			protected void setData() {

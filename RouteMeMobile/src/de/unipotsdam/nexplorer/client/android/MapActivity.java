@@ -25,7 +25,7 @@ public class MapActivity extends FragmentActivity {
 		setContentView(R.layout.activity_map);
 
 		MapRotator map = new MapRotator(this, R.id.map);
-		map.setUpMapIfNeeded(false);
+		map.setUpMapIfNeeded(true);
 		GoogleMap googleMap = map.getMap();
 
 		loginDialog = new LoginDialog(this);
@@ -58,7 +58,7 @@ public class MapActivity extends FragmentActivity {
 
 		String hostAdress = "http://routeme.dnsdynamic.com:8080";
 
-		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, hostAdress, waitingForGameDialog, noPositionDialog, googleMap);
+		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, hostAdress, waitingForGameDialog, noPositionDialog, googleMap, map);
 		js = new FunctionsMobile();
 	}
 
