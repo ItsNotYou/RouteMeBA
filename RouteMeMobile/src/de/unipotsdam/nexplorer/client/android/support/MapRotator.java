@@ -47,7 +47,7 @@ public class MapRotator {
 
 					if (mMap != null && currentLocation != null) {
 						CameraPosition pos = new CameraPosition.Builder().target(currentLocation).bearing(bearing) // Sets the orientation of the camera to east
-								.zoom(19).tilt(newAngle) // Sets the tilt of the camera to 30 degrees
+								.zoom(20).tilt(newAngle) // Sets the tilt of the camera to 30 degrees
 								.build(); // Creates a CameraPosition from the builder
 						mMap.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
 					}
