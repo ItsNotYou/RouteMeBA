@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.TextView;
 
 public class Text extends UIElement {
@@ -13,13 +14,7 @@ public class Text extends UIElement {
 	}
 
 	public void html(final String string) {
-		runOnUIThread(new Runnable() {
-
-			@Override
-			public void run() {
-				text.setText(string);
-			}
-		});
+		setText(string);
 	}
 
 	public void setText(final String string) {
@@ -28,6 +23,9 @@ public class Text extends UIElement {
 			@Override
 			public void run() {
 				text.setText(string);
+				if (text.getVisibility() != View.VISIBLE) {
+					text.setVisibility(View.VISIBLE);
+				}
 			}
 		});
 	}
