@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -60,6 +61,10 @@ public class MapActivity extends FragmentActivity {
 
 		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, hostAdress, waitingForGameDialog, noPositionDialog, googleMap, map);
 		js = new FunctionsMobile();
+	}
+
+	public void collectItem(View view) {
+		js.collectItem();
 	}
 
 	@Override
