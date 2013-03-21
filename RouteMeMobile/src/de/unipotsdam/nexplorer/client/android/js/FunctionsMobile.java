@@ -305,93 +305,7 @@ public class FunctionsMobile implements PositionWatcher {
 				}
 
 				public void success(GameStatus data) {
-					latencyCount++;
-					latencyTotal += new Date().getTime() - updateGameStatusStartTime;
-					gameStatusRequestExecutes = false;
-
-					// Spielstatus und Spielinformationen
-
-					gameIsRunning = parseInt(data.stats.settings.getIsRunning()) != 0 ? true : false;
-					remainingPlayingTime = parseInt(data.stats.getRemainingPlayingTime());
-					gameExists = parseInt(data.stats.getGameExists()) != 0 ? true : false;
-					gameDidExist = gameExists;
-					baseNodeRange = parseInt(data.stats.getBaseNodeRange());
-					gameDifficulty = parseInt(data.stats.getGameDifficulty());
-					itemCollectionRange = parseInt(data.stats.settings.getItemCollectionRange());
-					gameDidEnd = parseInt(data.stats.getDidEnd()) != 0 ? true : false;
-					// updatePositionIntervalTime = parseInt(data.stats.settings["updatePositionIntervalTime"]);
-					updateDisplayIntervalTime = parseInt(data.stats.settings.getUpdateDisplayIntervalTime());
-
-					// Spielerinformationen
-					battery = parseFloat(data.node.getBatterieLevel());
-					neighbourCount = parseInt(data.node.getNeighbourCount());
-					serverLatitude = parseFloat(data.stats.getPlayingFieldCenterLatitude());
-					serverLongitude = parseFloat(data.stats.getPlayingFieldCenterLongitude());
-					score = parseInt(data.node.getScore());
-					playerRange = parseInt(data.node.getRange());
-					neighbours = data.node.getNeighbours();
-					nearbyItemsCount = parseInt(data.node.getNearbyItemsCount());
-					nearbyItems = data.node.getNearbyItems().getItems();
-					nextItemDistance = parseInt(data.node.getNextItemDistance());
-					itemInCollectionRange = data.node.getItemInCollectionRange() == 0 ? false : true;
-					hasRangeBooster = parseInt(data.node.getHasRangeBooster()) != 0 ? true : false;
-					hint = data.getHint();
-
-					each(neighbourMarkersArray, new Call<Integer, Marker>() {
-
-						public void call(Integer key, Marker theMarker) {
-							if (theMarker != undefined && neighbours.get(key) == undefined) {
-								neighbourMarkersArray.get(key).setMap(null);
-							}
-						}
-					});
-
-					each(nearbyItemMarkersArray, new Call<Integer, Marker>() {
-
-						public void call(Integer key, Marker theMarker) {
-							if (theMarker != undefined && nearbyItems.get(key) == undefined) {
-								nearbyItemMarkersArray.get(key).setMap(null);
-							}
-						}
-					});
-
-					// Spiel entsprechend der erhaltenen Informationen
-					// anpassen
-					if (gameDidEnd) {
-						waitingText.setText("Das Spiel ist zu Ende. Vielen Dank fürs Mitspielen.");
-						stopIntervals();
-						waitingForGameOverlay.show();
-					} else {
-						if (battery > 0) {
-							if (!gameExists && gameDidExist) {
-								location.reload();
-							} else if (!gameExists && !gameDidExist) {
-								waitingText.setText("Warte auf Spielstart");
-								stopIntervals();
-								startGameStatusInterval();
-								waitingForGameOverlay.show();
-							} else if (gameExists && gameDidExist && !gameIsRunning) {
-								waitingText.setText("Das Spiel wurde Pausiert");
-								stopIntervals();
-								startGameStatusInterval();
-								waitingForGameOverlay.show();
-							} else {
-								// stopIntervals();
-								startIntervals();
-								waitingForGameOverlay.hide();
-							}
-						} else {
-							waitingText.setText("Dein Akku ist alle :( Vielen Dank fürs Mitspielen.");
-							stopIntervals();
-							waitingForGameOverlay.show();
-						}
-					}
-
-					// Ansicht aktualisieren
-
-					// updateDisplay(); refaktorisiert.... display soll
-					// nicht immer nur nach den server calls refreshed
-					// werden
+					updateGameStatusCallback(data);
 				}
 
 				public void error(Exception data) {
@@ -401,6 +315,96 @@ public class FunctionsMobile implements PositionWatcher {
 			});
 		}
 		;
+	}
+
+	private void updateGameStatusCallback(GameStatus data) {
+		latencyCount++;
+		latencyTotal += new Date().getTime() - updateGameStatusStartTime;
+		gameStatusRequestExecutes = false;
+
+		// Spielstatus und Spielinformationen
+
+		gameIsRunning = parseInt(data.stats.settings.getIsRunning()) != 0 ? true : false;
+		remainingPlayingTime = parseInt(data.stats.getRemainingPlayingTime());
+		gameExists = parseInt(data.stats.getGameExists()) != 0 ? true : false;
+		gameDidExist = gameExists;
+		baseNodeRange = parseInt(data.stats.getBaseNodeRange());
+		gameDifficulty = parseInt(data.stats.getGameDifficulty());
+		itemCollectionRange = parseInt(data.stats.settings.getItemCollectionRange());
+		gameDidEnd = parseInt(data.stats.getDidEnd()) != 0 ? true : false;
+		// updatePositionIntervalTime = parseInt(data.stats.settings["updatePositionIntervalTime"]);
+		updateDisplayIntervalTime = parseInt(data.stats.settings.getUpdateDisplayIntervalTime());
+
+		// Spielerinformationen
+		battery = parseFloat(data.node.getBatterieLevel());
+		neighbourCount = parseInt(data.node.getNeighbourCount());
+		serverLatitude = parseFloat(data.stats.getPlayingFieldCenterLatitude());
+		serverLongitude = parseFloat(data.stats.getPlayingFieldCenterLongitude());
+		score = parseInt(data.node.getScore());
+		playerRange = parseInt(data.node.getRange());
+		neighbours = data.node.getNeighbours();
+		nearbyItemsCount = parseInt(data.node.getNearbyItemsCount());
+		nearbyItems = data.node.getNearbyItems().getItems();
+		nextItemDistance = parseInt(data.node.getNextItemDistance());
+		itemInCollectionRange = data.node.getItemInCollectionRange() == 0 ? false : true;
+		hasRangeBooster = parseInt(data.node.getHasRangeBooster()) != 0 ? true : false;
+		hint = data.getHint();
+
+		each(neighbourMarkersArray, new Call<Integer, Marker>() {
+
+			public void call(Integer key, Marker theMarker) {
+				if (theMarker != undefined && neighbours.get(key) == undefined) {
+					neighbourMarkersArray.get(key).setMap(null);
+				}
+			}
+		});
+
+		each(nearbyItemMarkersArray, new Call<Integer, Marker>() {
+
+			public void call(Integer key, Marker theMarker) {
+				if (theMarker != undefined && nearbyItems.get(key) == undefined) {
+					nearbyItemMarkersArray.get(key).setMap(null);
+				}
+			}
+		});
+
+		// Spiel entsprechend der erhaltenen Informationen
+		// anpassen
+		if (gameDidEnd) {
+			waitingText.setText("Das Spiel ist zu Ende. Vielen Dank fürs Mitspielen.");
+			stopIntervals();
+			waitingForGameOverlay.show();
+		} else {
+			if (battery > 0) {
+				if (!gameExists && gameDidExist) {
+					location.reload();
+				} else if (!gameExists && !gameDidExist) {
+					waitingText.setText("Warte auf Spielstart");
+					stopIntervals();
+					startGameStatusInterval();
+					waitingForGameOverlay.show();
+				} else if (gameExists && gameDidExist && !gameIsRunning) {
+					waitingText.setText("Das Spiel wurde Pausiert");
+					stopIntervals();
+					startGameStatusInterval();
+					waitingForGameOverlay.show();
+				} else {
+					// stopIntervals();
+					startIntervals();
+					waitingForGameOverlay.hide();
+				}
+			} else {
+				waitingText.setText("Dein Akku ist alle :( Vielen Dank fürs Mitspielen.");
+				stopIntervals();
+				waitingForGameOverlay.show();
+			}
+		}
+
+		// Ansicht aktualisieren
+
+		// updateDisplay(); refaktorisiert.... display soll
+		// nicht immer nur nach den server calls refreshed
+		// werden
 	}
 
 	/**

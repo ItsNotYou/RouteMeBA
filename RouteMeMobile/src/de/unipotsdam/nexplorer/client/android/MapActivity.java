@@ -19,6 +19,7 @@ public class MapActivity extends FragmentActivity {
 	private FunctionsMobile js;
 	private boolean firstStart;
 	private LoginDialog loginDialog;
+	private static final String HOST_ADRESS = "http://routeme.dnsdynamic.com:8080";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +58,7 @@ public class MapActivity extends FragmentActivity {
 		Dialog noPositionDialog = new WaitingDialog(this);
 		((TextView) noPositionDialog.findViewById(R.id.waiting_text)).setText(R.string.default_noposition);
 
-		String hostAdress = "http://routeme.dnsdynamic.com:8080";
-
-		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, hostAdress, waitingForGameDialog, noPositionDialog, googleMap, map);
+		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
 		js = new FunctionsMobile();
 	}
 
