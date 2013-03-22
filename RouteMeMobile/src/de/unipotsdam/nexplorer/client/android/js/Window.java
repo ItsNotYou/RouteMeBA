@@ -2,10 +2,6 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import java.util.TimerTask;
 
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.widget.TextView;
@@ -52,8 +48,7 @@ public class Window {
 
 	public static Activity ui = null;
 
-	private static RestTemplate template;
-	private static String host;
+	public static String host;
 
 	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator) {
 		collectItemButton = new Button(collectItem, host);
@@ -101,10 +96,6 @@ public class Window {
 
 		ui = host;
 
-		SimpleClientHttpRequestFactory http = new SimpleClientHttpRequestFactory();
-		http.setConnectTimeout(8000);
-		template = new RestTemplate(true, http);
-		template.getMessageConverters().add(new GsonHttpMessageConverter());
 		Window.host = hostAdress;
 	}
 
@@ -118,29 +109,6 @@ public class Window {
 		Interval interval = new Interval();
 		interval.set(callback, timeMillis);
 		return interval;
-	}
-
-	public static <T> void ajax(final Options<T> options) {
-		final AjaxTask<T> task = new AjaxTask<T>(host, template, options);
-
-		Runnable job = new Runnable() {
-
-			@Override
-			public void run() {
-				Object result = task.doInBackground();
-				if (result instanceof Exception) {
-					options.error((Exception) result);
-				} else {
-					options.success((T) result);
-				}
-			}
-		};
-
-		if (options.async) {
-			new Thread(job).start();
-		} else {
-			job.run();
-		}
 	}
 
 	public static <S, T> void each(java.util.Map<S, T> objects, Call<S, T> callback) {

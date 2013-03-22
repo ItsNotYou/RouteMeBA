@@ -24,6 +24,10 @@ public class Options<T> {
 	protected void setData() {
 	}
 
+	public boolean isAsync() {
+		return async;
+	}
+
 	public void success() {
 	}
 
@@ -36,5 +40,29 @@ public class Options<T> {
 
 	public void error(Exception e) {
 		error();
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public long getTimeout() {
+		return timeout;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public Class<T> getResponseType() {
+		return responseType;
 	}
 }

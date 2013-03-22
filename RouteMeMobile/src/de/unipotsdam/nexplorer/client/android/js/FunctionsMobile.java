@@ -1,6 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.ajax;
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
 import static de.unipotsdam.nexplorer.client.android.js.Window.clearInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
@@ -30,6 +29,8 @@ import java.util.HashMap;
 import java.util.TimerTask;
 
 import de.unipotsdam.nexplorer.client.android.R;
+import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
+import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
 /**
@@ -76,11 +77,6 @@ public class FunctionsMobile implements PositionWatcher {
 	int playerId;
 	double serverLatitude;
 	double serverLongitude;
-	Double gpsLatitude; // fixed error with gps latitude
-	Double gpsLongitude;
-	Double gpsAccuracy;
-	Double gpsSpeed;
-	Double gpsHeading;
 	double battery = 100;
 	java.util.Map<Integer, Neighbour> neighbours;
 	int neighbourCount = 0;
@@ -115,6 +111,8 @@ public class FunctionsMobile implements PositionWatcher {
 	long latencyTotal = 0;
 	int latencyCount = 0;
 
+	private Location currentLocation;
+
 	/**
 	 * Dise Funktion wird zunächst aufgerufen sie loggt den spier ein und zeigt bei existierenden Spiel eine Karte
 	 * 
@@ -125,27 +123,14 @@ public class FunctionsMobile implements PositionWatcher {
 		if (name != "") {
 			loginButton.label("melde an...");
 
-			ajax(new Options<LoginAnswer>(LoginAnswer.class) {
+			new RestMobile().login(name, isMobile, new AjaxResult<LoginAnswer>() {
 
 				@Override
-				protected void setData() {
-					this.type = "POST";
-					this.url = "/rest/loginManager/login_player_mobile";
-					this.data = "name=" + name + "&isMobile=" + isMobile;
-				}
-
 				public void success(LoginAnswer data) {
-					if (!isNaN(parseInt(data.id))) {
-						playerId = parseInt(data.id);
-						loginOverlay.hide();
-						updateGameStatus(false);
-						startGameStatusInterval();
-						// $("#mainContent").html("");
-					} else {
-						showLoginError("Keine id bekommen");
-					}
+					loginSuccess(data);
 				}
 
+				@Override
 				public void error() {
 					showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?");
 				}
@@ -230,29 +215,26 @@ public class FunctionsMobile implements PositionWatcher {
 	 * sendet die aktuelle Positionsdaten an den Server
 	 */
 	private void updatePosition() {
-		if (positionRequestExecutes == false && gpsLatitude != undefined && gpsLongitude != undefined) {
+		if (positionRequestExecutes == false && currentLocation != null) {
 			positionRequestExecutes = true;
 			updatePositionStartTime = new Date().getTime();
-			ajax(new Options<Object>(Object.class) {
+
+			new RestMobile().updatePlayerPosition(playerId, currentLocation, new AjaxResult<Object>() {
 
 				@Override
-				protected void setData() {
-					this.type = "POST";
-					this.url = "/rest/mobile/update_player_position";
-					this.data = "latitude=" + gpsLatitude + "&longitude=" + gpsLongitude + "&accuracy=" + gpsAccuracy + "&playerId=" + playerId + "&speed=" + gpsSpeed + "&heading=" + gpsHeading;
-					this.timeout = 5000;
-				}
-
-				public void success(Object result) {
-					latencyCount++;
-					latencyTotal += new Date().getTime() - updatePositionStartTime;
-					// console.log("Count: " + latencyCount + " Latenz: " +
-					// (latencyTotal / latencyCount));
-					positionRequestExecutes = false;
+				public void success() {
+					updateLatency();
 				}
 			});
 		}
-		;
+	}
+
+	private void updateLatency() {
+		latencyCount++;
+		latencyTotal += new Date().getTime() - updatePositionStartTime;
+		// console.log("Count: " + latencyCount + " Latenz: " +
+		// (latencyTotal / latencyCount));
+		positionRequestExecutes = false;
 	}
 
 	/*
@@ -269,11 +251,7 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 
 		noPositionOverlay.hide();
-		gpsLatitude = location.getLatitude();
-		gpsLongitude = location.getLongitude();
-		gpsAccuracy = location.getAccuracy();
-		gpsSpeed = location.getSpeed();
-		gpsHeading = location.getHeading();
+		this.currentLocation = location;
 	}
 
 	/**
@@ -294,27 +272,21 @@ public class FunctionsMobile implements PositionWatcher {
 			// console.log("gameStatusRequestExecutes == false");
 			gameStatusRequestExecutes = true;
 			updateGameStatusStartTime = new Date().getTime();
-			ajax(new Options<GameStatus>(GameStatus.class) {
 
-				protected void setData() {
-					this.dataType = "json";
-					this.url = "/rest/mobile/get_game_status";
-					this.async = isAsync;
-					this.data = "playerId=" + playerId;
-					this.timeout = 5000;
+			new RestMobile().getGameStatus(playerId, isAsync, new AjaxResult<GameStatus>() {
+
+				@Override
+				public void success(GameStatus result) {
+					updateGameStatusCallback(result);
 				}
 
-				public void success(GameStatus data) {
-					updateGameStatusCallback(data);
-				}
-
-				public void error(Exception data) {
+				@Override
+				public void error(Exception e) {
 					gameStatusRequestExecutes = false;
-					showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?" + data);
+					showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?" + e);
 				}
 			});
 		}
-		;
 	}
 
 	private void updateGameStatusCallback(GameStatus data) {
@@ -537,22 +509,22 @@ public class FunctionsMobile implements PositionWatcher {
 
 		Window.hint.setText(hint);
 
-		if (gpsLatitude != null && gpsLongitude != null) {
+		if (currentLocation != null) {
 			// Karte zentrieren
-			senchaMap.map.setCenter(new LatLng(gpsLatitude, gpsLongitude));
+			senchaMap.map.setCenter(new LatLng(currentLocation));
 			// Spieler Marker zentrieren
-			playerMarker.setPosition(new LatLng(gpsLatitude, gpsLongitude));
+			playerMarker.setPosition(new LatLng(currentLocation));
 			if (playerMarker.map == null) {
 				playerMarker.setMap(senchaMap.map);
 			}
 			// Senderadius zentrieren
-			playerRadius.setCenter(new LatLng(gpsLatitude, gpsLongitude));
+			playerRadius.setCenter(new LatLng(currentLocation));
 			if (playerRadius.map == null) {
 				playerRadius.setMap(senchaMap.map);
 			}
 			playerRadius.setRadius(playerRange);
 			// Sammelradius zentrieren
-			collectionRadius.setCenter(new LatLng(gpsLatitude, gpsLongitude));
+			collectionRadius.setCenter(new LatLng(currentLocation));
 			if (collectionRadius.map == null) {
 				collectionRadius.setMap(senchaMap.map);
 			}
@@ -607,17 +579,24 @@ public class FunctionsMobile implements PositionWatcher {
 	public void collectItem() {
 		Window.collectItemButton.disable();
 		Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
-		ajax(new Options<Object>(Object.class) {
+		new RestMobile().collectItem(playerId, new AjaxResult<Object>() {
 
-			protected void setData() {
-				this.type = "POST";
-				this.url = "/rest/mobile/collect_item";
-				this.data = "playerId=" + playerId;
-			}
-
+			@Override
 			public void success() {
 				updateDisplay();
 			}
 		});
+	}
+
+	private void loginSuccess(LoginAnswer data) {
+		if (!isNaN(parseInt(data.id))) {
+			playerId = parseInt(data.id);
+			loginOverlay.hide();
+			updateGameStatus(false);
+			startGameStatusInterval();
+			// $("#mainContent").html("");
+		} else {
+			showLoginError("Keine id bekommen");
+		}
 	}
 }

@@ -10,6 +10,11 @@ public class LatLng {
 		this.longitude = longitude;
 	}
 
+	public LatLng(de.unipotsdam.nexplorer.client.android.support.Location location) {
+		this.latitude = location.getLatitude();
+		this.longitude = location.getLongitude();
+	}
+
 	public com.google.android.gms.maps.model.LatLng create() {
 		return new com.google.android.gms.maps.model.LatLng(latitude, longitude);
 	}
