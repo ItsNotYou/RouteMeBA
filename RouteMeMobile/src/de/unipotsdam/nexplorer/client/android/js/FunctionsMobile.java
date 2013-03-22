@@ -1,12 +1,12 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
+import static de.unipotsdam.nexplorer.client.android.js.Window.app;
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
 import static de.unipotsdam.nexplorer.client.android.js.Window.clearInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
 import static de.unipotsdam.nexplorer.client.android.js.Window.each;
 import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
-import static de.unipotsdam.nexplorer.client.android.js.Window.app;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
@@ -487,28 +487,18 @@ public class FunctionsMobile implements PositionWatcher {
 	 * updates the display with the new position and the positions of the neighbours
 	 */
 	private void updateDisplay() {
-		// console.log("updateDisplay");
-		if (positionWatch == null) {
-			positionWatch = geolocation.watchPosition(this, new NavigatorOptions() {
-
-				protected void setData() {
-					this.enableHighAccuracy = true;
-					this.maximumAge = 0;
-					this.timeout = 9000;
-				}
-			});
-		}
-		if (!isNaN(score))
-			mainPanelToolbar.items.getItems()[0].setText(score + "");
-		if (!isNaN(neighbourCount))
-			mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
-		if (!isNaN(remainingPlayingTime))
-			mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));
-		if (!isNaN(battery))
-			mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
+		ensurePositionWatch();
+		updateStatusHeader();
 
 		Window.hint.setText(hint);
 
+		centerAtCurrentLocation();
+
+		updateStatusFooter();
+		drawMarkers();
+	}
+
+	private void centerAtCurrentLocation() {
 		if (currentLocation != null) {
 			// Karte zentrieren
 			senchaMap.map.setCenter(new LatLng(currentLocation));
@@ -530,7 +520,31 @@ public class FunctionsMobile implements PositionWatcher {
 			}
 			collectionRadius.setRadius(itemCollectionRange);
 		}
+	}
 
+	private void drawMarkers() {
+		if (neighbours != undefined) {
+			each(neighbours, new Call<Integer, Neighbour>() {
+
+				@Override
+				public void call(Integer key, Neighbour value) {
+					drawNeighbourMarkerAtLatitudeLongitude(key, value.getLatitude(), value.getLongitude());
+				}
+			});
+		}
+
+		if (nearbyItems != undefined) {
+			each(nearbyItems, new Call<Integer, Item>() {
+
+				@Override
+				public void call(Integer key, Item value) {
+					drawNearbyItemMarkerAtLatitudeLongitude(key, value.getItemType(), value.getLatitude(), value.getLongitude());
+				}
+			});
+		}
+	}
+
+	private void updateStatusFooter() {
 		if (nextItemDistance != null)
 			Window.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
 		else
@@ -551,23 +565,27 @@ public class FunctionsMobile implements PositionWatcher {
 		} else if (!itemInCollectionRange && !isDisabled) {
 			Window.collectItemButton.disable();
 		}
+	}
 
-		if (neighbours != undefined) {
-			each(neighbours, new Call<Integer, Neighbour>() {
+	private void updateStatusHeader() {
+		if (!isNaN(score))
+			mainPanelToolbar.items.getItems()[0].setText(score + "");
+		if (!isNaN(neighbourCount))
+			mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
+		if (!isNaN(remainingPlayingTime))
+			mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));
+		if (!isNaN(battery))
+			mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
+	}
 
-				@Override
-				public void call(Integer key, Neighbour value) {
-					drawNeighbourMarkerAtLatitudeLongitude(key, value.getLatitude(), value.getLongitude());
-				}
-			});
-		}
+	private void ensurePositionWatch() {
+		if (positionWatch == null) {
+			positionWatch = geolocation.watchPosition(this, new NavigatorOptions() {
 
-		if (nearbyItems != undefined) {
-			each(nearbyItems, new Call<Integer, Item>() {
-
-				@Override
-				public void call(Integer key, Item value) {
-					drawNearbyItemMarkerAtLatitudeLongitude(key, value.getItemType(), value.getLatitude(), value.getLongitude());
+				protected void setData() {
+					this.enableHighAccuracy = true;
+					this.maximumAge = 0;
+					this.timeout = 9000;
 				}
 			});
 		}

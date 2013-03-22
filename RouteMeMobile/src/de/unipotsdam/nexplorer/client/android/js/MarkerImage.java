@@ -20,4 +20,12 @@ public class MarkerImage {
 	public BitmapDescriptor create() {
 		return BitmapDescriptorFactory.fromResource(resourceId);
 	}
+
+	public float getU() {
+		return (float) 0.5;
+	}
+
+	public float getV() {
+		return (float) 0.5;
+	}
 }

@@ -46,7 +46,7 @@ public class Marker extends UIElement {
 				if (map2 == null && inner != null) {
 					inner.remove();
 				} else if (map2 != null) {
-					inner = map2.getMap().addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()));
+					inner = map2.getMap().addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()).anchor(icon.getU(), icon.getV()));
 				}
 			}
 		});
