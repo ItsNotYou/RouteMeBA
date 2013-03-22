@@ -15,7 +15,7 @@ public class Window {
 
 	public static Object undefined = null;
 
-	public static Location location = null;
+	public static AppWrapper app = null;
 
 	public static Button loginButton = null;
 
@@ -59,7 +59,7 @@ public class Window {
 		nextItemDistance = new Text(nextItemDistanceText, host);
 		waitingText = new Text(waitingTextText, host);
 
-		location = new Location(host);
+		app = new AppWrapper(host);
 
 		beginDialog = new Text(beginText, host);
 

@@ -6,7 +6,7 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
 import static de.unipotsdam.nexplorer.client.android.js.Window.each;
 import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
-import static de.unipotsdam.nexplorer.client.android.js.Window.location;
+import static de.unipotsdam.nexplorer.client.android.js.Window.app;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
@@ -349,7 +349,7 @@ public class FunctionsMobile implements PositionWatcher {
 		} else {
 			if (battery > 0) {
 				if (!gameExists && gameDidExist) {
-					location.reload();
+					app.reload();
 				} else if (!gameExists && !gameDidExist) {
 					waitingText.setText("Warte auf Spielstart");
 					stopIntervals();

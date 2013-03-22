@@ -2,11 +2,11 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import android.app.Activity;
 
-public class Location {
+public class AppWrapper {
 
 	private Activity activity;
 
-	public Location(Activity host) {
+	public AppWrapper(Activity host) {
 		this.activity = host;
 	}
 
