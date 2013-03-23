@@ -1,6 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.clearInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
@@ -11,16 +10,12 @@ import java.util.TimerTask;
 
 public class Intervals {
 
+	Geolocator positionWatch = null;
+
 	Interval displayMarkerInterval;
 	Interval gameStatusInterval;
 
-	Interval localisationInterval;
-	Geolocator positionWatch = null;
-	// Interval Times
-
 	long updatePositionIntervalTime = 300;
-	// Interval Times
-
 	long updateDisplayIntervalTime = 300;
 
 	private void startDisplayInterval(final FunctionsMobile functionsMobile) {
@@ -43,9 +38,6 @@ public class Intervals {
 	}
 
 	void stopIntervals() {
-		clearInterval(localisationInterval);
-		localisationInterval = null;
-
 		geolocation.clearWatch(positionWatch);
 		positionWatch = null;
 	}
@@ -66,22 +58,6 @@ public class Intervals {
 		}
 	}
 
-	private void startLocalisationInterval(final FunctionsMobile functionsMobile) {
-		if (localisationInterval == undefined || localisationInterval == null) {
-			localisationInterval = setInterval(new TimerTask() {
-
-				@Override
-				public void run() {
-					try {
-						functionsMobile.updatePosition();
-					} catch (Throwable e) {
-						e.toString();
-					}
-				}
-			}, updatePositionIntervalTime);
-		}
-	}
-
 	/**
 	 * bewirkt, dass das Display regelm‰ﬂig aktualisiert wird und die aktuelle Position an den Server gesendet wird
 	 * 
@@ -90,7 +66,6 @@ public class Intervals {
 	 */
 	void startIntervals(FunctionsMobile functionsMobile) {
 		startGameStatusInterval(functionsMobile);
-		startLocalisationInterval(functionsMobile);
 		startDisplayInterval(functionsMobile);
 	}
 

@@ -83,10 +83,12 @@ public class FunctionsMobile implements PositionWatcher {
 	int latencyCount = 0;
 
 	Location currentLocation;
+	private boolean isCollectingItem;
 
 	public FunctionsMobile() {
 		this.mapTasks = new MapRelatedTasks();
 		this.intervals = new Intervals();
+		this.isCollectingItem = false;
 	}
 
 	/**
@@ -121,28 +123,26 @@ public class FunctionsMobile implements PositionWatcher {
 
 	/**
 	 * sendet die aktuelle Positionsdaten an den Server
+	 * 
+	 * @param location
 	 */
-	void updatePosition() {
-		if (positionRequestExecutes == false && currentLocation != null) {
+	void updatePosition(Location location) {
+		if (!positionRequestExecutes && location != null) {
 			positionRequestExecutes = true;
-			updatePositionStartTime = new Date().getTime();
 
-			new RestMobile().updatePlayerPosition(playerId, currentLocation, new AjaxResult<Object>() {
+			new RestMobile().updatePlayerPosition(playerId, location, new AjaxResult<Object>() {
 
 				@Override
 				public void success() {
-					updateLatency();
+					positionRequestExecutes = false;
+				}
+
+				@Override
+				public void error() {
+					positionRequestExecutes = false;
 				}
 			});
 		}
-	}
-
-	private void updateLatency() {
-		latencyCount++;
-		latencyTotal += new Date().getTime() - updatePositionStartTime;
-		// console.log("Count: " + latencyCount + " Latenz: " +
-		// (latencyTotal / latencyCount));
-		positionRequestExecutes = false;
 	}
 
 	/*
@@ -159,7 +159,10 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 
 		noPositionOverlay.hide();
+
 		this.currentLocation = location;
+		updatePosition(currentLocation);
+		updateDisplay();
 	}
 
 	/**
@@ -287,7 +290,6 @@ public class FunctionsMobile implements PositionWatcher {
 		double secs = s % 60;
 		s = (s - secs) / 60;
 		double mins = s % 60;
-		double hrs = (s - mins) / 60;
 
 		return addZ(mins);
 	}
@@ -297,17 +299,17 @@ public class FunctionsMobile implements PositionWatcher {
 	 */
 	void updateDisplay() {
 		intervals.ensurePositionWatch(this);
-		updateStatusHeader();
+		updateStatusHeader(score, neighbourCount, remainingPlayingTime, battery);
 
 		Window.hint.setText(hint);
 
 		mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
 
-		updateStatusFooter();
+		updateStatusFooter(nextItemDistance, hasRangeBooster, isCollectingItem, itemInCollectionRange);
 		mapTasks.drawMarkers(this);
 	}
 
-	private void updateStatusFooter() {
+	private void updateStatusFooter(Object nextItemDistance, boolean hasRangeBooster, boolean isCollectingItem, boolean itemInCollectionRange) {
 		if (nextItemDistance != null)
 			Window.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
 		else
@@ -322,15 +324,19 @@ public class FunctionsMobile implements PositionWatcher {
 
 		Window.activeItems.html("Aktive Gegenstände: ", boosterImageElement);
 
-		boolean isDisabled = Window.collectItemButton.isDisabled();
-		if (itemInCollectionRange && isDisabled) {
-			Window.collectItemButton.enable();
-		} else if (!itemInCollectionRange && !isDisabled) {
-			Window.collectItemButton.disable();
+		if (!isCollectingItem) {
+			Window.collectItemButton.html("Gegenstand einsammeln");
+
+			boolean isDisabled = Window.collectItemButton.isDisabled();
+			if (itemInCollectionRange && isDisabled) {
+				Window.collectItemButton.enable();
+			} else if (!itemInCollectionRange && !isDisabled) {
+				Window.collectItemButton.disable();
+			}
 		}
 	}
 
-	private void updateStatusHeader() {
+	private void updateStatusHeader(int score, int neighbourCount, int remainingPlayingTime, double battery) {
 		if (!isNaN(score))
 			mainPanelToolbar.items.getItems()[0].setText(score + "");
 		if (!isNaN(neighbourCount))
@@ -345,15 +351,26 @@ public class FunctionsMobile implements PositionWatcher {
 	 * collect items
 	 */
 	public void collectItem() {
-		Window.collectItemButton.disable();
-		Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
-		new RestMobile().collectItem(playerId, new AjaxResult<Object>() {
+		if (!isCollectingItem) {
+			isCollectingItem = true;
 
-			@Override
-			public void success() {
-				updateDisplay();
-			}
-		});
+			Window.collectItemButton.disable();
+			Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
+			new RestMobile().collectItem(playerId, new AjaxResult<Object>() {
+
+				@Override
+				public void success() {
+					isCollectingItem = false;
+					updateDisplay();
+				}
+
+				@Override
+				public void error() {
+					isCollectingItem = false;
+					updateDisplay();
+				}
+			});
+		}
 	}
 
 	private void loginSuccess(LoginAnswer data) {
