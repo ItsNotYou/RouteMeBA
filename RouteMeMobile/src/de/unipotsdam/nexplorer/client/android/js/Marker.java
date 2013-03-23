@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import de.unipotsdam.nexplorer.client.android.ui.UIElement;
+
 public class Marker extends UIElement {
 
 	public Map map;

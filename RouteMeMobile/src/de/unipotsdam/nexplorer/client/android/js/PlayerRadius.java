@@ -5,6 +5,8 @@ import android.app.Activity;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 
+import de.unipotsdam.nexplorer.client.android.ui.UIElement;
+
 public class PlayerRadius extends UIElement {
 
 	public Map map;

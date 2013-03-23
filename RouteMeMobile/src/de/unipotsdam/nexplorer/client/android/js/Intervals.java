@@ -42,6 +42,11 @@ public class Intervals {
 		positionWatch = null;
 	}
 
+	public void restartIntervals(FunctionsMobile functionsMobile) {
+		stopIntervals();
+		startIntervals(functionsMobile);
+	}
+
 	void startGameStatusInterval(final FunctionsMobile functionsMobile) {
 		if (gameStatusInterval == undefined || gameStatusInterval == null) {
 			gameStatusInterval = setInterval(new TimerTask() {

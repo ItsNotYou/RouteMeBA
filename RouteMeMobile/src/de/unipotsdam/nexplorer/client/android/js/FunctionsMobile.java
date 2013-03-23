@@ -1,23 +1,16 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import static de.unipotsdam.nexplorer.client.android.js.Window.app;
-import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
-import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
-import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
-import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
-import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseInt;
-import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
-import static de.unipotsdam.nexplorer.client.android.js.Window.waitingText;
 
 import java.util.Date;
 
-import de.unipotsdam.nexplorer.client.android.R;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.support.Location;
+import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 /**
  * mainly legacy code from Tobias Moebert has been adapted to work with a java backend and gwt client wrapper
@@ -28,6 +21,7 @@ public class FunctionsMobile implements PositionWatcher {
 
 	MapRelatedTasks mapTasks;
 	Intervals intervals;
+	UI ui;
 
 	// TODO: Parameter flexibilisieren
 	double minAccuracy = 11;
@@ -45,7 +39,7 @@ public class FunctionsMobile implements PositionWatcher {
 
 	// Player data
 
-	int playerId;
+	Integer playerId = null;
 	double serverLatitude;
 	double serverLongitude;
 	double battery = 100;
@@ -85,10 +79,13 @@ public class FunctionsMobile implements PositionWatcher {
 	Location currentLocation;
 	private boolean isCollectingItem;
 
-	public FunctionsMobile() {
+	public FunctionsMobile(UI ui) {
 		this.mapTasks = new MapRelatedTasks();
 		this.intervals = new Intervals();
+		this.ui = ui;
 		this.isCollectingItem = false;
+
+		intervals.ensurePositionWatch(this);
 	}
 
 	/**
@@ -99,7 +96,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 */
 	public void loginPlayer(final String name, final boolean isMobile) {
 		if (name != "") {
-			loginButton.label("melde an...");
+			ui.labelButtonForLogin();
 
 			new RestMobile().login(name, isMobile, new AjaxResult<LoginAnswer>() {
 
@@ -110,15 +107,10 @@ public class FunctionsMobile implements PositionWatcher {
 
 				@Override
 				public void error() {
-					showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?");
+					ui.showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?");
 				}
 			});
 		}
-	}
-
-	private void showLoginError(Object data) {
-		beginDialog.setText("Kein Spiel da. Versuchen Sie es später noch einmal!");
-		loginButton.label("anmelden ");
 	}
 
 	/**
@@ -126,8 +118,8 @@ public class FunctionsMobile implements PositionWatcher {
 	 * 
 	 * @param location
 	 */
-	void updatePosition(Location location) {
-		if (!positionRequestExecutes && location != null) {
+	private void updatePosition(Location location) {
+		if (!positionRequestExecutes && location != null && playerId != null) {
 			positionRequestExecutes = true;
 
 			new RestMobile().updatePlayerPosition(playerId, location, new AjaxResult<Object>() {
@@ -145,10 +137,6 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 	}
 
-	/*
-	 * // findet in höheren Schwierigkeitsgraden Verwendung private void updateNeighbours() { if (neighboursRequestExecutes == false) { neighboursRequestExecutes = true; $.ajax({ type:"POST", data:"playerId=" + playerId, url:"../php/ajax/mobile/update_neighbours.php", timeout:5000, success:private void () { neighboursRequestExecutes = false; } }) } ; }
-	 */
-
 	/**
 	 * callback for the geolocation
 	 */
@@ -158,7 +146,7 @@ public class FunctionsMobile implements PositionWatcher {
 			return;
 		}
 
-		noPositionOverlay.hide();
+		ui.hideNoPositionOverlay();
 
 		this.currentLocation = location;
 		updatePosition(currentLocation);
@@ -169,7 +157,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 * callback for the geolocation
 	 */
 	public void positionError(Exception error) {
-		noPositionOverlay.show();
+		ui.showNoPositionOverlay();
 	}
 
 	/**
@@ -194,7 +182,6 @@ public class FunctionsMobile implements PositionWatcher {
 				@Override
 				public void error(Exception e) {
 					gameStatusRequestExecutes = false;
-					showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?" + e);
 				}
 			});
 		}
@@ -239,112 +226,37 @@ public class FunctionsMobile implements PositionWatcher {
 		// Spiel entsprechend der erhaltenen Informationen
 		// anpassen
 		if (gameDidEnd) {
-			waitingText.setText("Das Spiel ist zu Ende. Vielen Dank fürs Mitspielen.");
 			intervals.stopIntervals();
-			waitingForGameOverlay.show();
+			ui.showGameEnded();
 		} else {
 			if (battery > 0) {
 				if (!gameExists && gameDidExist) {
 					app.reload();
 				} else if (!gameExists && !gameDidExist) {
-					waitingText.setText("Warte auf Spielstart");
-					intervals.stopIntervals();
-					intervals.startGameStatusInterval(this);
-					waitingForGameOverlay.show();
+					intervals.restartIntervals(this);
+					ui.showWaitingForGameStart();
 				} else if (gameExists && gameDidExist && !gameIsRunning) {
-					waitingText.setText("Das Spiel wurde Pausiert");
-					intervals.stopIntervals();
-					intervals.startGameStatusInterval(this);
-					waitingForGameOverlay.show();
+					intervals.restartIntervals(this);
+					ui.showGamePaused();
 				} else {
-					// stopIntervals();
 					intervals.startIntervals(this);
-					waitingForGameOverlay.hide();
+					ui.hideWaitingForGameOverlay();
 				}
 			} else {
-				waitingText.setText("Dein Akku ist alle :( Vielen Dank fürs Mitspielen.");
 				intervals.stopIntervals();
-				waitingForGameOverlay.show();
+				ui.showBatteryEmpty();
 			}
 		}
-
-		// Ansicht aktualisieren
-
-		// updateDisplay(); refaktorisiert.... display soll
-		// nicht immer nur nach den server calls refreshed
-		// werden
-	}
-
-	private String addZ(double n) {
-		return (n < 10 ? "0" : "") + n;
-	}
-
-	/**
-	 * 
-	 * @param ms
-	 * @returns {String}
-	 */
-	private String convertMS(double s) {
-		double ms = s % 1000;
-		s = (s - ms) / 1000;
-		double secs = s % 60;
-		s = (s - secs) / 60;
-		double mins = s % 60;
-
-		return addZ(mins);
 	}
 
 	/**
 	 * updates the display with the new position and the positions of the neighbours
 	 */
 	void updateDisplay() {
-		intervals.ensurePositionWatch(this);
-		updateStatusHeader(score, neighbourCount, remainingPlayingTime, battery);
-
-		Window.hint.setText(hint);
-
 		mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
-
-		updateStatusFooter(nextItemDistance, hasRangeBooster, isCollectingItem, itemInCollectionRange);
 		mapTasks.drawMarkers(this);
-	}
 
-	private void updateStatusFooter(Object nextItemDistance, boolean hasRangeBooster, boolean isCollectingItem, boolean itemInCollectionRange) {
-		if (nextItemDistance != null)
-			Window.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
-		else
-			Window.nextItemDistance.setText("Keine Gegenstände in der Nähe.");
-
-		int boosterImageElement;
-		if (hasRangeBooster) {
-			boosterImageElement = R.drawable.mobile_phone_cast;
-		} else {
-			boosterImageElement = R.drawable.mobile_phone_cast_gray;
-		}
-
-		Window.activeItems.html("Aktive Gegenstände: ", boosterImageElement);
-
-		if (!isCollectingItem) {
-			Window.collectItemButton.html("Gegenstand einsammeln");
-
-			boolean isDisabled = Window.collectItemButton.isDisabled();
-			if (itemInCollectionRange && isDisabled) {
-				Window.collectItemButton.enable();
-			} else if (!itemInCollectionRange && !isDisabled) {
-				Window.collectItemButton.disable();
-			}
-		}
-	}
-
-	private void updateStatusHeader(int score, int neighbourCount, int remainingPlayingTime, double battery) {
-		if (!isNaN(score))
-			mainPanelToolbar.items.getItems()[0].setText(score + "");
-		if (!isNaN(neighbourCount))
-			mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
-		if (!isNaN(remainingPlayingTime))
-			mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));
-		if (!isNaN(battery))
-			mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
+		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, isCollectingItem, itemInCollectionRange, hint);
 	}
 
 	/**
@@ -354,8 +266,7 @@ public class FunctionsMobile implements PositionWatcher {
 		if (!isCollectingItem) {
 			isCollectingItem = true;
 
-			Window.collectItemButton.disable();
-			Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
+			ui.disableButtonForItemCollection();
 			new RestMobile().collectItem(playerId, new AjaxResult<Object>() {
 
 				@Override
@@ -376,12 +287,12 @@ public class FunctionsMobile implements PositionWatcher {
 	private void loginSuccess(LoginAnswer data) {
 		if (!isNaN(parseInt(data.id))) {
 			playerId = parseInt(data.id);
-			loginOverlay.hide();
+			ui.hideLoginOverlay();
 			updateGameStatus(false);
 			intervals.startGameStatusInterval(this);
 			// $("#mainContent").html("");
 		} else {
-			showLoginError("Keine id bekommen");
+			ui.showLoginError("Keine id bekommen");
 		}
 	}
 }
