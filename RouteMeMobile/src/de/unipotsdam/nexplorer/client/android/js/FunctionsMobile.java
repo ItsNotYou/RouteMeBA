@@ -2,8 +2,6 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import static de.unipotsdam.nexplorer.client.android.js.Window.app;
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
-import static de.unipotsdam.nexplorer.client.android.js.Window.clearInterval;
-import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
@@ -11,15 +9,10 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
 import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
 import static de.unipotsdam.nexplorer.client.android.js.Window.parseInt;
-import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
-import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingText;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
-import java.util.TimerTask;
 
 import de.unipotsdam.nexplorer.client.android.R;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
@@ -33,17 +26,11 @@ import de.unipotsdam.nexplorer.client.android.support.Location;
  */
 public class FunctionsMobile implements PositionWatcher {
 
-	Object playerMaker;
 	MapRelatedTasks mapTasks;
+	Intervals intervals;
 
 	// TODO: Parameter flexibilisieren
 	double minAccuracy = 11;
-
-	// Intervals
-
-	Interval localisationInterval;
-	Interval gameStatusInterval;
-	Interval displayMarkerInterval;
 
 	// Interval Ajax Request
 
@@ -51,13 +38,6 @@ public class FunctionsMobile implements PositionWatcher {
 	boolean gameStatusRequestExecutes = false;
 	boolean playerStatusRequestExecutes = false;
 	boolean neighboursRequestExecutes = false;
-
-	// Interval Times
-
-	long updatePositionIntervalTime = 300;
-	long updateDisplayIntervalTime = 300;
-
-	Geolocator positionWatch = null;
 
 	// Overlays
 
@@ -106,6 +86,7 @@ public class FunctionsMobile implements PositionWatcher {
 
 	public FunctionsMobile() {
 		this.mapTasks = new MapRelatedTasks();
+		this.intervals = new Intervals();
 	}
 
 	/**
@@ -139,77 +120,9 @@ public class FunctionsMobile implements PositionWatcher {
 	}
 
 	/**
-	 * bewirkt, dass das Display regelmäßig aktualisiert wird und die aktuelle Position an den Server gesendet wird
-	 */
-	private void startIntervals() {
-		startGameStatusInterval();
-		startLocalisationInterval();
-		startDisplayInterval();
-	}
-
-	private void stopIntervals() {
-		clearInterval(localisationInterval);
-		localisationInterval = null;
-
-		geolocation.clearWatch(positionWatch);
-		positionWatch = null;
-	}
-
-	private void startGameStatusInterval() {
-		if (gameStatusInterval == undefined || gameStatusInterval == null) {
-			gameStatusInterval = setInterval(new TimerTask() {
-
-				@Override
-				public void run() {
-					try {
-						updateGameStatus(true);
-					} catch (Throwable e) {
-						e.toString();
-					}
-				}
-			}, updateDisplayIntervalTime);
-		}
-	}
-
-	private void startLocalisationInterval() {
-		if (localisationInterval == undefined || localisationInterval == null) {
-			localisationInterval = setInterval(new TimerTask() {
-
-				@Override
-				public void run() {
-					try {
-						updatePosition();
-					} catch (Throwable e) {
-						e.toString();
-					}
-				}
-			}, updatePositionIntervalTime);
-		}
-	}
-
-	private void startDisplayInterval() {
-		if (displayMarkerInterval == undefined || displayMarkerInterval == null) {
-			displayMarkerInterval = setInterval(new TimerTask() {
-
-				@Override
-				public void run() {
-					try {
-						updateDisplay();
-					} catch (Throwable e) {
-						StringWriter w = new StringWriter();
-						e.printStackTrace(new PrintWriter(w));
-						String message = w.toString();
-						e.toString();
-					}
-				}
-			}, 500);
-		}
-	}
-
-	/**
 	 * sendet die aktuelle Positionsdaten an den Server
 	 */
-	private void updatePosition() {
+	void updatePosition() {
 		if (positionRequestExecutes == false && currentLocation != null) {
 			positionRequestExecutes = true;
 			updatePositionStartTime = new Date().getTime();
@@ -261,7 +174,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 * 
 	 * @param isAsync
 	 */
-	private void updateGameStatus(final boolean isAsync) {
+	void updateGameStatus(final boolean isAsync) {
 		// console.log("updateGameStatus async: "+isAsync);
 		if (gameStatusRequestExecutes == false) {
 			// console.log("gameStatusRequestExecutes == false");
@@ -300,7 +213,8 @@ public class FunctionsMobile implements PositionWatcher {
 		itemCollectionRange = parseInt(data.stats.settings.getItemCollectionRange());
 		gameDidEnd = parseInt(data.stats.getDidEnd()) != 0 ? true : false;
 		// updatePositionIntervalTime = parseInt(data.stats.settings["updatePositionIntervalTime"]);
-		updateDisplayIntervalTime = parseInt(data.stats.settings.getUpdateDisplayIntervalTime());
+		Integer updateDisplayIntervalTime = parseInt(data.stats.settings.getUpdateDisplayIntervalTime());
+		intervals.setUpdateDisplayIntervalTime(updateDisplayIntervalTime);
 
 		// Spielerinformationen
 		battery = parseFloat(data.node.getBatterieLevel());
@@ -323,7 +237,7 @@ public class FunctionsMobile implements PositionWatcher {
 		// anpassen
 		if (gameDidEnd) {
 			waitingText.setText("Das Spiel ist zu Ende. Vielen Dank fürs Mitspielen.");
-			stopIntervals();
+			intervals.stopIntervals();
 			waitingForGameOverlay.show();
 		} else {
 			if (battery > 0) {
@@ -331,22 +245,22 @@ public class FunctionsMobile implements PositionWatcher {
 					app.reload();
 				} else if (!gameExists && !gameDidExist) {
 					waitingText.setText("Warte auf Spielstart");
-					stopIntervals();
-					startGameStatusInterval();
+					intervals.stopIntervals();
+					intervals.startGameStatusInterval(this);
 					waitingForGameOverlay.show();
 				} else if (gameExists && gameDidExist && !gameIsRunning) {
 					waitingText.setText("Das Spiel wurde Pausiert");
-					stopIntervals();
-					startGameStatusInterval();
+					intervals.stopIntervals();
+					intervals.startGameStatusInterval(this);
 					waitingForGameOverlay.show();
 				} else {
 					// stopIntervals();
-					startIntervals();
+					intervals.startIntervals(this);
 					waitingForGameOverlay.hide();
 				}
 			} else {
 				waitingText.setText("Dein Akku ist alle :( Vielen Dank fürs Mitspielen.");
-				stopIntervals();
+				intervals.stopIntervals();
 				waitingForGameOverlay.show();
 			}
 		}
@@ -381,8 +295,8 @@ public class FunctionsMobile implements PositionWatcher {
 	/**
 	 * updates the display with the new position and the positions of the neighbours
 	 */
-	private void updateDisplay() {
-		ensurePositionWatch();
+	void updateDisplay() {
+		intervals.ensurePositionWatch(this);
 		updateStatusHeader();
 
 		Window.hint.setText(hint);
@@ -427,19 +341,6 @@ public class FunctionsMobile implements PositionWatcher {
 			mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
 	}
 
-	private void ensurePositionWatch() {
-		if (positionWatch == null) {
-			positionWatch = geolocation.watchPosition(this, new NavigatorOptions() {
-
-				protected void setData() {
-					this.enableHighAccuracy = true;
-					this.maximumAge = 0;
-					this.timeout = 9000;
-				}
-			});
-		}
-	}
-
 	/**
 	 * collect items
 	 */
@@ -460,7 +361,7 @@ public class FunctionsMobile implements PositionWatcher {
 			playerId = parseInt(data.id);
 			loginOverlay.hide();
 			updateGameStatus(false);
-			startGameStatusInterval();
+			intervals.startGameStatusInterval(this);
 			// $("#mainContent").html("");
 		} else {
 			showLoginError("Keine id bekommen");
