@@ -9,18 +9,19 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
 public class MapRelatedTasks {
 
-	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap();
-	java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap();
+	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
+	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
 
-	void drawMarkers(final FunctionsMobile functionsMobile) {
-		if (functionsMobile.neighbours != undefined) {
-			each(functionsMobile.neighbours, new Call<Integer, Neighbour>() {
+	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems) {
+		if (neighbours != undefined) {
+			each(neighbours, new Call<Integer, Neighbour>() {
 
 				@Override
 				public void call(Integer key, Neighbour value) {
@@ -29,12 +30,12 @@ public class MapRelatedTasks {
 			});
 		}
 
-		if (functionsMobile.nearbyItems != undefined) {
-			each(functionsMobile.nearbyItems, new Call<Integer, Item>() {
+		if (nearbyItems != undefined) {
+			each(nearbyItems, new Call<Integer, Item>() {
 
 				@Override
 				public void call(Integer key, Item value) {
-					drawNearbyItemMarkerAtLatitudeLongitude(functionsMobile, key, value.getItemType(), value.getLatitude(), value.getLongitude());
+					drawNearbyItemMarkerAtLatitudeLongitude(key, value.getItemType(), value.getLatitude(), value.getLongitude());
 				}
 			});
 		}
@@ -42,15 +43,12 @@ public class MapRelatedTasks {
 
 	/**
 	 * draw nearby items
-	 * 
-	 * @param functionsMobile
-	 *            TODO
 	 * @param itemId
 	 * @param type
 	 * @param latitude
 	 * @param longitude
 	 */
-	void drawNearbyItemMarkerAtLatitudeLongitude(FunctionsMobile functionsMobile, int itemId, String type, double latitude, double longitude) {
+	void drawNearbyItemMarkerAtLatitudeLongitude(int itemId, String type, double latitude, double longitude) {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
 		int imagePath = 0;

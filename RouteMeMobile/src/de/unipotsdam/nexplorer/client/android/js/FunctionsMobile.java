@@ -19,19 +19,17 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
  */
 public class FunctionsMobile implements PositionWatcher {
 
-	MapRelatedTasks mapTasks;
-	Intervals intervals;
-	UI ui;
+	private MapRelatedTasks mapTasks;
+	private Intervals intervals;
+	private UI ui;
 
 	// TODO: Parameter flexibilisieren
-	double minAccuracy = 11;
+	private double minAccuracy = 11;
 
 	// Interval Ajax Request
 
-	boolean positionRequestExecutes = false;
-	boolean gameStatusRequestExecutes = false;
-	boolean playerStatusRequestExecutes = false;
-	boolean neighboursRequestExecutes = false;
+	private boolean positionRequestExecutes = false;
+	private boolean gameStatusRequestExecutes = false;
 
 	// Overlays
 
@@ -39,44 +37,38 @@ public class FunctionsMobile implements PositionWatcher {
 
 	// Player data
 
-	Integer playerId = null;
-	double serverLatitude;
-	double serverLongitude;
-	double battery = 100;
-	java.util.Map<Integer, Neighbour> neighbours;
-	int neighbourCount = 0;
-	int score;
-	int playerRange;
-	java.util.Map<Integer, Item> nearbyItems;
-	Object nearbyItemsCount;
-	Object nextItemDistance;
-	boolean itemInCollectionRange;
-	boolean hasRangeBooster;
-	String hint = "Achte auf die Hinweise!";
+	private Integer playerId = null;
+	private double serverLatitude;
+	private double serverLongitude;
+	private double battery = 100;
+	private java.util.Map<Integer, Neighbour> neighbours;
+	private int neighbourCount = 0;
+	private int score;
+	private int playerRange;
+	private java.util.Map<Integer, Item> nearbyItems;
+	private Object nearbyItemsCount;
+	private Object nextItemDistance;
+	private boolean itemInCollectionRange;
+	private boolean hasRangeBooster;
+	private String hint = "Achte auf die Hinweise!";
 
 	// Game data
 
-	boolean gameIsRunning;
-	boolean gameExists;
-	boolean gameDidExist = true; // die semantik davon, dass es mal ein Spiel gegeben
+	private boolean gameIsRunning;
+	private boolean gameExists;
+	private boolean gameDidExist = true; // die semantik davon, dass es mal ein Spiel gegeben
 	// hat, ist mir unklar ... es hat hat schon immer ein
 	// Spiel gegeben!
-	int remainingPlayingTime;
-	Object baseNodeRange;
-	Object gameDifficulty = 0;
-	int itemCollectionRange;
-	boolean gameDidEnd = false;
+	private int remainingPlayingTime;
+	private Object baseNodeRange;
+	private Object gameDifficulty = 0;
+	private int itemCollectionRange;
+	private boolean gameDidEnd = false;
 
 	// Time Tracking
+	private long updateGameStatusStartTime;
 
-	long updatePositionStartTime;
-	long updateGameStatusStartTime;
-	Object updatePlayerStatusStartTime;
-
-	long latencyTotal = 0;
-	int latencyCount = 0;
-
-	Location currentLocation;
+	private Location currentLocation;
 	private boolean isCollectingItem;
 
 	public FunctionsMobile(UI ui) {
@@ -188,8 +180,6 @@ public class FunctionsMobile implements PositionWatcher {
 	}
 
 	private void updateGameStatusCallback(GameStatus data) {
-		latencyCount++;
-		latencyTotal += new Date().getTime() - updateGameStatusStartTime;
 		gameStatusRequestExecutes = false;
 
 		// Spielstatus und Spielinformationen
@@ -254,7 +244,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 */
 	void updateDisplay() {
 		mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
-		mapTasks.drawMarkers(this);
+		mapTasks.drawMarkers(neighbours, nearbyItems);
 
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, isCollectingItem, itemInCollectionRange, hint);
 	}
