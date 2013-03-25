@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unipotsdam.nexplorer.client.android.R.drawable;
+import de.unipotsdam.nexplorer.client.android.net.Item;
+import de.unipotsdam.nexplorer.client.android.net.Neighbour;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
 public class MapRelatedTasks {

@@ -7,9 +7,6 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
-import de.unipotsdam.nexplorer.client.android.js.GameStatus;
-import de.unipotsdam.nexplorer.client.android.js.LoginAnswer;
-import de.unipotsdam.nexplorer.client.android.js.Options;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 
 public class RestMobile {

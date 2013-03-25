@@ -1,9 +1,9 @@
-package de.unipotsdam.nexplorer.client.android.js;
+package de.unipotsdam.nexplorer.client.android.net;
 
 public class GameStatus {
 
-	protected Stats stats;
-	protected Node node;
+	public Stats stats;
+	public Node node;
 	private String hint;
 
 	public Stats getStats() {

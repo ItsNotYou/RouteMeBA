@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap;
 import de.unipotsdam.nexplorer.client.android.R;
 import de.unipotsdam.nexplorer.client.android.support.MapRotator;
 import de.unipotsdam.nexplorer.client.android.ui.Button;
+import de.unipotsdam.nexplorer.client.android.ui.MainPanelToolbar;
 import de.unipotsdam.nexplorer.client.android.ui.Overlay;
 import de.unipotsdam.nexplorer.client.android.ui.Text;
 

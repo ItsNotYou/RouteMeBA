@@ -1,8 +1,8 @@
-package de.unipotsdam.nexplorer.client.android.js;
+package de.unipotsdam.nexplorer.client.android.net;
 
 public class Stats {
 
-	protected Settings settings;
+	public Settings settings;
 
 	private String remainingPlayingTime;
 	private String gameExists;

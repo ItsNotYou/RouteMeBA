@@ -1,9 +1,8 @@
-package de.unipotsdam.nexplorer.client.android.js;
+package de.unipotsdam.nexplorer.client.android.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.unipotsdam.nexplorer.client.android.ui.Text;
 
 import android.app.Activity;
 import android.widget.TextView;

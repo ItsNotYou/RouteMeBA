@@ -8,6 +8,10 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.parseInt;
 import java.util.Date;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
+import de.unipotsdam.nexplorer.client.android.net.GameStatus;
+import de.unipotsdam.nexplorer.client.android.net.Item;
+import de.unipotsdam.nexplorer.client.android.net.LoginAnswer;
+import de.unipotsdam.nexplorer.client.android.net.Neighbour;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
