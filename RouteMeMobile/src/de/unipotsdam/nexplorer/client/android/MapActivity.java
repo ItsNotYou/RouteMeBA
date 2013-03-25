@@ -10,7 +10,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
+import de.unipotsdam.nexplorer.client.android.js.Geolocation;
+import de.unipotsdam.nexplorer.client.android.js.Intervals;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.support.MapRotator;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
@@ -60,7 +63,7 @@ public class MapActivity extends FragmentActivity {
 		((TextView) noPositionDialog.findViewById(R.id.waiting_text)).setText(R.string.default_noposition);
 
 		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
-		js = new FunctionsMobile(new UI(this));
+		js = new FunctionsMobile(new UI(this), new AppWrapper(this), new Intervals(new Geolocation(this)));
 	}
 
 	public void collectItem(View view) {

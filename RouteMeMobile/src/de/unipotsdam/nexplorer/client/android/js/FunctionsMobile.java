@@ -1,10 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.app;
-import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
-import static de.unipotsdam.nexplorer.client.android.js.Window.parseFloat;
-import static de.unipotsdam.nexplorer.client.android.js.Window.parseInt;
-
 import java.util.Date;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
@@ -23,9 +18,10 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
  */
 public class FunctionsMobile implements PositionWatcher {
 
-	private MapRelatedTasks mapTasks;
-	private Intervals intervals;
-	private UI ui;
+	private final MapRelatedTasks mapTasks;
+	private final Intervals intervals;
+	private final UI ui;
+	private final AppWrapper app;
 
 	// TODO: Parameter flexibilisieren
 	private double minAccuracy = 11;
@@ -75,9 +71,10 @@ public class FunctionsMobile implements PositionWatcher {
 	private Location currentLocation;
 	private boolean isCollectingItem;
 
-	public FunctionsMobile(UI ui) {
+	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals) {
 		this.mapTasks = new MapRelatedTasks();
-		this.intervals = new Intervals();
+		this.intervals = intervals;
+		this.app = app;
 		this.ui = ui;
 		this.isCollectingItem = false;
 
@@ -288,5 +285,20 @@ public class FunctionsMobile implements PositionWatcher {
 		} else {
 			ui.showLoginError("Keine id bekommen");
 		}
+	}
+
+	public static boolean isNaN(double result) {
+		return Double.isNaN(result);
+	}
+
+	public static double parseFloat(String value) {
+		return Double.parseDouble(value);
+	}
+
+	public static Integer parseInt(String value) {
+		if (value == null) {
+			return null;
+		}
+		return Integer.parseInt(value);
 	}
 }

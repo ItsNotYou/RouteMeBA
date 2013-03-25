@@ -19,8 +19,6 @@ public class Window {
 
 	public static Object undefined = null;
 
-	public static AppWrapper app = null;
-
 	public static Button loginButton = null;
 
 	public static Text beginDialog = null;
@@ -34,8 +32,6 @@ public class Window {
 	public static Text activeItems = null;
 
 	public static Button collectItemButton = null;
-
-	public static Geolocation geolocation = null;
 
 	public static MainPanelToolbar mainPanelToolbar = null;
 
@@ -63,11 +59,7 @@ public class Window {
 		nextItemDistance = new Text(nextItemDistanceText, host);
 		waitingText = new Text(waitingTextText, host);
 
-		app = new AppWrapper(host);
-
 		beginDialog = new Text(beginText, host);
-
-		geolocation = new Geolocation(host, host);
 
 		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host);
 
@@ -119,20 +111,5 @@ public class Window {
 		for (S key : objects.keySet()) {
 			callback.call(key, objects.get(key));
 		}
-	}
-
-	public static boolean isNaN(double result) {
-		return Double.isNaN(result);
-	}
-
-	public static double parseFloat(String value) {
-		return Double.parseDouble(value);
-	}
-
-	public static Integer parseInt(String value) {
-		if (value == null) {
-			return null;
-		}
-		return Integer.parseInt(value);
 	}
 }

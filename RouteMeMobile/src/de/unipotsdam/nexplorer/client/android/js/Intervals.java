@@ -1,6 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.geolocation;
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
 import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 
@@ -17,6 +16,12 @@ public class Intervals {
 
 	long updatePositionIntervalTime = 300;
 	long updateDisplayIntervalTime = 300;
+
+	private final Geolocation geolocation;
+
+	public Intervals(Geolocation geolocation) {
+		this.geolocation = geolocation;
+	}
 
 	private void startDisplayInterval(final FunctionsMobile functionsMobile) {
 		if (displayMarkerInterval == undefined || displayMarkerInterval == null) {

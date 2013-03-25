@@ -16,11 +16,9 @@ public class Geolocation {
 
 	private static boolean IS_DEBUG = true;
 
-	private Context context;
 	private Activity host;
 
-	public Geolocation(Context context, Activity host) {
-		this.context = context;
+	public Geolocation(Activity host) {
 		this.host = host;
 	}
 
@@ -34,7 +32,7 @@ public class Geolocation {
 		if (IS_DEBUG) {
 			return new DummyGeolocator(functionsMobile);
 		} else {
-			return new ActiveGeolocator(context, functionsMobile, host);
+			return new ActiveGeolocator(functionsMobile, host);
 		}
 	}
 
@@ -43,10 +41,10 @@ public class Geolocation {
 		private LocationManager manager;
 		private FunctionsMobile callback;
 
-		public ActiveGeolocator(Context context, FunctionsMobile callback, Activity host) {
+		public ActiveGeolocator(FunctionsMobile callback, Activity host) {
 			super(callback);
 			this.callback = callback;
-			this.manager = registerManager(context);
+			this.manager = registerManager(host);
 			host.runOnUiThread(new Runnable() {
 
 				@Override
