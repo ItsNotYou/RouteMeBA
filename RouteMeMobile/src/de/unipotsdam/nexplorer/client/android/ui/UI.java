@@ -1,7 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
-import static de.unipotsdam.nexplorer.client.android.js.Window.isNaN;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
@@ -27,7 +26,12 @@ public class UI extends UIElement {
 	 * @param ms
 	 * @returns {String}
 	 */
-	private String convertMS(double s) {
+	private String convertMS(Integer seconds) {
+		if (seconds == null) {
+			return null;
+		}
+
+		double s = seconds;
 		double ms = s % 1000;
 		s = (s - ms) / 1000;
 		double secs = s % 60;
@@ -48,15 +52,11 @@ public class UI extends UIElement {
 		});
 	}
 
-	private void updateStatusHeader(final int score, final int neighbourCount, final int remainingPlayingTime, final double battery) {
-		if (!isNaN(score))
-			mainPanelToolbar.items.getItems()[0].setText(score + "");
-		if (!isNaN(neighbourCount))
-			mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
-		if (!isNaN(remainingPlayingTime))
-			mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));
-		if (!isNaN(battery))
-			mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
+	private void updateStatusHeader(final Integer score, final Integer neighbourCount, final Integer remainingPlayingTime, final Double battery) {
+		mainPanelToolbar.items.getItems()[0].setText(score + "");
+		mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
+		mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));
+		mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
 	}
 
 	private void updateStatusFooter(final Object nextItemDistance, final boolean hasRangeBooster, final boolean isCollectingItem, final boolean itemInCollectionRange, final String hint) {
