@@ -6,15 +6,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 public class MarkerImage {
 
 	private int resourceId;
-	private Size size;
-	private Point upperLeft;
-	private Point lowerRight;
 
-	public MarkerImage(int resourceId, Size size, Point point, Point point2) {
+	public MarkerImage(int resourceId) {
 		this.resourceId = resourceId;
-		this.size = size;
-		this.upperLeft = point;
-		this.lowerRight = point2;
 	}
 
 	public BitmapDescriptor create() {

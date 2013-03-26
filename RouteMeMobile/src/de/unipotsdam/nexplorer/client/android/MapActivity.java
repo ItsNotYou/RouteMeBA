@@ -62,8 +62,8 @@ public class MapActivity extends FragmentActivity {
 		Dialog noPositionDialog = new WaitingDialog(this);
 		((TextView) noPositionDialog.findViewById(R.id.waiting_text)).setText(R.string.default_noposition);
 
-		Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
-		js = new FunctionsMobile(new UI(this), new AppWrapper(this), new Intervals(new Geolocation(this)));
+		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)));
 	}
 
 	public void collectItem(View view) {

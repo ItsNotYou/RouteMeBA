@@ -60,11 +60,7 @@ public class MapRelatedTasks {
 			imagePath = drawable.mobile_phone_cast;
 		}
 
-		final MarkerImage image = new MarkerImage(imagePath, new Size(16, 16),
-		// The origin for this image is 0,0.
-				new Point(0, 0),
-				// The anchor for this image is the base of the flagpole at 0,32.
-				new Point(8, 8));
+		final MarkerImage image = new MarkerImage(imagePath);
 
 		if (nearbyItemMarkersArray.get(itemId) == undefined) {
 			Marker marker = new Marker(ui) {
@@ -116,11 +112,7 @@ public class MapRelatedTasks {
 	void drawNeighbourMarkerAtLatitudeLongitude(final int playerId, double latitude, double longitude) {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
-		final MarkerImage image = new MarkerImage(drawable.network_wireless_small, new Size(16, 16),
-		// The origin for this image is 0,0.
-				new Point(0, 0),
-				// The anchor for this image is the base of the flagpole at 0,32.
-				new Point(8, 8));
+		final MarkerImage image = new MarkerImage(drawable.network_wireless_small);
 
 		if (neighbourMarkersArray.get(playerId) == undefined) {
 			Marker marker = new Marker(ui) {

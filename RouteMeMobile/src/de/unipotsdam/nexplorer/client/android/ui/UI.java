@@ -1,20 +1,31 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
 import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
-import static de.unipotsdam.nexplorer.client.android.js.Window.loginButton;
 import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
 import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
 import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
-import static de.unipotsdam.nexplorer.client.android.js.Window.waitingText;
 import android.app.Activity;
 import de.unipotsdam.nexplorer.client.android.R;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 
 public class UI extends UIElement {
 
-	public UI(Activity host) {
+	private final Button collectItemButton;
+	private final Button loginButton;
+	private final Text activeItems;
+	private final Text hint;
+	private final Text nextItemDistance;
+	private final Text waitingText;
+
+	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText) {
 		super(host);
+		this.collectItemButton = collectItemButton;
+		this.loginButton = loginButton;
+		this.activeItems = activeItems;
+		this.hint = hint;
+		this.nextItemDistance = nextItemDistance;
+		this.waitingText = waitingText;
 	}
 
 	private String addZ(double n) {
@@ -60,12 +71,12 @@ public class UI extends UIElement {
 	}
 
 	private void updateStatusFooter(final Object nextItemDistance, final boolean hasRangeBooster, final boolean isCollectingItem, final boolean itemInCollectionRange, final String hint) {
-		Window.hint.setText(hint);
+		this.hint.setText(hint);
 
 		if (nextItemDistance != null)
-			Window.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
+			this.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
 		else
-			Window.nextItemDistance.setText("Keine Gegenstände in der Nähe.");
+			this.nextItemDistance.setText("Keine Gegenstände in der Nähe.");
 
 		int boosterImageElement;
 		if (hasRangeBooster) {
@@ -93,8 +104,8 @@ public class UI extends UIElement {
 
 			@Override
 			public void run() {
-				Window.collectItemButton.disable();
-				Window.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
+				UI.this.collectItemButton.disable();
+				UI.this.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
 			}
 		});
 	}

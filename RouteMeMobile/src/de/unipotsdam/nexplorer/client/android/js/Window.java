@@ -14,6 +14,7 @@ import de.unipotsdam.nexplorer.client.android.ui.Button;
 import de.unipotsdam.nexplorer.client.android.ui.MainPanelToolbar;
 import de.unipotsdam.nexplorer.client.android.ui.Overlay;
 import de.unipotsdam.nexplorer.client.android.ui.Text;
+import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class Window {
 
@@ -50,7 +51,7 @@ public class Window {
 
 	public static String host;
 
-	public static void createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator) {
+	public static UI createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator) {
 		collectItemButton = new Button(collectItem, host);
 		loginButton = new Button(login, host);
 
@@ -68,15 +69,13 @@ public class Window {
 		waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		noPositionOverlay = new Overlay(noPositionDialog, host);
 
+		UI result = new UI(host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText);
+
 		senchaMap = new SenchaMap(map, host, rotator);
 		playerMarker = new Marker(host) {
 
 			protected void setData() {
-				MarkerImage image = new MarkerImage(R.drawable.home_network, new Size(16, 16),
-				// The origin for this image is 0,0.
-						new Point(0, 0),
-						// The anchor for this image is the base of the flagpole at 0,32.
-						new Point(8, 8));
+				MarkerImage image = new MarkerImage(R.drawable.home_network);
 				this.icon = image;
 			};
 		};
@@ -93,6 +92,8 @@ public class Window {
 		ui = host;
 
 		Window.host = hostAdress;
+
+		return result;
 	}
 
 	public static void clearInterval(Interval interval) {
