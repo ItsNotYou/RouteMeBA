@@ -70,12 +70,14 @@ public class FunctionsMobile implements PositionWatcher {
 
 	private Location currentLocation;
 	private boolean isCollectingItem;
+	private RestMobile rest;
 
-	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals) {
-		this.mapTasks = new MapRelatedTasks();
+	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest) {
+		this.mapTasks = mapTasks;
 		this.intervals = intervals;
 		this.app = app;
 		this.ui = ui;
+		this.rest = rest;
 		this.isCollectingItem = false;
 
 		intervals.ensurePositionWatch(this);
@@ -91,7 +93,7 @@ public class FunctionsMobile implements PositionWatcher {
 		if (name != "") {
 			ui.labelButtonForLogin();
 
-			new RestMobile().login(name, isMobile, new AjaxResult<LoginAnswer>() {
+			rest.login(name, isMobile, new AjaxResult<LoginAnswer>() {
 
 				@Override
 				public void success(LoginAnswer data) {
@@ -115,7 +117,7 @@ public class FunctionsMobile implements PositionWatcher {
 		if (!positionRequestExecutes && location != null && playerId != null) {
 			positionRequestExecutes = true;
 
-			new RestMobile().updatePlayerPosition(playerId, location, new AjaxResult<Object>() {
+			rest.updatePlayerPosition(playerId, location, new AjaxResult<Object>() {
 
 				@Override
 				public void success() {
@@ -165,7 +167,7 @@ public class FunctionsMobile implements PositionWatcher {
 			gameStatusRequestExecutes = true;
 			updateGameStatusStartTime = new Date().getTime();
 
-			new RestMobile().getGameStatus(playerId, isAsync, new AjaxResult<GameStatus>() {
+			rest.getGameStatus(playerId, isAsync, new AjaxResult<GameStatus>() {
 
 				@Override
 				public void success(GameStatus result) {
@@ -258,7 +260,7 @@ public class FunctionsMobile implements PositionWatcher {
 			isCollectingItem = true;
 
 			ui.disableButtonForItemCollection();
-			new RestMobile().collectItem(playerId, new AjaxResult<Object>() {
+			rest.collectItem(playerId, new AjaxResult<Object>() {
 
 				@Override
 				public void success() {

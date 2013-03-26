@@ -18,60 +18,32 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class Window {
 
-	public static Object undefined = null;
-
-	public static Button loginButton = null;
-
-	public static Text beginDialog = null;
-
-	public static Text waitingText = null;
-
-	public static Text hint = null;
-
-	public static Text nextItemDistance = null;
-
-	public static Text activeItems = null;
-
-	public static Button collectItemButton = null;
-
-	public static MainPanelToolbar mainPanelToolbar = null;
-
-	public static Overlay loginOverlay = null;
-
-	public static Overlay waitingForGameOverlay = null;
-	public static Overlay noPositionOverlay = null;
-
-	public static SenchaMap senchaMap = null;
-
 	public static Marker playerMarker = null;
 	public static PlayerRadius playerRadius = null;
 	public static PlayerRadius collectionRadius = null;
 
 	public static Activity ui = null;
 
-	public static String host;
-
 	public static UI createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, TextView score, TextView neighbourCount, TextView remainingPlayingTime, TextView battery, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator) {
-		collectItemButton = new Button(collectItem, host);
-		loginButton = new Button(login, host);
+		Button collectItemButton = new Button(collectItem, host);
+		Button loginButton = new Button(login, host);
 
-		activeItems = new Text(activeItemsText, host);
-		hint = new Text(hintText, host);
-		nextItemDistance = new Text(nextItemDistanceText, host);
-		waitingText = new Text(waitingTextText, host);
+		Text activeItems = new Text(activeItemsText, host);
+		Text hint = new Text(hintText, host);
+		Text nextItemDistance = new Text(nextItemDistanceText, host);
+		Text waitingText = new Text(waitingTextText, host);
 
-		beginDialog = new Text(beginText, host);
+		Text beginDialog = new Text(beginText, host);
 
-		mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host);
+		MainPanelToolbar mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host);
 
-		loginOverlay = new Overlay(loginDialog, host);
+		Overlay loginOverlay = new Overlay(loginDialog, host);
 
-		waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
-		noPositionOverlay = new Overlay(noPositionDialog, host);
+		Overlay waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
+		Overlay noPositionOverlay = new Overlay(noPositionDialog, host);
 
-		UI result = new UI(host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText);
+		UI result = new UI(host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText, beginDialog, mainPanelToolbar, loginOverlay, waitingForGameOverlay, noPositionOverlay);
 
-		senchaMap = new SenchaMap(map, host, rotator);
 		playerMarker = new Marker(host) {
 
 			protected void setData() {
@@ -90,8 +62,6 @@ public class Window {
 		collectionRadius = new PlayerRadius(host, strokeColor, strokeWeight, fillColor);
 
 		ui = host;
-
-		Window.host = hostAdress;
 
 		return result;
 	}

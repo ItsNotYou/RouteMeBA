@@ -4,9 +4,7 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
 import static de.unipotsdam.nexplorer.client.android.js.Window.each;
 import static de.unipotsdam.nexplorer.client.android.js.Window.playerMarker;
 import static de.unipotsdam.nexplorer.client.android.js.Window.playerRadius;
-import static de.unipotsdam.nexplorer.client.android.js.Window.senchaMap;
 import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
-import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +16,16 @@ import de.unipotsdam.nexplorer.client.android.support.Location;
 
 public class MapRelatedTasks {
 
+	private final SenchaMap senchaMap;
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
 
+	public MapRelatedTasks(SenchaMap senchaMap) {
+		this.senchaMap = senchaMap;
+	}
+
 	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems) {
-		if (neighbours != undefined) {
+		if (neighbours != null) {
 			each(neighbours, new Call<Integer, Neighbour>() {
 
 				@Override
@@ -32,7 +35,7 @@ public class MapRelatedTasks {
 			});
 		}
 
-		if (nearbyItems != undefined) {
+		if (nearbyItems != null) {
 			each(nearbyItems, new Call<Integer, Item>() {
 
 				@Override
@@ -45,6 +48,7 @@ public class MapRelatedTasks {
 
 	/**
 	 * draw nearby items
+	 * 
 	 * @param itemId
 	 * @param type
 	 * @param latitude
@@ -62,7 +66,7 @@ public class MapRelatedTasks {
 
 		final MarkerImage image = new MarkerImage(imagePath);
 
-		if (nearbyItemMarkersArray.get(itemId) == undefined) {
+		if (nearbyItemMarkersArray.get(itemId) == null) {
 			Marker marker = new Marker(ui) {
 
 				protected void setData() {
@@ -86,7 +90,7 @@ public class MapRelatedTasks {
 		each(neighbourMarkersArray, new Call<Integer, Marker>() {
 
 			public void call(Integer key, Marker theMarker) {
-				if (theMarker != undefined && neighbours.get(key) == undefined) {
+				if (theMarker != null && neighbours.get(key) == null) {
 					neighbourMarkersArray.get(key).setMap(null);
 				}
 			}
@@ -95,7 +99,7 @@ public class MapRelatedTasks {
 		each(nearbyItemMarkersArray, new Call<Integer, Marker>() {
 
 			public void call(Integer key, Marker theMarker) {
-				if (theMarker != undefined && nearbyItems.get(key) == undefined) {
+				if (theMarker != null && nearbyItems.get(key) == null) {
 					nearbyItemMarkersArray.get(key).setMap(null);
 				}
 			}
@@ -114,7 +118,7 @@ public class MapRelatedTasks {
 
 		final MarkerImage image = new MarkerImage(drawable.network_wireless_small);
 
-		if (neighbourMarkersArray.get(playerId) == undefined) {
+		if (neighbourMarkersArray.get(playerId) == null) {
 			Marker marker = new Marker(ui) {
 
 				protected void setData() {

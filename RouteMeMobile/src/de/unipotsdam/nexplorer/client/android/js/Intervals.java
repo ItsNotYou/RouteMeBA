@@ -1,7 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
-import static de.unipotsdam.nexplorer.client.android.js.Window.undefined;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,7 +23,7 @@ public class Intervals {
 	}
 
 	private void startDisplayInterval(final FunctionsMobile functionsMobile) {
-		if (displayMarkerInterval == undefined || displayMarkerInterval == null) {
+		if (displayMarkerInterval == null || displayMarkerInterval == null) {
 			displayMarkerInterval = setInterval(new TimerTask() {
 
 				@Override
@@ -43,8 +42,6 @@ public class Intervals {
 	}
 
 	void stopIntervals() {
-		geolocation.clearWatch(positionWatch);
-		positionWatch = null;
 	}
 
 	public void restartIntervals(FunctionsMobile functionsMobile) {
@@ -53,7 +50,7 @@ public class Intervals {
 	}
 
 	void startGameStatusInterval(final FunctionsMobile functionsMobile) {
-		if (gameStatusInterval == undefined || gameStatusInterval == null) {
+		if (gameStatusInterval == null || gameStatusInterval == null) {
 			gameStatusInterval = setInterval(new TimerTask() {
 
 				@Override

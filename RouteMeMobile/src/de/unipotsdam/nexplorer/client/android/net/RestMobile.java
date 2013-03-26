@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.net;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.host;
-
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -11,9 +9,12 @@ import de.unipotsdam.nexplorer.client.android.support.Location;
 
 public class RestMobile {
 
+	private final String host;
 	private RestTemplate template;
 
-	public RestMobile() {
+	public RestMobile(String host) {
+		this.host = host;
+
 		SimpleClientHttpRequestFactory http = new SimpleClientHttpRequestFactory();
 		http.setConnectTimeout(8000);
 		template = new RestTemplate(true, http);

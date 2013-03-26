@@ -1,13 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.beginDialog;
-import static de.unipotsdam.nexplorer.client.android.js.Window.loginOverlay;
-import static de.unipotsdam.nexplorer.client.android.js.Window.mainPanelToolbar;
-import static de.unipotsdam.nexplorer.client.android.js.Window.noPositionOverlay;
-import static de.unipotsdam.nexplorer.client.android.js.Window.waitingForGameOverlay;
 import android.app.Activity;
 import de.unipotsdam.nexplorer.client.android.R;
-import de.unipotsdam.nexplorer.client.android.js.Window;
 
 public class UI extends UIElement {
 
@@ -17,8 +11,13 @@ public class UI extends UIElement {
 	private final Text hint;
 	private final Text nextItemDistance;
 	private final Text waitingText;
+	private Text beginDialog;
+	private MainPanelToolbar mainPanelToolbar;
+	private Overlay loginOverlay;
+	private Overlay noPositionOverlay;
+	private Overlay waitingForGameOverlay;
 
-	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText) {
+	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, MainPanelToolbar mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay) {
 		super(host);
 		this.collectItemButton = collectItemButton;
 		this.loginButton = loginButton;
@@ -26,6 +25,11 @@ public class UI extends UIElement {
 		this.hint = hint;
 		this.nextItemDistance = nextItemDistance;
 		this.waitingText = waitingText;
+		this.beginDialog = beginDialog;
+		this.mainPanelToolbar = mainPanelToolbar;
+		this.loginOverlay = loginOverlay;
+		this.noPositionOverlay = noPositionOverlay;
+		this.waitingForGameOverlay = waitingForGameOverlay;
 	}
 
 	private String addZ(double n) {
@@ -85,16 +89,16 @@ public class UI extends UIElement {
 			boosterImageElement = R.drawable.mobile_phone_cast_gray;
 		}
 
-		Window.activeItems.html("Aktive Gegenstände: ", boosterImageElement);
+		activeItems.html("Aktive Gegenstände: ", boosterImageElement);
 
 		if (!isCollectingItem) {
-			Window.collectItemButton.html("Gegenstand einsammeln");
+			collectItemButton.html("Gegenstand einsammeln");
 
-			boolean isDisabled = Window.collectItemButton.isDisabled();
+			boolean isDisabled = collectItemButton.isDisabled();
 			if (itemInCollectionRange && isDisabled) {
-				Window.collectItemButton.enable();
+				collectItemButton.enable();
 			} else if (!itemInCollectionRange && !isDisabled) {
-				Window.collectItemButton.disable();
+				collectItemButton.disable();
 			}
 		}
 	}
