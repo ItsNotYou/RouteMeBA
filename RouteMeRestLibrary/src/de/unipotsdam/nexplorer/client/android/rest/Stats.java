@@ -1,4 +1,4 @@
-package de.unipotsdam.nexplorer.client.android.net;
+package de.unipotsdam.nexplorer.client.android.rest;
 
 public class Stats {
 
@@ -9,8 +9,6 @@ public class Stats {
 	private String baseNodeRange;
 	private String gameDifficulty;
 	private String didEnd;
-	private String playingFieldCenterLatitude;
-	private String playingFieldCenterLongitude;
 
 	public String getRemainingPlayingTime() {
 		return remainingPlayingTime;
@@ -50,21 +48,5 @@ public class Stats {
 
 	public void setDidEnd(String didEnd) {
 		this.didEnd = didEnd;
-	}
-
-	public String getPlayingFieldCenterLatitude() {
-		return playingFieldCenterLatitude;
-	}
-
-	public void setPlayingFieldCenterLatitude(String playingFieldCenterLatitude) {
-		this.playingFieldCenterLatitude = playingFieldCenterLatitude;
-	}
-
-	public String getPlayingFieldCenterLongitude() {
-		return playingFieldCenterLongitude;
-	}
-
-	public void setPlayingFieldCenterLongitude(String playingFieldCenterLongitude) {
-		this.playingFieldCenterLongitude = playingFieldCenterLongitude;
 	}
 }

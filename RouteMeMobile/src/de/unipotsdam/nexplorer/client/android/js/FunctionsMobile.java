@@ -3,11 +3,11 @@ package de.unipotsdam.nexplorer.client.android.js;
 import java.util.Date;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
-import de.unipotsdam.nexplorer.client.android.net.GameStatus;
-import de.unipotsdam.nexplorer.client.android.net.Item;
-import de.unipotsdam.nexplorer.client.android.net.LoginAnswer;
-import de.unipotsdam.nexplorer.client.android.net.Neighbour;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
+import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
+import de.unipotsdam.nexplorer.client.android.rest.Item;
+import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
+import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
@@ -38,8 +38,8 @@ public class FunctionsMobile implements PositionWatcher {
 	// Player data
 
 	private Integer playerId = null;
-	private double serverLatitude;
-	private double serverLongitude;
+	// private double serverLatitude;
+	// private double serverLongitude;
 	private double battery = 100;
 	private java.util.Map<Integer, Neighbour> neighbours;
 	private int neighbourCount = 0;
@@ -202,8 +202,9 @@ public class FunctionsMobile implements PositionWatcher {
 		// Spielerinformationen
 		battery = parseFloat(data.node.getBatterieLevel());
 		neighbourCount = parseInt(data.node.getNeighbourCount());
-		serverLatitude = parseFloat(data.stats.getPlayingFieldCenterLatitude());
-		serverLongitude = parseFloat(data.stats.getPlayingFieldCenterLongitude());
+		// Not used anywhere
+		// serverLatitude = parseFloat(data.stats.getPlayingFieldCenterLatitude());
+		// serverLongitude = parseFloat(data.stats.getPlayingFieldCenterLongitude());
 		score = parseInt(data.node.getScore());
 		playerRange = parseInt(data.node.getRange());
 		neighbours = data.node.getNeighbours();
