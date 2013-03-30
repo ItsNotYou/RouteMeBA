@@ -30,35 +30,43 @@ public class GameStatusTest extends AndroidTestCase {
 	}
 
 	public void testBatterieLevel() {
-		assertEquals("80.0", status.getNode().getBatterieLevel());
+		assertEquals(80.0, status.getNode().getBatterieLevel());
 	}
 
 	public void testHasRangeBooster() {
-		assertEquals("1", status.getNode().getHasRangeBooster());
+		assertEquals((Integer) 1, status.getNode().getHasRangeBooster());
+	}
+
+	public void testHasRangeBoosterBoolean() {
+		assertEquals((Boolean) true, status.getNode().hasRangeBoosterBoolean());
 	}
 
 	public void testItemInCollectionRange() {
 		assertEquals(1, status.getNode().getItemInCollectionRange());
 	}
 
+	public void testItemInCollectionRangeBoolean() {
+		assertEquals(true, status.getNode().isItemInCollectionRangeBoolean());
+	}
+
 	public void testNearbyItemsCount() {
-		assertEquals("2", status.getNode().getNearbyItemsCount());
+		assertEquals((Integer) 2, status.getNode().getNearbyItemsCount());
 	}
 
 	public void testNeighbourCount() {
-		assertEquals("1", status.getNode().getNeighbourCount());
+		assertEquals((Integer) 1, status.getNode().getNeighbourCount());
 	}
 
 	public void testNextItemDistance() {
-		assertEquals("3", status.getNode().getNextItemDistance());
+		assertEquals((Integer) 3, status.getNode().getNextItemDistance());
 	}
 
 	public void testRange() {
-		assertEquals("10", status.getNode().getRange());
+		assertEquals((Integer) 10, status.getNode().getRange());
 	}
 
 	public void testScore() {
-		assertEquals("180", status.getNode().getScore());
+		assertEquals((Integer) 180, status.getNode().getScore());
 	}
 
 	public void testNearbyItemsSize() {
@@ -90,11 +98,15 @@ public class GameStatusTest extends AndroidTestCase {
 	}
 
 	public void testBaseNodeRange() {
-		assertEquals("9", status.getStats().getBaseNodeRange());
+		assertEquals((Integer) 9, status.getStats().getBaseNodeRange());
 	}
 
 	public void testDidEnd() {
-		assertEquals("0", status.getStats().getDidEnd());
+		assertEquals((Integer) 0, status.getStats().getDidEnd());
+	}
+
+	public void testHasEndedBoolean() {
+		assertEquals((Boolean) false, status.getStats().hasEndedBoolean());
 	}
 
 	public void testGameDifficulty() {
@@ -102,10 +114,14 @@ public class GameStatusTest extends AndroidTestCase {
 	}
 
 	public void testGameExists() {
-		assertEquals("1", status.getStats().getGameExists());
+		assertEquals((Integer) 1, status.getStats().getGameExists());
+	}
+
+	public void testGameExistingBoolean() {
+		assertEquals((Boolean) true, status.getStats().isGameExistingBoolean());
 	}
 
 	public void testRemainingPlayingTime() {
-		assertEquals("1234567890", status.getStats().getRemainingPlayingTime());
+		assertEquals((Long) 1234567890l, status.getStats().getRemainingPlayingTime());
 	}
 }

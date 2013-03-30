@@ -4,33 +4,41 @@ public class Stats {
 
 	public Settings settings;
 
-	private String remainingPlayingTime;
-	private String gameExists;
-	private String baseNodeRange;
+	private Long remainingPlayingTime;
+	private Integer gameExists;
+	private Integer baseNodeRange;
 	private String gameDifficulty;
-	private String didEnd;
+	private Integer didEnd;
 
-	public String getRemainingPlayingTime() {
+	public Long getRemainingPlayingTime() {
 		return remainingPlayingTime;
 	}
 
-	public void setRemainingPlayingTime(String remainingPlayingTime) {
+	public void setRemainingPlayingTime(Long remainingPlayingTime) {
 		this.remainingPlayingTime = remainingPlayingTime;
 	}
 
-	public String getGameExists() {
+	public Boolean isGameExistingBoolean() {
+		if (gameExists == null) {
+			return null;
+		} else {
+			return gameExists != 0;
+		}
+	}
+
+	public Integer getGameExists() {
 		return gameExists;
 	}
 
-	public void setGameExists(String gameExists) {
+	public void setGameExists(Integer gameExists) {
 		this.gameExists = gameExists;
 	}
 
-	public String getBaseNodeRange() {
+	public Integer getBaseNodeRange() {
 		return baseNodeRange;
 	}
 
-	public void setBaseNodeRange(String baseNodeRange) {
+	public void setBaseNodeRange(Integer baseNodeRange) {
 		this.baseNodeRange = baseNodeRange;
 	}
 
@@ -42,11 +50,19 @@ public class Stats {
 		this.gameDifficulty = gameDifficulty;
 	}
 
-	public String getDidEnd() {
+	public Boolean hasEndedBoolean() {
+		if (didEnd == null) {
+			return null;
+		} else {
+			return didEnd != 0;
+		}
+	}
+
+	public Integer getDidEnd() {
 		return didEnd;
 	}
 
-	public void setDidEnd(String didEnd) {
+	public void setDidEnd(Integer didEnd) {
 		this.didEnd = didEnd;
 	}
 }

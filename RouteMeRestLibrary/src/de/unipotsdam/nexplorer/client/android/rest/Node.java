@@ -4,46 +4,46 @@ import java.util.Map;
 
 public class Node {
 
-	private String batterieLevel;
-	private String neighbourCount;
-	private String score;
-	private String range;
+	private Double batterieLevel;
+	private Integer neighbourCount;
+	private Integer score;
+	private Integer range;
 	private Map<Integer, Neighbour> neighbours;
-	private String nearbyItemsCount;
+	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
-	private String nextItemDistance;
+	private Integer nextItemDistance;
 	private int itemInCollectionRange;
-	private String hasRangeBooster;
+	private Integer hasRangeBooster;
 
-	public String getBatterieLevel() {
+	public Double getBatterieLevel() {
 		return batterieLevel;
 	}
 
-	public void setBatterieLevel(String batterieLevel) {
+	public void setBatterieLevel(Double batterieLevel) {
 		this.batterieLevel = batterieLevel;
 	}
 
-	public String getNeighbourCount() {
+	public Integer getNeighbourCount() {
 		return neighbourCount;
 	}
 
-	public void setNeighbourCount(String neighbourCount) {
+	public void setNeighbourCount(Integer neighbourCount) {
 		this.neighbourCount = neighbourCount;
 	}
 
-	public String getScore() {
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(String score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 
-	public String getRange() {
+	public Integer getRange() {
 		return range;
 	}
 
-	public void setRange(String range) {
+	public void setRange(Integer range) {
 		this.range = range;
 	}
 
@@ -55,11 +55,11 @@ public class Node {
 		this.neighbours = neighbours;
 	}
 
-	public String getNearbyItemsCount() {
+	public Integer getNearbyItemsCount() {
 		return nearbyItemsCount;
 	}
 
-	public void setNearbyItemsCount(String nearbyItemsCount) {
+	public void setNearbyItemsCount(Integer nearbyItemsCount) {
 		this.nearbyItemsCount = nearbyItemsCount;
 	}
 
@@ -71,12 +71,16 @@ public class Node {
 		this.nearbyItems = nearbyItems;
 	}
 
-	public String getNextItemDistance() {
+	public Integer getNextItemDistance() {
 		return nextItemDistance;
 	}
 
-	public void setNextItemDistance(String nextItemDistance) {
+	public void setNextItemDistance(Integer nextItemDistance) {
 		this.nextItemDistance = nextItemDistance;
+	}
+
+	public boolean isItemInCollectionRangeBoolean() {
+		return itemInCollectionRange != 0;
 	}
 
 	public int getItemInCollectionRange() {
@@ -87,11 +91,19 @@ public class Node {
 		this.itemInCollectionRange = itemInCollectionRange;
 	}
 
-	public String getHasRangeBooster() {
+	public Boolean hasRangeBoosterBoolean() {
+		if (hasRangeBooster == null) {
+			return null;
+		} else {
+			return hasRangeBooster != 0;
+		}
+	}
+
+	public Integer getHasRangeBooster() {
 		return hasRangeBooster;
 	}
 
-	public void setHasRangeBooster(String hasRangeBooster) {
+	public void setHasRangeBooster(Integer hasRangeBooster) {
 		this.hasRangeBooster = hasRangeBooster;
 	}
 }

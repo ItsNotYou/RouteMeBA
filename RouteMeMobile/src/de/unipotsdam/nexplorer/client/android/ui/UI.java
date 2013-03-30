@@ -41,7 +41,7 @@ public class UI extends UIElement {
 	 * @param ms
 	 * @returns {String}
 	 */
-	private String convertMS(Integer seconds) {
+	private String convertMS(Long seconds) {
 		if (seconds == null) {
 			return null;
 		}
@@ -56,7 +56,7 @@ public class UI extends UIElement {
 		return addZ(mins);
 	}
 
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final int remainingPlayingTime, final double battery, final Object nextItemDistance, final boolean hasRangeBooster, final boolean isCollectingItem, final boolean itemInCollectionRange, final String hint) {
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Object nextItemDistance, final boolean hasRangeBooster, final boolean isCollectingItem, final boolean itemInCollectionRange, final String hint) {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -67,7 +67,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	private void updateStatusHeader(final Integer score, final Integer neighbourCount, final Integer remainingPlayingTime, final Double battery) {
+	private void updateStatusHeader(final Integer score, final Integer neighbourCount, final Long remainingPlayingTime, final Double battery) {
 		mainPanelToolbar.items.getItems()[0].setText(score + "");
 		mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
 		mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));

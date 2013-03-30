@@ -2,31 +2,39 @@ package de.unipotsdam.nexplorer.client.android.rest;
 
 public class Settings {
 
-	private String isRunning;
-	private String itemCollectionRange;
-	private String updateDisplayIntervalTime;
+	private Integer isRunning;
+	private Integer itemCollectionRange;
+	private Integer updateDisplayIntervalTime;
 
-	public String getIsRunning() {
+	public Boolean isRunningBoolean() {
+		if (isRunning == null) {
+			return null;
+		} else {
+			return isRunning != 0;
+		}
+	}
+
+	public Integer getIsRunning() {
 		return isRunning;
 	}
 
-	public void setIsRunning(String isRunning) {
+	public void setIsRunning(Integer isRunning) {
 		this.isRunning = isRunning;
 	}
 
-	public String getItemCollectionRange() {
+	public Integer getItemCollectionRange() {
 		return itemCollectionRange;
 	}
 
-	public void setItemCollectionRange(String itemCollectionRange) {
+	public void setItemCollectionRange(Integer itemCollectionRange) {
 		this.itemCollectionRange = itemCollectionRange;
 	}
 
-	public String getUpdateDisplayIntervalTime() {
+	public Integer getUpdateDisplayIntervalTime() {
 		return updateDisplayIntervalTime;
 	}
 
-	public void setUpdateDisplayIntervalTime(String updateDisplayIntervalTime) {
+	public void setUpdateDisplayIntervalTime(Integer updateDisplayIntervalTime) {
 		this.updateDisplayIntervalTime = updateDisplayIntervalTime;
 	}
 }

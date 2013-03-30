@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import java.util.Date;
-
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
@@ -26,47 +24,29 @@ public class FunctionsMobile implements PositionWatcher {
 	// TODO: Parameter flexibilisieren
 	private double minAccuracy = 11;
 
-	// Interval Ajax Request
-
 	private boolean positionRequestExecutes = false;
 	private boolean gameStatusRequestExecutes = false;
 
-	// Overlays
-
-	// Panels
-
-	// Player data
-
 	private Integer playerId = null;
-	// private double serverLatitude;
-	// private double serverLongitude;
 	private double battery = 100;
 	private java.util.Map<Integer, Neighbour> neighbours;
 	private int neighbourCount = 0;
 	private int score;
 	private int playerRange;
 	private java.util.Map<Integer, Item> nearbyItems;
-	private Object nearbyItemsCount;
 	private Object nextItemDistance;
 	private boolean itemInCollectionRange;
 	private boolean hasRangeBooster;
 	private String hint = "Achte auf die Hinweise!";
-
-	// Game data
 
 	private boolean gameIsRunning;
 	private boolean gameExists;
 	private boolean gameDidExist = true; // die semantik davon, dass es mal ein Spiel gegeben
 	// hat, ist mir unklar ... es hat hat schon immer ein
 	// Spiel gegeben!
-	private int remainingPlayingTime;
-	private Object baseNodeRange;
-	private Object gameDifficulty = 0;
+	private long remainingPlayingTime;
 	private int itemCollectionRange;
 	private boolean gameDidEnd = false;
-
-	// Time Tracking
-	private long updateGameStatusStartTime;
 
 	private Location currentLocation;
 	private boolean isCollectingItem;
@@ -165,7 +145,6 @@ public class FunctionsMobile implements PositionWatcher {
 		if (gameStatusRequestExecutes == false) {
 			// console.log("gameStatusRequestExecutes == false");
 			gameStatusRequestExecutes = true;
-			updateGameStatusStartTime = new Date().getTime();
 
 			rest.getGameStatus(playerId, isAsync, new AjaxResult<GameStatus>() {
 
@@ -187,32 +166,25 @@ public class FunctionsMobile implements PositionWatcher {
 
 		// Spielstatus und Spielinformationen
 
-		gameIsRunning = parseInt(data.stats.settings.getIsRunning()) != 0 ? true : false;
-		remainingPlayingTime = parseInt(data.stats.getRemainingPlayingTime());
-		gameExists = parseInt(data.stats.getGameExists()) != 0 ? true : false;
+		gameIsRunning = data.stats.settings.isRunningBoolean();
+		remainingPlayingTime = data.stats.getRemainingPlayingTime();
+		gameExists = data.stats.isGameExistingBoolean();
 		gameDidExist = gameExists;
-		baseNodeRange = parseInt(data.stats.getBaseNodeRange());
-		gameDifficulty = parseInt(data.stats.getGameDifficulty());
-		itemCollectionRange = parseInt(data.stats.settings.getItemCollectionRange());
-		gameDidEnd = parseInt(data.stats.getDidEnd()) != 0 ? true : false;
-		// updatePositionIntervalTime = parseInt(data.stats.settings["updatePositionIntervalTime"]);
-		Integer updateDisplayIntervalTime = parseInt(data.stats.settings.getUpdateDisplayIntervalTime());
+		itemCollectionRange = data.stats.settings.getItemCollectionRange();
+		gameDidEnd = data.stats.hasEndedBoolean();
+		Integer updateDisplayIntervalTime = data.stats.settings.getUpdateDisplayIntervalTime();
 		intervals.setUpdateDisplayIntervalTime(updateDisplayIntervalTime);
 
 		// Spielerinformationen
-		battery = parseFloat(data.node.getBatterieLevel());
-		neighbourCount = parseInt(data.node.getNeighbourCount());
-		// Not used anywhere
-		// serverLatitude = parseFloat(data.stats.getPlayingFieldCenterLatitude());
-		// serverLongitude = parseFloat(data.stats.getPlayingFieldCenterLongitude());
-		score = parseInt(data.node.getScore());
-		playerRange = parseInt(data.node.getRange());
+		battery = data.node.getBatterieLevel();
+		neighbourCount = data.node.getNeighbourCount();
+		score = data.node.getScore();
+		playerRange = data.node.getRange();
 		neighbours = data.node.getNeighbours();
-		nearbyItemsCount = parseInt(data.node.getNearbyItemsCount());
 		nearbyItems = data.node.getNearbyItems().getItems();
-		nextItemDistance = parseInt(data.node.getNextItemDistance());
-		itemInCollectionRange = data.node.getItemInCollectionRange() == 0 ? false : true;
-		hasRangeBooster = parseInt(data.node.getHasRangeBooster()) != 0 ? true : false;
+		nextItemDistance = data.node.getNextItemDistance();
+		itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
+		hasRangeBooster = data.node.hasRangeBoosterBoolean();
 		hint = data.getHint();
 
 		mapTasks.removeInvisibleMarkers(neighbours, nearbyItems);
