@@ -51,14 +51,16 @@ public class FunctionsMobile implements PositionWatcher {
 	private Location currentLocation;
 	private boolean isCollectingItem;
 	private RestMobile rest;
+	private RadiusBlinker radiusBlinker;
 
-	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest) {
+	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker) {
 		this.mapTasks = mapTasks;
 		this.intervals = intervals;
 		this.app = app;
 		this.ui = ui;
 		this.rest = rest;
 		this.isCollectingItem = false;
+		this.radiusBlinker = blinker;
 
 		intervals.ensurePositionWatch(this);
 	}
@@ -229,6 +231,8 @@ public class FunctionsMobile implements PositionWatcher {
 	 * collect items
 	 */
 	public void collectItem() {
+		radiusBlinker.start(new LatLng(currentLocation));
+
 		if (!isCollectingItem) {
 			isCollectingItem = true;
 

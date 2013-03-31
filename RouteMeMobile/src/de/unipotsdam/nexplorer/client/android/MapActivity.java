@@ -15,6 +15,7 @@ import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.Geolocation;
 import de.unipotsdam.nexplorer.client.android.js.Intervals;
 import de.unipotsdam.nexplorer.client.android.js.MapRelatedTasks;
+import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.js.SenchaMap;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
@@ -65,8 +66,10 @@ public class MapActivity extends FragmentActivity {
 		Dialog noPositionDialog = new WaitingDialog(this);
 		((TextView) noPositionDialog.findViewById(R.id.waiting_text)).setText(R.string.default_noposition);
 
+		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
+
 		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map)), new RestMobile(HOST_ADRESS));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map)), new RestMobile(HOST_ADRESS), blinker);
 	}
 
 	public void collectItem(View view) {
