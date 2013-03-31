@@ -10,7 +10,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 
-public class RadiusBlinker {
+import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
+import de.unipotsdam.nexplorer.client.android.callbacks.Pingable;
+import de.unipotsdam.nexplorer.client.android.support.Location;
+
+public class RadiusBlinker implements Locatable, Pingable {
 
 	private static final double maxSize = 15;
 	private static final int frequency = 50;
@@ -19,6 +23,7 @@ public class RadiusBlinker {
 	private final GoogleMap map;
 	private final Activity host;
 	private final double sizeDelta;
+	private Location location;
 
 	public RadiusBlinker(GoogleMap map, Activity host) {
 		this.map = map;
@@ -27,8 +32,17 @@ public class RadiusBlinker {
 		this.sizeDelta = maxSize / (maxTime / frequency);
 	}
 
-	public void start(final LatLng loc) {
-		new Blink(loc);
+	@Override
+	public void locationChanged(Location location) {
+		this.location = location;
+	}
+
+	@Override
+	public void pingRequested() {
+		Location loc = location;
+		if (loc != null) {
+			new Blink(new LatLng(loc));
+		}
 	}
 
 	private class Blink extends TimerTask {

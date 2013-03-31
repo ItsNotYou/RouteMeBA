@@ -10,6 +10,7 @@ import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
+import de.unipotsdam.nexplorer.client.android.support.PingObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 /**
@@ -54,10 +55,10 @@ public class FunctionsMobile implements PositionWatcher {
 	private Location currentLocation;
 	private boolean isCollectingItem;
 	private RestMobile rest;
-	private RadiusBlinker radiusBlinker;
 
 	private final LocationObserver locationObserver;
 	private final LoginObserver loginObserver;
+	private final PingObserver pingObserver;
 
 	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker) {
 		this.mapTasks = mapTasks;
@@ -66,15 +67,19 @@ public class FunctionsMobile implements PositionWatcher {
 		this.ui = ui;
 		this.rest = rest;
 		this.isCollectingItem = false;
-		this.radiusBlinker = blinker;
 
 		SendLocation sendLocation = new SendLocation(rest);
+		RadiusBlinker radiusBlinker = blinker;
 
 		this.locationObserver = new LocationObserver();
 		this.locationObserver.add(sendLocation);
+		this.locationObserver.add(radiusBlinker);
 
 		this.loginObserver = new LoginObserver();
 		this.loginObserver.add(sendLocation);
+
+		this.pingObserver = new PingObserver();
+		this.pingObserver.add(radiusBlinker);
 
 		intervals.ensurePositionWatch(this);
 	}
@@ -222,7 +227,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 * collect items
 	 */
 	public void collectItem() {
-		radiusBlinker.start(new LatLng(currentLocation));
+		this.pingObserver.fire();
 
 		if (!isCollectingItem) {
 			isCollectingItem = true;
