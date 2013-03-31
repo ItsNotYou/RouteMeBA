@@ -2,11 +2,14 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
+import de.unipotsdam.nexplorer.client.android.net.SendLocation;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.support.Location;
+import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
+import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 /**
@@ -53,6 +56,9 @@ public class FunctionsMobile implements PositionWatcher {
 	private RestMobile rest;
 	private RadiusBlinker radiusBlinker;
 
+	private final LocationObserver locationObserver;
+	private final LoginObserver loginObserver;
+
 	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker) {
 		this.mapTasks = mapTasks;
 		this.intervals = intervals;
@@ -61,6 +67,14 @@ public class FunctionsMobile implements PositionWatcher {
 		this.rest = rest;
 		this.isCollectingItem = false;
 		this.radiusBlinker = blinker;
+
+		SendLocation sendLocation = new SendLocation(rest);
+
+		this.locationObserver = new LocationObserver();
+		this.locationObserver.add(sendLocation);
+
+		this.loginObserver = new LoginObserver();
+		this.loginObserver.add(sendLocation);
 
 		intervals.ensurePositionWatch(this);
 	}
@@ -91,30 +105,6 @@ public class FunctionsMobile implements PositionWatcher {
 	}
 
 	/**
-	 * sendet die aktuelle Positionsdaten an den Server
-	 * 
-	 * @param location
-	 */
-	private void updatePosition(Location location) {
-		if (!positionRequestExecutes && location != null && playerId != null) {
-			positionRequestExecutes = true;
-
-			rest.updatePlayerPosition(playerId, location, new AjaxResult<Object>() {
-
-				@Override
-				public void success() {
-					positionRequestExecutes = false;
-				}
-
-				@Override
-				public void error() {
-					positionRequestExecutes = false;
-				}
-			});
-		}
-	}
-
-	/**
 	 * callback for the geolocation
 	 */
 	public void positionReceived(Location location) {
@@ -126,8 +116,9 @@ public class FunctionsMobile implements PositionWatcher {
 		ui.hideNoPositionOverlay();
 
 		this.currentLocation = location;
-		updatePosition(currentLocation);
 		updateDisplay();
+
+		this.locationObserver.fire(location);
 	}
 
 	/**
@@ -261,6 +252,8 @@ public class FunctionsMobile implements PositionWatcher {
 			updateGameStatus(false);
 			intervals.startGameStatusInterval(this);
 			// $("#mainContent").html("");
+
+			this.loginObserver.fire(playerId);
 		} else {
 			ui.showLoginError("Keine id bekommen");
 		}
