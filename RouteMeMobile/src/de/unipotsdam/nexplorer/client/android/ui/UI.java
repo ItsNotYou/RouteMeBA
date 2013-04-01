@@ -16,6 +16,7 @@ public class UI extends UIElement {
 	private Overlay loginOverlay;
 	private Overlay noPositionOverlay;
 	private Overlay waitingForGameOverlay;
+	private boolean isCollectingItem;
 
 	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, MainPanelToolbar mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay) {
 		super(host);
@@ -30,6 +31,8 @@ public class UI extends UIElement {
 		this.loginOverlay = loginOverlay;
 		this.noPositionOverlay = noPositionOverlay;
 		this.waitingForGameOverlay = waitingForGameOverlay;
+
+		this.isCollectingItem = false;
 	}
 
 	private String addZ(double n) {
@@ -56,13 +59,13 @@ public class UI extends UIElement {
 		return addZ(mins);
 	}
 
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Object nextItemDistance, final boolean hasRangeBooster, final boolean isCollectingItem, final boolean itemInCollectionRange, final String hint) {
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Object nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
 		runOnUIThread(new Runnable() {
 
 			@Override
 			public void run() {
 				updateStatusHeader(score, neighbourCount, remainingPlayingTime, battery);
-				updateStatusFooter(nextItemDistance, hasRangeBooster, isCollectingItem, itemInCollectionRange, hint);
+				updateStatusFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 			}
 		});
 	}
@@ -74,7 +77,7 @@ public class UI extends UIElement {
 		mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
 	}
 
-	private void updateStatusFooter(final Object nextItemDistance, final boolean hasRangeBooster, final boolean isCollectingItem, final boolean itemInCollectionRange, final String hint) {
+	private void updateStatusFooter(final Object nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
 		this.hint.setText(hint);
 
 		if (nextItemDistance != null)
@@ -91,7 +94,7 @@ public class UI extends UIElement {
 
 		activeItems.html("Aktive Gegenstände: ", boosterImageElement);
 
-		if (!isCollectingItem) {
+		if (!this.isCollectingItem) {
 			collectItemButton.html("Gegenstand einsammeln");
 
 			boolean isDisabled = collectItemButton.isDisabled();
@@ -104,6 +107,7 @@ public class UI extends UIElement {
 	}
 
 	public void disableButtonForItemCollection() {
+		this.isCollectingItem = true;
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -112,6 +116,10 @@ public class UI extends UIElement {
 				UI.this.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
 			}
 		});
+	}
+
+	public void enableButtonForItemCollection() {
+		this.isCollectingItem = false;
 	}
 
 	public void hideLoginOverlay() {

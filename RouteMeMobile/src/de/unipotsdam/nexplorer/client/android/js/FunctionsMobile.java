@@ -1,12 +1,14 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
+import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.net.SendLocation;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
+import de.unipotsdam.nexplorer.client.android.support.CollectObserver;
 import de.unipotsdam.nexplorer.client.android.support.Location;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
@@ -53,12 +55,12 @@ public class FunctionsMobile implements PositionWatcher {
 	private boolean gameDidEnd = false;
 
 	private Location currentLocation;
-	private boolean isCollectingItem;
 	private RestMobile rest;
 
 	private final LocationObserver locationObserver;
 	private final LoginObserver loginObserver;
 	private final PingObserver pingObserver;
+	private final CollectObserver collectObserver;
 
 	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker) {
 		this.mapTasks = mapTasks;
@@ -66,9 +68,9 @@ public class FunctionsMobile implements PositionWatcher {
 		this.app = app;
 		this.ui = ui;
 		this.rest = rest;
-		this.isCollectingItem = false;
 
 		SendLocation sendLocation = new SendLocation(rest);
+		CollectItem collectItem = new CollectItem(rest, ui);
 		RadiusBlinker radiusBlinker = blinker;
 
 		this.locationObserver = new LocationObserver();
@@ -77,9 +79,13 @@ public class FunctionsMobile implements PositionWatcher {
 
 		this.loginObserver = new LoginObserver();
 		this.loginObserver.add(sendLocation);
+		this.loginObserver.add(collectItem);
 
 		this.pingObserver = new PingObserver();
 		this.pingObserver.add(radiusBlinker);
+
+		this.collectObserver = new CollectObserver();
+		this.collectObserver.add(collectItem);
 
 		intervals.ensurePositionWatch(this);
 	}
@@ -220,7 +226,7 @@ public class FunctionsMobile implements PositionWatcher {
 		mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
 		mapTasks.drawMarkers(neighbours, nearbyItems);
 
-		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, isCollectingItem, itemInCollectionRange, hint);
+		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
 
 	/**
@@ -228,26 +234,6 @@ public class FunctionsMobile implements PositionWatcher {
 	 */
 	public void collectItem() {
 		this.pingObserver.fire();
-
-		if (!isCollectingItem) {
-			isCollectingItem = true;
-
-			ui.disableButtonForItemCollection();
-			rest.collectItem(playerId, new AjaxResult<Object>() {
-
-				@Override
-				public void success() {
-					isCollectingItem = false;
-					updateDisplay();
-				}
-
-				@Override
-				public void error() {
-					isCollectingItem = false;
-					updateDisplay();
-				}
-			});
-		}
 	}
 
 	private void loginSuccess(LoginAnswer data) {
