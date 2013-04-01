@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
+import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.net.SendLocation;
@@ -9,7 +10,6 @@ import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.support.CollectObserver;
-import de.unipotsdam.nexplorer.client.android.support.Location;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
 import de.unipotsdam.nexplorer.client.android.support.PingObserver;

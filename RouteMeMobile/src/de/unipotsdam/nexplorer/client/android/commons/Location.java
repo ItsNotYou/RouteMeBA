@@ -1,4 +1,4 @@
-package de.unipotsdam.nexplorer.client.android.support;
+package de.unipotsdam.nexplorer.client.android.commons;
 
 public class Location {
 

@@ -3,7 +3,7 @@ package de.unipotsdam.nexplorer.client.android.net;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Loginable;
-import de.unipotsdam.nexplorer.client.android.support.Location;
+import de.unipotsdam.nexplorer.client.android.commons.Location;
 
 /**
  * Sendet die aktuelle Position an den Server

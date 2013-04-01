@@ -14,7 +14,7 @@ public abstract class Geolocator implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		de.unipotsdam.nexplorer.client.android.support.Location result = new de.unipotsdam.nexplorer.client.android.support.Location();
+		de.unipotsdam.nexplorer.client.android.commons.Location result = new de.unipotsdam.nexplorer.client.android.commons.Location();
 		result.setLatitude(location.getLatitude());
 		result.setLongitude(location.getLongitude());
 		result.setAccuracy(location.getAccuracy());

@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.callbacks;
 
-import de.unipotsdam.nexplorer.client.android.support.Location;
+import de.unipotsdam.nexplorer.client.android.commons.Location;
 
 public interface Locatable {
 

@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Pingable;
-import de.unipotsdam.nexplorer.client.android.support.Location;
+import de.unipotsdam.nexplorer.client.android.commons.Location;
 
 public class RadiusBlinker implements Locatable, Pingable {
 

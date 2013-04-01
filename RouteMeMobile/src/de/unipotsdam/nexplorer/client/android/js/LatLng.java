@@ -10,7 +10,7 @@ public class LatLng {
 		this.longitude = longitude;
 	}
 
-	public LatLng(de.unipotsdam.nexplorer.client.android.support.Location location) {
+	public LatLng(de.unipotsdam.nexplorer.client.android.commons.Location location) {
 		this.latitude = location.getLatitude();
 		this.longitude = location.getLongitude();
 	}
