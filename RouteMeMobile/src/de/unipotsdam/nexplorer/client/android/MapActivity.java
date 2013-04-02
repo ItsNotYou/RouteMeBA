@@ -69,7 +69,7 @@ public class MapActivity extends FragmentActivity {
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
 		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map)), new RestMobile(HOST_ADRESS), blinker);
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker);
 	}
 
 	public void collectItem(View view) {

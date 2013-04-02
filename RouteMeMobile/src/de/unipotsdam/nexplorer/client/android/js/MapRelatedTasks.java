@@ -9,6 +9,7 @@ import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Activity;
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
@@ -17,11 +18,21 @@ import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 public class MapRelatedTasks {
 
 	private final SenchaMap senchaMap;
+	private final Activity host;
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
 
-	public MapRelatedTasks(SenchaMap senchaMap) {
+	private Location oldLocation;
+	private Integer oldPlayerRange;
+	private Integer oldItemRange;
+
+	public MapRelatedTasks(SenchaMap senchaMap, Activity host) {
 		this.senchaMap = senchaMap;
+		this.host = host;
+
+		this.oldLocation = null;
+		this.oldPlayerRange = null;
+		this.oldItemRange = null;
 	}
 
 	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems) {
@@ -140,27 +151,41 @@ public class MapRelatedTasks {
 		}
 	}
 
-	void centerAtCurrentLocation(Location currentLocation, int playerRange, int itemCollectionRange) {
-		if (currentLocation != null) {
-			// Karte zentrieren
-			senchaMap.map.setCenter(new LatLng(currentLocation));
-			// Spieler Marker zentrieren
-			playerMarker.setPosition(new LatLng(currentLocation));
-			if (playerMarker.map == null) {
-				playerMarker.setMap(senchaMap.map);
-			}
-			// Senderadius zentrieren
-			playerRadius.setCenter(new LatLng(currentLocation));
-			if (playerRadius.map == null) {
-				playerRadius.setMap(senchaMap.map);
-			}
-			playerRadius.setRadius(playerRange);
-			// Sammelradius zentrieren
-			collectionRadius.setCenter(new LatLng(currentLocation));
-			if (collectionRadius.map == null) {
-				collectionRadius.setMap(senchaMap.map);
-			}
-			collectionRadius.setRadius(itemCollectionRange);
+	void centerAtCurrentLocation(final Location currentLocation, final Integer playerRange, final Integer itemCollectionRange) {
+		if (currentLocation == oldLocation && playerRange.equals(oldPlayerRange) && itemCollectionRange.equals(oldItemRange)) {
+			return;
 		}
+
+		this.oldLocation = currentLocation;
+		this.oldPlayerRange = playerRange;
+		this.oldItemRange = itemCollectionRange;
+
+		host.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (currentLocation != null) {
+					// Karte zentrieren
+					senchaMap.map.setCenter(new LatLng(currentLocation));
+					// Spieler Marker zentrieren
+					playerMarker.setPosition(new LatLng(currentLocation));
+					if (playerMarker.map == null) {
+						playerMarker.setMap(senchaMap.map);
+					}
+					// Senderadius zentrieren
+					playerRadius.setCenter(new LatLng(currentLocation));
+					if (playerRadius.map == null) {
+						playerRadius.setMap(senchaMap.map);
+					}
+					playerRadius.setRadius(playerRange);
+					// Sammelradius zentrieren
+					collectionRadius.setCenter(new LatLng(currentLocation));
+					if (collectionRadius.map == null) {
+						collectionRadius.setMap(senchaMap.map);
+					}
+					collectionRadius.setRadius(itemCollectionRange);
+				}
+			}
+		});
 	}
 }
