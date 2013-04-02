@@ -13,6 +13,7 @@ import de.unipotsdam.nexplorer.client.android.support.CollectObserver;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
 import de.unipotsdam.nexplorer.client.android.support.PingObserver;
+import de.unipotsdam.nexplorer.client.android.support.RangeObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 /**
@@ -30,7 +31,6 @@ public class FunctionsMobile implements PositionWatcher {
 	// TODO: Parameter flexibilisieren
 	private double minAccuracy = 11;
 
-	private boolean positionRequestExecutes = false;
 	private boolean gameStatusRequestExecutes = false;
 
 	private Integer playerId = null;
@@ -61,6 +61,7 @@ public class FunctionsMobile implements PositionWatcher {
 	private final LoginObserver loginObserver;
 	private final PingObserver pingObserver;
 	private final CollectObserver collectObserver;
+	private final RangeObserver rangeObserver;
 
 	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker) {
 		this.mapTasks = mapTasks;
@@ -86,6 +87,9 @@ public class FunctionsMobile implements PositionWatcher {
 
 		this.collectObserver = new CollectObserver();
 		this.collectObserver.add(collectItem);
+
+		this.rangeObserver = new RangeObserver();
+		this.rangeObserver.add(radiusBlinker);
 
 		intervals.ensurePositionWatch(this);
 	}
@@ -168,6 +172,8 @@ public class FunctionsMobile implements PositionWatcher {
 	private void updateGameStatusCallback(GameStatus data) {
 		gameStatusRequestExecutes = false;
 
+		int oldRange = playerRange;
+
 		// Spielstatus und Spielinformationen
 
 		gameIsRunning = data.stats.settings.isRunningBoolean();
@@ -190,6 +196,10 @@ public class FunctionsMobile implements PositionWatcher {
 		itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
 		hasRangeBooster = data.node.hasRangeBoosterBoolean();
 		hint = data.getHint();
+
+		if (oldRange != playerRange) {
+			this.rangeObserver.fire((double) playerRange);
+		}
 
 		mapTasks.removeInvisibleMarkers(neighbours, nearbyItems);
 
@@ -234,6 +244,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 */
 	public void collectItem() {
 		this.pingObserver.fire();
+		this.collectObserver.fire(itemCollectionRange);
 	}
 
 	private void loginSuccess(LoginAnswer data) {
