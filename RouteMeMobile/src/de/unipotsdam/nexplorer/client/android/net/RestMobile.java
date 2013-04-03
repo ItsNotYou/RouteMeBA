@@ -9,6 +9,8 @@ import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Options;
+import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
+import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
 
 public class RestMobile {
 
@@ -95,6 +97,28 @@ public class RestMobile {
 				ajaxResult.error();
 			}
 		});
+	}
+
+	public void requestPing(final int playerId, final Location currentLocation, final AjaxResult<PingResponse> ajaxResult) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					final String url = host + "/rest/ping";
+					final PingRequest data = new PingRequest();
+
+					data.setNodeId(playerId);
+					data.setLatitude(currentLocation.getLatitude());
+					data.setLongitude(currentLocation.getLongitude());
+
+					PingResponse result = template.postForObject(url, data, PingResponse.class);
+					ajaxResult.success(result);
+				} catch (Exception e) {
+					ajaxResult.error(e);
+				}
+			}
+		}).start();
 	}
 
 	private <T> void ajax(final Options<T> options) {
