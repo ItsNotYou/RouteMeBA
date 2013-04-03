@@ -1,0 +1,10 @@
+---
+Item:
+  tableName: items
+  columns:
+    type: integer
+    latitude: double(18,9)
+    longitude: double(18,9)
+    created: integer
+  options:
+    tpye: InnoDB

@@ -1,0 +1,9 @@
+---
+AODVRouteRequestBufferEntry:
+  tableName: aodv_route_request_buffer_entries
+  columns:
+    node_id as nodeId: integer
+    source_id as sourceId: integer
+    sequence_number as sequenceNumber: integer
+  options:
+    type: InnoDB

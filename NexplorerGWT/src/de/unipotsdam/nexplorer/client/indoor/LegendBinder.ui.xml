@@ -1,0 +1,19 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" >
+    <div>
+        <table ui:field="legendTable" style="width:100%" >
+
+            <!-- <?php foreach ($legendItems as $key => $value): ?> -->
+            <!-- <tr> -->
+            <!-- <td style="text-align:center"> -->
+            <!-- <img src="../media/images/icons/<?php echo $key ?>" style="vertical-align: middle" /> -->
+            <!-- </td> -->
+            <!-- <td> -->
+            <!-- <?php echo $value ?> -->
+            <!-- </td> -->
+            <!-- </tr> -->
+            <!-- <?php endforeach ?> -->
+        </table>
+    </div>
+
+</ui:UiBinder>

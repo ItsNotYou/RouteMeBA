@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry including="**" kind="src" path="resources"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/adapter-core"/>
+	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate3.jar" sourcepath="C:/GWT/hibernate3.2"/>
+	<classpathentry kind="lib" path="lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hibernate-util"/>
+	<classpathentry kind="lib" path="/adapter4gwt/lib/gwt-dev-windows.jar"/>
+	<classpathentry kind="lib" path="/adapter4gwt/lib/gwt-user.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/adapter4gwt"/>
+	<classpathentry kind="lib" path="/adapter-core/lib/beanlib-hibernate-5.0.2beta.jar" sourcepath="D:/OpenSource/beanlib-5.0.2beta/beanlib-hibernate-5.0.2beta-sources.jar"/>
+	<classpathentry kind="lib" path="/adapter-core/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<div>
+		<div style="display: none;">
+		    <div id="login" style="text-align:center">
+				<div id="beginDialog">
+		        Bitte geben Sie ihren gewünschten Spielernamen ein. Wenn sie ein unterbrochenes Spiel wieder aufnehmen wollen, benutzen Sie bitte den gleichen Namen wie zuvor.
+				</div>				
+				<input id="playerName" type="text" />
+				<br/><br/>
+				<button id="loginButton" type="button" onclick="loginPlayer($('#playerName').val(), true)">anmelden</button>
+			</div>
+			
+			<div id="waiting" style="text-align:center">
+				<span id="waitingText">
+					Warte auf Spielstart.
+				</span>
+			</div>
+			
+			<div id="noPosition" style="text-align:center">
+				<span>
+					Bitte warten. Position konnte nicht ermittelt werden.
+				</span>
+			</div>
+		</div>		    
+	</div>
+</ui:UiBinder>

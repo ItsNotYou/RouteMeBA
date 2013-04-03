@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="nexplorer"/>
+  <table-filter match-name="aodv_route_request_buffer_entries"/>
+  <table-filter match-name="neighbours"/>
+  <table-filter match-name="aodv_node_data"/>
+  <table-filter match-name="aodv_routing_messages"/>
+  <table-filter match-name="items"/>
+  <table-filter match-name="aodv_data_packets"/>
+  <table-filter match-name="aodv_routing_table_entries"/>
+  <table-filter match-name="settings"/>
+  <table-filter match-name="players"/>
+  <table-filter match-name="performance"/>
+  <table-filter match-name="position_backlog"/>
+</hibernate-reverse-engineering>

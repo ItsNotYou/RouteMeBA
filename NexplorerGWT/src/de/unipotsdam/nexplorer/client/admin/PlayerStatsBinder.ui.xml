@@ -1,0 +1,44 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">	
+<div>
+    <table ui:field="indoorStatsTable" class="ui-accordion ui-widget ui-widget-content ui-corner-all ui-accordion-content-active"
+           style="border:1px solid black; text-align:center">
+        <th colspan="8">Spieler (Nachrichten)</th>
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Punktzahl</td>
+        </tr>
+<!--         <tr> -->
+<!--             <td>id</td> -->
+<!--             <td>name</td> -->
+<!--             <td>score</td> -->
+<!--         </tr> -->
+    </table>
+    <br/>
+    <table ui:field="mobileStatsTable" class="ui-accordion ui-widget ui-widget-content ui-corner-all ui-accordion-content-active"
+           style="border:1px solid black; text-align:center">
+        <th colspan="8">Spieler (Knoten)</th>
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Breitengrad</td>
+            <td>Längengrad</td>
+            <td>Letzte Positionsaktualisierung</td>
+            <td>Punktzahl</td>
+            <td>Batterie</td>
+            <td>Booster seit</td>
+        </tr>
+<!--         <tr> -->
+<!--             <td>id</td> -->
+<!--             <td>name</td> -->
+<!--             <td>latitude</td> -->
+<!--             <td>longitude</td> -->
+<!--             <td>lastpositionupdate</td> -->
+<!--             <td>score</td> -->
+<!--             <td>battery</td> -->
+<!--             <td>hasbooster</td> -->
+<!--         </tr> -->
+    </table>
+</div>
+</ui:UiBinder>

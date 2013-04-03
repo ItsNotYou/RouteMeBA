@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/flex-messaging-remoting.jar"/>
+	<classpathentry kind="lib" path="lib/flex-messaging-core.jar"/>
+	<classpathentry kind="lib" path="lib/flex-messaging-common.jar"/>
+	<classpathentry kind="lib" path="lib/ejb3-persistence.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/adapter-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hibernate-util"/>
+	<classpathentry kind="lib" path="/hibernate-util/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="/adapter-core/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/adapter-core/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

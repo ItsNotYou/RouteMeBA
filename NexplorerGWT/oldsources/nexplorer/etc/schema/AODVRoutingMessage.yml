@@ -1,0 +1,31 @@
+---
+AODVRoutingMessage:
+  tableName: aodv_routing_messages
+  columns:
+    current_node_id as currentNodeId: integer
+    type: string(10)
+    source_id as sourceId: integer
+    destination_id as destinationId: integer
+    lifespan: integer
+    sequence_number as sequenceNumber: integer
+    hop_count as hopCount: integer
+    passed_nodes as passedNodes: array
+    processing_round as processingRound: integer
+  relations:
+    CurrentNode:
+      class: Player
+      local: currentNodeId
+      foreign: id
+      type: one
+    Source:
+      class: Player
+      local: sourceId
+      foreign: id
+      type: one
+    Destination:
+      class: Player
+      local: destinationId
+      foreign: id 
+      type: one
+  options:
+    type: InnoDB

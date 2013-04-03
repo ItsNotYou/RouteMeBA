@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+<div>
+<table ui:field="gameStatsTable"
+        class="ui-accordion ui-widget ui-widget-content ui-corner-all ui-accordion-content-active"
+        style="border:1px solid black; text-align:center">
+    <th colspan="7">Spielparameter</th>
+    <tr>
+        <td>Spielstart</td>
+        <td>Spiel zuende</td>
+        <td>Restliche Spielzeit</td>
+        <td>Spielfeld oben links</td>
+        <td>Spielfeld unten rechts</td>
+        <td>Aktuelle Routingrunde</td>
+        <td>Aktuelle Datenrunde</td>
+    </tr>
+<!--     <tr> -->
+<!--         <td ui:field="runningSince"></td> -->
+<!--         <td ui:field="didEnd"></td> -->
+<!--         <td ui:field="remainingPlayingTime"></td> -->
+<!--         <td ui:field="playingFieldUpperLeftLatitude"></td> -->
+<!--         <td ui:field="playingFieldLowerRightLatitude"></td> -->
+<!--         <td ui:field="currentRoutingMessageProcessingRound"></td> -->
+<!--         <td ui:field="currentDataPacketProcessingRound"></td> -->
+<!--     </tr> -->
+</table>
+<br />
+<!-- <button class="ui-state-highlight" type="button" ui:field="stopGameButton">Spiel -->
+<!-- unterbrechen</button> -->
+<div ui:field="resumeGameButton">
+<button type="button" onclick="resumeGame()"
+        class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        role="button">
+    <span class="ui-button-text" id="resumeButton">Spiel fortsetzen</span>
+</button>
+</div>
+<button class="ui-state-error ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        type="button" onclick="resetGame()" role="button">
+    <span id="resetButton" class="ui-button-text">Spiel beenden</span>
+</button>
+
+</div>
+</ui:UiBinder>

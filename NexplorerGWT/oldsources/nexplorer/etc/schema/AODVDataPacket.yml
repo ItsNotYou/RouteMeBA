@@ -1,0 +1,41 @@
+---
+AODVDataPacket:
+  tableName: aodv_data_packets
+  columns:
+    owner_id as ownerId: integer
+    current_node_id as currentNodeId: integer
+    source_id as sourceId: integer
+    destination_id as destinationId: integer
+    hops_done as hopsDone: 
+      type: integer(2)
+      default: 0
+    status:
+      type: integer(1)
+      default: 1
+    processing_round as processingRound: integer
+    did_reach_bonus_goal as didReachBonusGoal:
+      type: integer(1)
+      default: 0
+  relations:
+    Owner:
+      class: Player
+      local: ownerId
+      foreign: id
+      type: one
+    CurrentNode:
+      class: Player
+      local: currentNodeId
+      foreign: id
+      type: one
+    Source:
+      class: Player
+      local: sourceId
+      foreign: id
+      type: one
+    Destination:
+      class: Player
+      local: destinationId
+      foreign: id
+      type: one
+  options:
+    type: InnoDB    

@@ -1,0 +1,30 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">	
+<div>
+    <div style="position:relative" >
+        <div id="map_canvas" style="width:800px; height:600px; margin: 0 auto; float:left; margin-left:10px"></div>
+        <div id="playerInfo" class="ui-accordion ui-widget ui-widget-content ui-corner-bottom ui-accordion-content-active" style="float:left; margin-left: 20px; width: 300px; padding: 5px; font-size: 14px">
+           <div ui:field="playerInfoContainer"></div> 
+        </div>
+        <div class="ui-accordion ui-widget ui-widget-content ui-corner-bottom ui-accordion-content-active" style="float:left; margin-left: 20px; margin-top:10px; width: 300px; padding: 5px; font-size: 14px">
+            <div style="width:100%; text-align:center; font-weight:bold">***Legende***</div>
+            <div ui:field="legendDiv"> </div>        
+        </div>
+    </div>
+    <div class="ui-widget" id="loginModal" style="text-align:center; display:none">
+		<span id="loginReady" style="display:none">
+			Bitte geben Sie ihren gewünschten Spielernamen ein. Wenn sie ein unterbrochenes Spiel wieder aufnehmen wollen, benutzen Sie bitte den gleichen Namen wie zuvor.
+			<br/><br/>
+			<input id="playerName" type="text" />
+			<br/><br/>
+			<button id="loginButton" type="button" onclick="loginPlayer($('#playerName').val(), false)">anmelden</button>
+		</span>
+		<span id="loginNotReady">
+			Es wurde noch kein Spiel gestartet. Bitte warten Sie auf Anweisungen des Spielleiters.
+		</span>
+    </div>   
+    <div class="ui-widget" id="waitingOverlay" style="text-align:center; display:none">
+        <span id="waitingText"></span>
+    </div>
+</div>
+</ui:UiBinder>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/proxy/commons-lang-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/proxy/xstream-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/proxy/javassist-3.4.GA.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/stateless/xpp3-1.1.4c.jar"/>
+	<classpathentry kind="lib" path="lib/stateless/jboss-serialization.jar"/>
+	<classpathentry kind="lib" path="lib/stateless/trove.jar"/>
+	<classpathentry kind="lib" path="lib/beanlib-5.0.2beta.jar" sourcepath="D:/OpenSource/beanlib-5.0.2beta/beanlib-5.0.2beta-sources/src"/>
+	<classpathentry kind="lib" path="lib/beanlib-hibernate-5.0.2beta.jar" sourcepath="D:/OpenSource/beanlib-5.0.2beta/beanlib-hibernate-5.0.2beta-sources.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

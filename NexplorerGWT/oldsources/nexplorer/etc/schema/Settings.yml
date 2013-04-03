@@ -1,0 +1,37 @@
+---
+Settings:
+  tableName: settings
+  columns:
+    is_running as isRunning: integer(1)
+    running_since as runningSince: integer
+    last_pause as lastPause: integer
+    did_end as didEnd: integer(1)
+    difficulty: integer
+    playing_time as playingTime: integer
+    remaining_playing_time as remainingPlayingTime: integer
+    protocol: string(255)
+    base_node_range as baseNodeRange: integer
+    item_collection_range as itemCollectionRange: integer
+    playing_field_upper_left_latitude as playingFieldUpperLeftLatitude: double(18,9)
+    playing_field_upper_left_longitude as playingFieldUpperLeftLongitude: double(18,9)
+    playing_field_lower_right_latitude as playingFieldLowerRightLatitude: double(18,9)
+    playing_field_lower_right_longitude as playingFieldLowerRightLongitude: double(18,9)
+    max_batteries as maxBatteries: integer
+    max_boosters as maxBoosters: integer
+    current_routing_message_processing_round as currentRoutingMessageProcessingRound:
+      type: integer
+      default: 1
+    current_data_packet_processing_round as currentDataPacketProcessingRound:
+      type: integer
+      default: 1
+    bonus_goal as bonusGoal: integer
+    update_position_interval_time as updatePositionIntervalTime: integer
+    update_display_interval_time as updateDisplayIntervalTime: integer
+  relations:
+    BonusGoal:
+      class: Player
+      local: bonusGoal
+      foreign: id
+      type: one
+  options:
+    type: InnoDB 

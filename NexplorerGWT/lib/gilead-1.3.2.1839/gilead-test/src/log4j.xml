@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false" threshold="all">
+  <!-- ========================================================= Appenders -->
+  <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+    <param name="Target" value="System.out" />
+    <param name="threshold" value="DEBUG" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p [%t] %c: %m%n" />
+    </layout>
+  </appender>
+  <appender name="file" class="org.apache.log4j.RollingFileAppender">
+    <param name="threshold" value="WARN" />
+    <param name="File" value="testGWT.log" />
+    <param name="MaxFileSize" value="1000KB" />
+    <param name="MaxBackupIndex" value="1" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p [%t] %c: %m%n" />
+    </layout>
+  </appender>
+  <!-- ========================================================= Logger -->
+  <!-- ============================================== #### APPLICATION -->
+  <!--## Le passage en mode DEBUG doit se faire localement -->
+  <!--## Ã  une classe ou un package sinon utiliser l'AOP -->
+  <logger name="net.sf.gilead">
+    <level value="INFO"></level>
+  </logger>
+  <!-- ============================================= #### LIBS TIERCES -->
+  <logger name="org.apache">
+    <level value="WARN"></level>
+  </logger>
+  <logger name="org.springframework">
+    <level value="WARN"></level>
+  </logger>
+  <logger name="org.springframework.aop.interceptor.SimpleTraceInterceptor">
+    <level value="TRACE"></level>
+  </logger>
+  <logger name="org.springframework.aop.interceptor.DebugInterceptor">
+    <level value="TRACE"></level>
+  </logger>
+  <logger name="org.springframework.aop.interceptor.PerformanceMonitorInterceptor">
+    <level value="TRACE"></level>
+  </logger>
+  <logger name="org.springframework.aop.interceptor.JamonPerformanceMonitorInterceptor">
+    <level value="TRACE"></level>
+  </logger>
+  <logger name="org.springframework.transaction.interceptor.TransactionInterceptor">
+    <level value="INFO"></level>
+  </logger>
+  <logger name="org.springframework.core.io.support">
+    <level value="INFO"></level>
+  </logger>
+  <logger name="org.springframework.orm.hibernate3">
+    <level value="WARN"></level>
+  </logger>
+  <logger name="org.hibernate">
+    <level value="INFO"></level>
+  </logger>
+  <!-- ========================================================= Root -->
+  <root>
+    <level value="INFO" />
+    <!--  Appenders par dÃ©faut   -->
+    <appender-ref ref="stdout" />
+  </root>
+</log4j:configuration>

@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	
+	<div>
+<!-- 	    <?php if ($playerMessage->status == AODV_DATA_PACKET_STATUS_NODE_BUSY): ?> -->
+		<div style="width:100%; text-align:center">
+			<button type="button" onclick="resetPlayerMessage()"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+				role="button"
+			>
+				zurücksetzen
+			</button>
+		</div>
+<!-- 	<?php endif ?> -->
+	</div>
+</ui:UiBinder>

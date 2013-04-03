@@ -1,0 +1,155 @@
+Release 1.3.2 (05/2010)
+-----------------------
+Bug fix:
+    - "Unimplemented collection : PersistentBag" regression 
+    - Empty collection was considered as null during Gilead merge
+    - NPE if null item in collection
+    - Exception if the collection is not persistent in 'getUnderlyingCollection'
+    
+Improvements for the KOA project ;)
+    - Rename IGwtSerializableParameter.getValue to IGwtSerializableParameter.getUnderlyingValue
+(getValue is too common and leads to name conflict in some cases).
+    - Remove System.out messages from dynamic proxy generation
+
+Release 1.3.1 (04/2010)
+-----------------------
+Bug fixed : 
+    - Fix for nullified collection on client side
+    - Fix some map merge issues
+    - Fix for LinkedHashSet support 
+    - Improve support for collection of Embeddable items
+    - Fix CollectionOfElements for basic types and enums (thanks sullymandias)
+    - Exclude JBoss unnecessary Maven dependencies
+    - Remote service : LoadAssociation fix (error if the association collection is null or empty)
+    - getPersistentClass NPE fix (HibernateLazyIntializer is sometimes null...)
+    - Dynamic proxy : missing getValue method in xml files
+    - Dynamic proxy : Added the template files to JAR
+    - Fix SessionImpl proxy handling (thanks to Gregor !)
+    - Fix Action Script classes 
+    
+Improvements:
+    - Support for JPA2 annotations
+    - Change level of some disturbing log messages
+    - Add the merged collections to the PersistentContext (better support for reattachment)
+    
+Release 1.3.0 (01/2010)
+-----------------------
+Bug fixed :
+    - Fix collection ordering error on merge operation
+    - Unmodifiable collection handling
+    - Flush session before clone (leading to "Unknown collection role : null" error)
+    - Fix arrays of persistent objects detection in PersistentBeanManager
+    - Handling error is persistent collection size throws LazyInitialisationException
+    - Fix merge collection duplicate elements
+    - Clone of collection without empty constructor
+    - NPE on Serializable ID
+    - Fix Java5 compilation issue (@Override on interface implementation methods)
+    - Persistent POJO inside exception
+    - Fix embeddable entities persistent collection modification detection.
+    - Primitive type checking for merge operation (was causing ClassCastException)
+    - Nested collection handling for holdPersistentObject (fix from Paul Wills)
+    - Minor fix on MergePropertyFilter
+
+Improvements : 
+    - Remote Loading Service for GWT and Flex
+    - Remote Request Service for GWT and Flex
+    - Lazy loading checking on client side
+    - @LimitedAccess transport annotation for application control on fields
+    - ConfigurationHelper to simplify Gilead configuration 
+    - Migration from Jakarta commons-logging to SLF4J
+    - Rename module to reflect that it is relevant to gilead
+    - NoProxyStore : no need for LightEntity inheritance, no http session storage, use for clone only operation
+    - Remove proxy information serialization if not needed (performance improvement)
+    - Improved proxy information serialization for GWT (both in size and performance)
+    
+Other : 
+    - Use beanlib-5.0.2beta
+
+Release 1.2.3 (05/2009)
+-----------------------
+Bug fixed :
+    - Invalid inheritance for GWT 1.4 LightEntity
+    - Missing null condition checking on createIdList
+    - Fix enhancement detection in holdPersistentObject
+    - Fix collection ordering with delete items (OutOfBoundsException)
+    - NullPointerException fix on holdPersistentObject
+    - Persistent Sorted set and map handling
+    - StackOverflow exception on initializing AdditionalCodeManager from ProxyClassLoader
+    - Bad exception fix (issue 2663344)
+    - ServerOnly on association lead to TransientObjectException (bug 2685748)
+          
+Improvements : 
+	- Distinction of clone and merge CustomBeanTransformers
+	- Usage of entity name instead of entity class
+	
+Other :
+    - Use beanlib-5.0.1beta
+    
+Release 1.2.2 (03/2009)
+-----------------------
+Bug fixed :
+    - NullPointerException on isUnsavedValue call
+    - Ordered collection handling
+    - Dynamic proxy mode fix
+    - Fixed NonPersistentObject exception if entity name is defined in mapping file
+    - adapter4blazeds : Persistence util fix 
+    	* handling entity manager factory with Helper class strategy
+    
+          
+Improvements : 
+	- Handle transient or not persistent items (such as String) in persistent collection
+	- Stateful proxy store refactor
+	- Generalization of HibernateUtil for JPA, JBoss injected factory, Spring Proxy, ...
+	- Performance improvements 
+		* Threaded proxy information serialization (stateless mode)
+		* added cache for getter and setters reflection
+		* Removed useless code (useless loop and CGLIB call) from beanlib unenhancer
+	
+Other :
+    - Use beanlib-3.3beta21c (unofficial but optimized release !)
+    - hibernate-jpa-util has been removed : use hibernate-util instead !
+    - This release was developed listening to "All we know is falling" (Paramore)and various albums from Hans Zimmer :)
+
+
+Release 1.2.1 (02/2009)
+-----------------------
+
+Bug fixed :
+    - NullPointerException on AnnotationHelper
+    - Unenhancement class handling fixes
+    - holdPersistentObject 
+    	* stack overflow (cyclic dependency)
+    	* Object property handling
+    - Java5 proxy generation error (bad type for Map)
+    - Various FindBugs error fixes
+    - Component types support (including subclasses, collections...)
+    - Fixed snapshot creation for added items in collection
+    - Fixed snapshot creation for ordered collection
+    - adapter4blazeds : 
+        * PersistentAdapter fix for HttpSessionStore (stateful mode)
+        * NullPointerException when incoming parameter is null
+        * Lazy initialization exception on logging call result
+          
+Improvements : 
+	- Collection extending base classes (such as PagingList extending ArrayList) support
+	- Add support for collection with private constructor (such as BaseListLoadResult)
+	- Online doc improvement
+	- Checking persistenceUtil on clone and merge (send a clean exception instead of NullPointerException)
+	- Persistent class detection improvement
+		* support for interface declaration
+		* deep search for component type
+	- Unsaved value improvement (was 0 by default)
+	- Performance improvements 
+		* removed nested map for GWT serialization
+		* convert bytes to String (GWT convert bytes to double leading to OutOfMemoryException)
+		* use of jboss serialization instead of Java serialization
+		* do not create proxyInformation map until necessary
+		* added cache for annotations handling and unenhanced classes
+	
+New features :
+	- Full Maven support
+	- comet4gwt module : add comet support, including when used with persistent entities
+	- UnionCustomBeanTransformer : allow user to add their beanlib custombeantransformer
+
+Other : 
+    - This release was developed listening to "Riot!" (Paramore), "Rendez-vous" (Manu) and "Tandoori" (Eiffel) albums :)

@@ -1,0 +1,118 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:o="urn:import:com.sun.org.apache.xpath.internal.operations">
+	<div>
+		<div id="content">
+			<div>
+				<!-- hier kommen die GameStats hin -->
+				<div ui:field="gameStats"></div>
+			</div>
+			<br />
+			<br />
+			<div ui:field="map_canvas">			
+			</div>
+			<div ui:field="playerStats"></div>
+			<br />
+			<div ui:field="itemStats"></div>
+			<div id="log"
+				class="ui-accordion ui-widget ui-widget-content ui-corner-all ui-accordion-content-active"
+				style="border:1px solid black; text-align:center; display:none">
+				<textarea id="logText" style="width: 90%; height: 400px">
+				</textarea>
+			</div>
+			<!-- <form id="startGameForm" method="POST" action="rest/gameManager/start" 
+				onSubmit="startGame()"> -->
+			<div ui:field="startGameForm">
+			<form id="startGameForm">
+				<strong>Einstellungen:</strong>
+				<br />
+				<label>Spieldauer:</label>
+				<input ui:field="timeToPlay" class="ui-corner-all" type="text"
+					name="playingTime" value="5" />
+				Minuten
+				<br />
+				<label>Basisreichweite Knoten:</label>
+				<input ui:field="baseNodeRange" class="ui-corner-all" type="text"
+					name="baseNodeRange" value="9" />
+				Meter
+				<br />
+				<label>Reichweite "Gegenstände einsammeln":</label>
+				<input ui:field="rangeForCollectingStuff" class="ui-corner-all"
+					type="text" name="itemCollectionRange" value="4" />
+				Meter
+				<br />
+				<label>Max. Anzahl Batterien:</label>
+				<input ui:field="numberOfBatteries" class="ui-corner-all"
+					type="text" name="maxBatteries" value="5" />
+				<br />
+				<label>Max. Anzahl Booster:</label>
+				<input ui:field="numberOfBoosters" class="ui-corner-all" type="text"
+					name="maxBoosters" value="2" />
+				<br />
+				<label>Schwierigkeitsgrad:</label>
+				<select ui:field="difficulty" name="difficulty">
+					<option value="1">einfach (geringe Anforderungen / starke
+						Assistenz)</option>
+				</select>
+				<br />
+				<label>Routing-Protokoll</label>
+				<select ui:field="protocol" name="protocol">
+					<option value="aodv">Ad-hoc On-Demand Distance Vector (AODV)</option>
+				</select>
+				<br />
+				<strong>Erweiterte Einstellungen:</strong>
+				<br />
+				<label>Spielfeld obere linke Ecke:</label>
+				<input ui:field="playingFieldUpperLeftLatitude" class="ui-corner-all"
+					type="text" name="playingFieldUpperLeftLatitude" value="52.39358362957616"
+					style="width:130px" />
+				;
+				<input ui:field="playingFieldUpperLeftLongitude" class="ui-corner-all"
+					type="text" name="playingFieldUpperLeftLongitude" value="13.130382746458054"
+					style="width:130px" />
+				<br />
+				<label>Spielfeld untere rechte Ecke:</label>
+				<input ui:field="playingFieldLowerRightLatitude" class="ui-corner-all"
+					type="text" name="playingFieldLowerRightLatitude" value="52.39328409876577"
+					style="width:130px" />
+				;
+				<input ui:field="playingFieldLowerRightLongitude" class="ui-corner-all"
+					type="text" name="playingFieldLowerRightLongitude" value="13.130974173545837"
+					style="width:130px" />
+				<br />
+				<strong>Intervallzeiten *:</strong>
+				<br />
+				<label>Senden der Knotenposition an Server (deprecated):</label>
+				<input ui:field="updatePositionIntervalTime" class="ui-corner-all"
+					type="text" name="updatePositionIntervalTime" value="3000" />
+				Millisekunden
+				<br />
+				<label>Aktualisierung der Benutzeroberfläche (für die Adminoberfläche):</label>
+				<input ui:field="updateDisplayIntervalTime" class="ui-corner-all"
+					type="text" name="updateDisplayIntervalTime" value="3000" />
+				Millisekunden
+				<br />
+				<div id="buttonContainer">
+				<button ui:field="submitButton"
+					class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+					<span class="ui-button-text">Spiel erstellen</span>
+				</button>
+				</div>
+				<!-- <button id="submitButton" class="ui-button ui-widget ui-state-default 
+					ui-corner-all ui-button-text-only"> -->
+				<!-- <span class="ui-button-text">Spiel starten</span> -->
+				<!-- </button> -->
+				<div style="margin-top:20px">
+					* Achtung! Intervallzeiten geben an mit welcher
+					Frequenz versucht
+					wird Anfragen an den Server zu senden. Anfragen
+					können verworfen
+					werden, wenn der Server oder die Netzwerkverbindung
+					ausgelastet
+					sind.
+                </div>
+			</form>
+			</div>
+		</div>
+	</div> <!-- end content -->
+</ui:UiBinder>

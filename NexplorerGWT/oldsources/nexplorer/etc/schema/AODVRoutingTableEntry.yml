@@ -1,0 +1,28 @@
+---
+AODVRoutingTableEntry:
+  tableName: aodv_routing_table_entries
+  columns:
+    node_id as nodeId: integer
+    destination_id as destinationId: integer
+    next_hop_id as nextHopId: integer
+    destination_sequence_number as destinationSequenceNumber: integer
+    hop_count as hopCount: integer
+    timestamp: integer
+  relations:
+    Node:
+      class: Player
+      local: nodeId
+      foreign: id
+      type: one
+    Destination:
+      class: Player
+      local: destinationId
+      foreign: id
+      type: one
+    NextHop:
+      class: Player
+      local: nextHopId
+      foreign: id
+      type: one
+  options:
+    type: InnoDB

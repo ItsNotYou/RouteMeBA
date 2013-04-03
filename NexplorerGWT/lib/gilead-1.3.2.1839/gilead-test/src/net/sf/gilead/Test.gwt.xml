@@ -1,0 +1,24 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='net.sf.gilead.Gilead4Gwt'/>
+	<inherits name='net.sf.gilead.gwt.Loading' /> 
+
+	<!-- Source path -->
+	<source path="test/domain/gwt"/>
+	<source path="test/domain/stateful"/>
+	<source path="test/domain/interfaces"/>
+	<source path="performance/gwt/client"/>
+	<source path="core/loading/gwt/client"/>
+  
+  	<!-- Servlets -->
+  	<servlet path="/StatelessPerformanceService" class="net.sf.gilead.performance.gwt.server.StatelessPerformanceServiceImpl"/>
+  	<servlet path="/StatefulPerformanceService" class="net.sf.gilead.performance.gwt.server.StatefulPerformanceServiceImpl"/>
+  	<servlet path="/Java5PerformanceService" class="net.sf.gilead.performance.gwt.server.Java5PerformanceServiceImpl"/>
+  	<servlet path="/LoadingService" class="net.sf.gilead.gwt.server.LoadingServiceImpl"/>
+  	<servlet path="/RequestService" class="net.sf.gilead.gwt.server.RequestServiceImpl"/>
+  	<servlet path="/ProxyInformationService" class="net.sf.gilead.gwt.server.ProxyInformationServiceImpl"/>
+  	<servlet path="/StatelessInitService" class="net.sf.gilead.core.loading.gwt.server.StatelessInitServiceImpl"/>
+  	<servlet path="/StatefulInitService" class="net.sf.gilead.core.loading.gwt.server.StatefulInitServiceImpl"/>
+</module>

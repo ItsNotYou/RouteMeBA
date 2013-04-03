@@ -1,0 +1,14 @@
+---
+Neighbour:
+  tableName: neighbours
+  columns:
+    node_id as nodeId: integer
+    neighbour_id as neighbourId: integer
+  relations:
+    Neighbour:
+      class: Player
+      local: neighbourId
+      foreign: id
+      type: one
+  options:
+    type: InnoDB

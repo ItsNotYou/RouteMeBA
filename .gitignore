@@ -1,2 +1,13 @@
 [Bb]in
 [Gg]en
+
+NexplorerGWT/.gwt/
+NexplorerGWT/gwt-unitCache/
+NexplorerGWT/war/de.unipotsdam.nexplorer.MobileGWT/
+NexplorerGWT/war/indoorgwt/
+NexplorerGWT/war/logs
+NexplorerGWT/war/WEB-INF/deploy/
+NexplorerGWT/war/WEB-INF/classes/
+NexplorerGWT/war/js/.idea/
+NexplorerGWT/war/js/.settings/
+NexplorerGWT/war/js/.nbproject/

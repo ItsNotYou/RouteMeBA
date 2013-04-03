@@ -1,0 +1,48 @@
+---
+Player:
+  tableName: players
+  columns:
+    role:
+      type: integer(1)
+      default: 1
+    name: string(45)
+    score: integer
+    latitude: double(18,9)
+    longitude: double(18,9)
+    last_position_update as lastPositionUpdate: integer
+    battery: double(5,2)
+    has_signal_range_booster as hasSignalRangeBooster:
+      type: integer
+      default: 0
+    has_signal_strength_booster as hasSignalStrengthBooster:
+      type: integer
+      default: 0
+    remaining_high_priority_messages as remainingHighPriorityMessages:
+      type: integer(4)
+      default: 5
+    sequence_number as sequenceNumber:
+      type: integer
+      default: 1
+  relations:
+    AODVDataPackets:
+      class: AODVDataPacket
+      local: id
+      foreign: currentNodeId
+      type: many
+    AODVRoutingTableEntries:
+      class: AODVRoutingTableEntry
+      local: id
+      foreign: nodeId
+      type: many
+    AODVRoutingMessages:
+      class: AODVRoutingMessage
+      local: id
+      foreign: currentNodeId
+      type: many
+    Neighbours:
+      class: Neighbour
+      local: id
+      foreign: nodeId
+      type: many
+  options:
+    type: InnoDB

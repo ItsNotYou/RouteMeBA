@@ -1,0 +1,127 @@
+Release 1.1 (2008/06)
+-----------------------
+Bug fixed :
+    - Merge error when changing association on client side
+    - Minor correction on stateful POJO store (exception when trying to store a transient instance)
+    - Correction of the abstract LazyPojo (without GWT) class
+
+Improvement :
+    - Compatibility with both GWT 1.4 and GWT 1.5
+    - Merge update with new beanLib version
+    - Clone and merge of wrapping classes (ie non persistent instance having persistent members)
+    - Dynamic proxy additional code is read from xml file (LazyPojo.java14.xml and LazyPojo.java5.xml)
+   
+Known issue : 
+    - Does not work with Hibernate natural IDs
+     
+Other :
+    - Needs BeanLib version 3.3beta16
+
+Release 1.0.4 (2008/03)
+-----------------------
+Bug fixed :
+    - Map merge issue
+    - Better proxy handling (when session.load() is used instead of session.get())
+    - DirectoryClassMapper : bug when dto and domain directories are nested
+    - BeanlibThreadLocal : bad Integer destination bean (the merge list contains Integer instances instead of beans)
+    - Bad initialization of PersistentSet on merge (merged collection members modifications are lost)
+    - Tomcat/Javassist classloader issue with dynamic proxy mode 
+    - Stateless Pojo Store : Hibernate session was not closed when mergePojo threw an exception
+    - Component class handling
+    
+Improvement :
+    - Merge property in not null, even if it was lazy but not loaded at clone
+    - HibernateHelper becomes HibernateUtil and is no longer used as a singleton (multi-database enable)
+   
+Known issue : 
+    - Does not work with Hibernate natural IDs
+     
+Other :
+	- Needs the new BeanLib version (3.3alpha12) for solving "merge of beans with the same abstract class" issue
+
+Release 1.0.3 (2008/01)
+---------------------
+Bug fixed :
+	- Collection merge issue
+
+
+Release 1.0.2 (2008/01)
+---------------------
+Bug fixed :
+	- Change ProxyClassLoader to URLClassLoader (GWT-SL integration issue)
+
+Improvements :
+        - ExplicitClassMapper Spring integration (contribution of Norman Maurer)
+
+
+Release 1.0.1 (2007/11)
+---------------------
+Bug fixed :
+	- Bad session management for merge operation
+	- SecurityException with Java5 support
+	- "HibernatePOJO not found !" exception when try to merge a new Hibernate POJO with Java native (int, long) ID
+	
+Improvements :
+    - ExplicitClassMapper and MultiDirectoryClassMapper (contributions of Florian Siebert and Olaf Kock)
+	
+Other :
+	- Needs the BeanLib 3.3beta10
+	- GWT 1.4 only
+
+Release 1.0 (2007/10)
+---------------------
+New features :
+	- GWT dynamic proxy generation for Serializable objects
+
+Bug fixed :
+	- Better collection support for clone and merge (including set and map)
+	
+Improvements :
+    - No more clone or merge class needed for Java5 support (clone based on defined ClassMapper)
+    - Add JPA EntityManager support to HibernateLazyManager (works only with Hibernate implementation)
+	
+Other :
+	- Needs the new BeanLib version (3.3beta10) for solving javassist proxy clone issue
+	- GWT 1.4 only
+
+Release 0.5 (2007/08)
+---------------------
+New features :
+	- LazyGwtPojo implements the Serializable interface instead of IsSerializable
+	- Full support for java.sql.Timestamp & java.sql.Date
+	- No more need for clone and merge methods in GWT service : they are executed behind the scene by the HibernateRemoteService
+	- Basic support for Java5 Hibernate POJO (dynamic DTO conversion)
+
+Bug fixed :
+	- Correct handling protected and private setters for ID
+	
+Improvements :
+    - Remove the HTTPServletRequest argument from the POJO stores and clone/merge/remove methods of HibernatenLazyManager
+      (use of ThreadLocal to store it)
+    - Unique name generator : no more name parameter for clone/merge/remove methods.
+    - Better exception handling
+	
+Other :
+	- Needs the new BeanLib version (3.3beta8) for solving 'char' attribute cloning
+	- GWT 1.4 only
+
+Release 0.2 (2007/05)
+---------------------
+New features :
+	- Add list support for clone, merge and remove in LazyManager and HibernateRemoteService classes
+	- Pure POJO handling for stateful Pojo stores (no more ILazyPojo inheritance)
+
+Bug fixed :
+	- java.sql.Timestamp conversion to prevent GWT RPC Serialization exception.
+	  WARNING : the Timestamp is converted to Date so the nano part is lost. 
+	  DO NOT USE TIMESTAMP FOR VERSION MANAGEMENT (OPTIMISTIC LOCK) ! 
+	
+Other :
+	- Lot of code refactoring
+	- Documentation update
+	- Use of new BeanLib version (3.3beta5)
+	- Tested with GWT 1.3.3 and 1.4RC1
+
+Release 0.1 (2007/04)
+---------------------
+	- Initial release
