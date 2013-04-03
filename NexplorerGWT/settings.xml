@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+<entry key="playingFieldLowerRightLatitude">52.39209820651062</entry>
+<entry key="baseNodeRange">9</entry>
+<entry key="updatePositionIntervalTime">1000</entry>
+<entry key="playingFieldLowerRightLongitude">13.131460486785954</entry>
+<entry key="updateDisplayIntervalTime">1000</entry>
+<entry key="difficulty">1</entry>
+<entry key="playingTime">10</entry>
+<entry key="numberOfBatteries">5</entry>
+<entry key="playingFieldUpperLeftLatitude">52.39235518805976</entry>
+<entry key="itemCollectionRange">4</entry>
+<entry key="numberOfBoosters">2</entry>
+<entry key="protocol">aodv</entry>
+<entry key="playingFieldUpperLeftLongitude">13.13081675662238</entry>
 </properties>
