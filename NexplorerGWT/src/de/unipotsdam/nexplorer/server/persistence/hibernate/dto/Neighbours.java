@@ -68,7 +68,7 @@ public class Neighbours implements java.io.Serializable {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return 1;
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class Neighbours implements java.io.Serializable {
 	public Integer getVersion() {
 		return this.version;
 	}
-	
+
 	public void setVersion(Integer version) {
 		this.version = version;
 	}

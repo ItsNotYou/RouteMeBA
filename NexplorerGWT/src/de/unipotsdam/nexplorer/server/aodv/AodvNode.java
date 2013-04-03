@@ -251,4 +251,12 @@ public class AodvNode implements NeighbourAction {
 		// Nachricht in Warteschleife setzen
 		newMessage.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 	}
+
+	public void updateNeighbourhood() {
+		theNode.updateNeighbourhood(this);
+	}
+
+	public void pingNeighbourhood() {
+		theNode.pingNeighbourhood();
+	}
 }

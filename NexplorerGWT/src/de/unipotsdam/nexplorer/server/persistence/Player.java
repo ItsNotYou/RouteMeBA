@@ -199,4 +199,15 @@ public class Player implements Locatable {
 	public Long getDifficulty() {
 		return inner.getDifficulty();
 	}
+
+	/**
+	 * Adds itself as known neighbour to all nodes within range. Does not add the neighbours within range to its own known neighbours. Result: All neighbours know this node, but this node does not know its neighbours.
+	 */
+	public void pingNeighbourhood() {
+		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
+		for (Player neighbour : reachableNodes) {
+			Set<Player> knowNeighbours = neighbour.getNeighbours();
+			knowNeighbours.add(this);
+		}
+	}
 }
