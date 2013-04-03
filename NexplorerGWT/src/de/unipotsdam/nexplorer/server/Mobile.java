@@ -3,12 +3,18 @@ package de.unipotsdam.nexplorer.server;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.WebApplicationException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.unipotsdam.nexplorer.client.MobileService;
+import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
+import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
+import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
+import de.unipotsdam.nexplorer.server.aodv.AodvNode;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingAlgorithm;
 import de.unipotsdam.nexplorer.server.data.ItemCollector;
 import de.unipotsdam.nexplorer.server.data.NodeMapper;
@@ -121,7 +127,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 
 			// Wenn leichtester Schwierigkeitsgrad, Nachbarschaft aktualisieren
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
-				aodv.updateNeighbourhood(thePlayer);
+				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood();
 			}
 		} finally {
 			unit.close();
@@ -159,6 +165,28 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 
 			long end = System.currentTimeMillis();
 			performance.trace("getGameStatus took {}ms", end - begin);
+		}
+	}
+
+	public PingResponse addPing(PingRequest request) {
+		Unit unit = new Unit();
+		try {
+			int nodeId = request.getNodeId();
+
+			DatabaseImpl dbAccesss = unit.resolve(DatabaseImpl.class);
+			Player player = dbAccesss.getPlayerById(nodeId);
+			AodvNode node = unit.resolve(AodvFactory.class).create(player);
+
+			node.pingNeighbourhood();
+
+			PingResponse result = new PingResponse();
+			result.setPingId(0);
+			return result;
+		} catch (Throwable e) {
+			unit.cancel();
+			throw new WebApplicationException(e);
+		} finally {
+			unit.close();
 		}
 	}
 }

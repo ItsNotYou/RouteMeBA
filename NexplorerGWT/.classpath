@@ -68,5 +68,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RouteMeRestLibrary"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
