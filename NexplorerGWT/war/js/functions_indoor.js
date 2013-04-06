@@ -49,6 +49,8 @@ var playingFieldCenterLongitude;
 var bonusGoal;
 var gameDidEnd = 0;
 
+var markerObservers;
+
 // Ajax
 
 var loginAjax;
@@ -160,6 +162,12 @@ function initialize(playerId, latitude, longitude) {
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	
+	markerObservers = new ObservableCollection();
+	var neighbour = new NeighbourObserver();
+	neighbour.subscribe(new NeighbourLine(map));
+	markerObservers.subscribe(neighbour);
+	
     updateDisplay();
 }
 
@@ -237,19 +245,7 @@ function updateMarkerPositions() {
                 }
             });
 			
-			$.each(data["playerMarkers"], function(key, theMarker) {
-				$.each(theMarker.neighbours, function(nKey, nMarker) {
-					var from = new google.maps.LatLng(theMarker.latitude, theMarker.longitude);
-					var to = new google.maps.LatLng(nMarker.latitude, nMarker.longitude);
-					
-					var line = new google.maps.Polyline(
-						{
-							path: [from, to],
-							map: map,
-							clickable: false
-						});
-				});
-			});
+			markerObservers.update(data["playerMarkers"]);
 
             messageUnderway = false;
             // Nachrichten-Marker aktualisieren
