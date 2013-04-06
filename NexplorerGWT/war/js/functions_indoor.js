@@ -236,6 +236,20 @@ function updateMarkerPositions() {
                     }
                 }
             });
+			
+			$.each(data["playerMarkers"], function(key, theMarker) {
+				$.each(theMarker.neighbours, function(nKey, nMarker) {
+					var from = new google.maps.LatLng(theMarker.latitude, theMarker.longitude);
+					var to = new google.maps.LatLng(nMarker.latitude, nMarker.longitude);
+					
+					var line = new google.maps.Polyline(
+						{
+							path: [from, to],
+							map: map,
+							clickable: false
+						});
+				});
+			});
 
             messageUnderway = false;
             // Nachrichten-Marker aktualisieren
