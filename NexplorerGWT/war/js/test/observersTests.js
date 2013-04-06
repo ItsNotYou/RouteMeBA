@@ -110,4 +110,27 @@ describe("NeighbourObserver", function() {
 			}
 		});
 	});
+	
+	it("notifies of added neighbour connection on removed and added", function() {
+		sut.removed("1",
+		{
+			"neighbours":{"2":{"id":2}}
+		});
+		sut.added("1",
+		{
+			"neighbours":{"3":{"id":3}}
+		});
+		
+		expect(subscriber.added).toHaveBeenCalledWith("1-3",
+		{
+			"from":
+			{
+				"neighbours":{"3":{"id":3}}
+			},
+			"to":
+			{
+				"id":3
+			}
+		});
+	});
 });
