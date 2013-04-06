@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.client.android.js;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
+import de.unipotsdam.nexplorer.client.android.net.RequestPing;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.net.SendLocation;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
@@ -73,17 +74,21 @@ public class FunctionsMobile implements PositionWatcher {
 		SendLocation sendLocation = new SendLocation(rest);
 		CollectItem collectItem = new CollectItem(rest, ui);
 		RadiusBlinker radiusBlinker = blinker;
+		RequestPing requestPing = new RequestPing(rest);
 
 		this.locationObserver = new LocationObserver();
 		this.locationObserver.add(sendLocation);
 		this.locationObserver.add(radiusBlinker);
+		this.locationObserver.add(requestPing);
 
 		this.loginObserver = new LoginObserver();
 		this.loginObserver.add(sendLocation);
 		this.loginObserver.add(collectItem);
+		this.loginObserver.add(requestPing);
 
 		this.pingObserver = new PingObserver();
 		this.pingObserver.add(radiusBlinker);
+		this.pingObserver.add(requestPing);
 
 		this.collectObserver = new CollectObserver();
 		this.collectObserver.add(collectItem);
