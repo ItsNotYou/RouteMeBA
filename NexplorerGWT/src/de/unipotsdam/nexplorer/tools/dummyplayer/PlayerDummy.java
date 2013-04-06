@@ -1,9 +1,13 @@
 package de.unipotsdam.nexplorer.tools.dummyplayer;
 
+import static de.unipotsdam.nexplorer.shared.GameStatus.HASENDED;
+import static de.unipotsdam.nexplorer.shared.GameStatus.ISPAUSED;
 import static de.unipotsdam.nexplorer.shared.GameStatus.ISRUNNING;
 
 import java.util.Random;
 import java.util.UUID;
+
+import de.unipotsdam.nexplorer.shared.GameStatus;
 
 public class PlayerDummy extends Thread {
 
@@ -20,8 +24,15 @@ public class PlayerDummy extends Thread {
 		String name = "Mobile-" + UUID.randomUUID().toString();
 		connection.login(name);
 
-		Settings status = null;
+		StatsPrinter.startOnce();
 		boolean isRunning = false;
+
+		Settings status = connection.readGameStatus();
+		GameSettings gameField = status.stats.settings;
+		PlayerDummy thread = new PlayerDummy(gameField.playingFieldUpperLeftLatitude, gameField.playingFieldUpperLeftLongitude, gameField.playingFieldLowerRightLatitude, gameField.playingFieldLowerRightLongitude, connection);
+		thread.setPlayerInfo(status.node);
+		thread.start();
+
 		while (!isRunning) {
 			try {
 				Thread.sleep(1000);
@@ -32,12 +43,7 @@ public class PlayerDummy extends Thread {
 			isRunning = status.stats.settings.gameState == ISRUNNING;
 		}
 
-		StatsPrinter.startOnce();
-		GameSettings gameField = status.stats.settings;
-		PlayerDummy thread = new PlayerDummy(gameField.playingFieldUpperLeftLatitude, gameField.playingFieldUpperLeftLongitude, gameField.playingFieldLowerRightLatitude, gameField.playingFieldLowerRightLongitude, connection);
-		thread.setPlayerInfo(status.node);
-
-		thread.start();
+		thread.setIsRunning(ISRUNNING);
 		while (isRunning) {
 			try {
 				Thread.sleep(500);
@@ -48,17 +54,17 @@ public class PlayerDummy extends Thread {
 			thread.setPlayerInfo(status.node);
 			isRunning = status.stats.settings.gameState == ISRUNNING;
 		}
-		thread.setIsRunning(false);
+		thread.setIsRunning(HASENDED);
 	}
 
-	private boolean isRunning;
+	private GameStatus gameStatus;
 	private LocationGenerator locations;
 	private Random random;
 	private Connection connection;
 	private PlayerInfo player;
 
 	private PlayerDummy(double upperLeftLatitude, double upperLeftLongtiude, double lowerRightLatitude, double lowerRightLongitude, Connection connection) {
-		this.isRunning = true;
+		this.gameStatus = ISPAUSED;
 		this.locations = new LocationGenerator(upperLeftLatitude, upperLeftLongtiude, lowerRightLatitude, lowerRightLongitude);
 		this.random = new Random();
 		this.connection = connection;
@@ -69,14 +75,14 @@ public class PlayerDummy extends Thread {
 		super.run();
 
 		Location loc = locations.generateStartLocation(random.nextInt(360));
-		while (isRunning) {
+		while (gameStatus != HASENDED) {
 			// Send location and generate new one
 			connection.sendLocation(loc);
 			loc = locations.generateNextLocation(random.nextDouble() * 2, random.nextInt(91) - 45);
 
 			for (int count = 0; count < 5; count++) {
 				// Spam the item collect button if there is an item nearby
-				if (player.nearbyItemsCount > 0) {
+				if (player.nearbyItemsCount > 0 && gameStatus == ISRUNNING) {
 					connection.collectItem();
 				}
 
@@ -89,8 +95,8 @@ public class PlayerDummy extends Thread {
 		}
 	}
 
-	public void setIsRunning(boolean isRunning) {
-		this.isRunning = isRunning;
+	public void setIsRunning(GameStatus isRunning) {
+		this.gameStatus = isRunning;
 	}
 
 	public void setPlayerInfo(PlayerInfo player) {
