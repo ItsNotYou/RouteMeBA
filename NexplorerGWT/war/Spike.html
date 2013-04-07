@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>JS-Spike</title>
+
+		<script type="text/javascript" charset="utf-8" src="js/lib/jquery-1.6.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/lib/jquery-ui-1.8.10.custom.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/lib/jquery.simplemodal.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/south-street/jquery-ui-1.8.10.custom.css">
+		
+		<script type="text/javascript" charset="utf-8">
+			var messagesVisible = true;
+			
+			$(document).ready(function(){
+				var messages = $("#messages");
+				for (var count = 0; count < 10; count++) {
+					var label = $("<div>").button().text("Test").attr("id", "label"+count).hover(callWith(count));
+					var br = $("<br>");
+					messages.append(label);
+					messages.append(br);
+				}
+				
+				var highestCol = Math.max($('#routing').height(),$('#messages').height());
+				$('#routing').height(highestCol);
+				$('#messages').height(highestCol);
+				
+				$("#routing").hide();
+			});
+			
+			function callWith(counter) {
+				return function() {
+					$("#sourceLabel").text(counter);
+				};
+			}
+			
+			function switchScreens() {
+				var visible;
+				var invisible;
+				
+				if (messagesVisible) {
+					visible = $("#messages");
+					invisible = $("#routing");
+				} else {
+					visible = $("#routing");
+					invisible = $("#messages");
+				}
+				
+				visible.fadeOut("fast", function() {
+				   // var div = $("<div id='foo'>test2</div>").hide();
+				   // $(this).replaceWith(div);
+				   invisible.fadeIn("fast");
+				   messagesVisible = !messagesVisible;
+				});
+			}
+			
+			function start() {
+				window.setInterval(function() {
+					var labelNr = Math.floor(Math.random()*10);
+					var label = $("#label" + labelNr);
+					
+					label.fadeOut("slow", function() {
+						label.text("Changed to " + Math.random());
+						label.fadeIn("slow");
+					});
+				}, 3000);
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<div id="messages"></div>
+			<div id="routing">
+				<button>Zuruecksetzen</button><br/>
+				<button>RREQ neu versenden</button>
+			</div>
+		</div><br/>
+		<button onclick="switchScreens()">switch</button><br/>
+		<button onclick="start()">start</button><br/>
+		<br/>
+		<label>Source: </label><label id="sourceLabel"></label>
+	</body>
+</html>
