@@ -1,7 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
-import static de.unipotsdam.nexplorer.client.android.js.Window.each;
 import static de.unipotsdam.nexplorer.client.android.js.Window.playerMarker;
 import static de.unipotsdam.nexplorer.client.android.js.Window.playerRadius;
 import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
@@ -37,23 +36,15 @@ public class MapRelatedTasks {
 
 	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems) {
 		if (neighbours != null) {
-			each(neighbours, new Call<Integer, Neighbour>() {
-
-				@Override
-				public void call(Integer key, Neighbour value) {
-					drawNeighbourMarkerAtLatitudeLongitude(key, value.getLatitude(), value.getLongitude());
-				}
-			});
+			for (Map.Entry<Integer, Neighbour> entry : neighbours.entrySet()) {
+				drawNeighbourMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
+			}
 		}
 
 		if (nearbyItems != null) {
-			each(nearbyItems, new Call<Integer, Item>() {
-
-				@Override
-				public void call(Integer key, Item value) {
-					drawNearbyItemMarkerAtLatitudeLongitude(key, value.getItemType(), value.getLatitude(), value.getLongitude());
-				}
-			});
+			for (Map.Entry<Integer, Item> entry : nearbyItems.entrySet()) {
+				drawNearbyItemMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getItemType(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
+			}
 		}
 	}
 
@@ -98,23 +89,17 @@ public class MapRelatedTasks {
 	}
 
 	void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems) {
-		each(neighbourMarkersArray, new Call<Integer, Marker>() {
-
-			public void call(Integer key, Marker theMarker) {
-				if (theMarker != null && neighbours.get(key) == null) {
-					neighbourMarkersArray.get(key).setMap(null);
-				}
+		for (Map.Entry<Integer, Marker> entry : neighbourMarkersArray.entrySet()) {
+			if (entry.getValue() != null && neighbours.get(entry.getKey()) == null) {
+				neighbourMarkersArray.get(entry.getKey()).setMap(null);
 			}
-		});
+		}
 
-		each(nearbyItemMarkersArray, new Call<Integer, Marker>() {
-
-			public void call(Integer key, Marker theMarker) {
-				if (theMarker != null && nearbyItems.get(key) == null) {
-					nearbyItemMarkersArray.get(key).setMap(null);
-				}
+		for (Map.Entry<Integer, Marker> entry : nearbyItemMarkersArray.entrySet()) {
+			if (entry.getValue() != null && nearbyItems.get(entry.getKey()) == null) {
+				nearbyItemMarkersArray.get(entry.getKey()).setMap(null);
 			}
-		});
+		}
 	}
 
 	/**

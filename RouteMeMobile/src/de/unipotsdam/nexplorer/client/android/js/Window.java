@@ -77,10 +77,4 @@ public class Window {
 		interval.set(callback, timeMillis);
 		return interval;
 	}
-
-	public static <S, T> void each(java.util.Map<S, T> objects, Call<S, T> callback) {
-		for (S key : objects.keySet()) {
-			callback.call(key, objects.get(key));
-		}
-	}
 }
