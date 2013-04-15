@@ -49,7 +49,7 @@ var playingFieldCenterLongitude;
 var bonusGoal;
 var gameDidEnd = 0;
 
-var markerObservers;
+var playerMarkerObservers;
 
 // Ajax
 
@@ -163,10 +163,10 @@ function initialize(playerId, latitude, longitude) {
 
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	
-	markerObservers = new ObservableCollection();
+	playerMarkerObservers = new ObservableCollection();
 	var neighbour = new NeighbourObserver();
 	neighbour.subscribe(new NeighbourLine(map));
-	markerObservers.subscribe(neighbour);
+	playerMarkerObservers.subscribe(neighbour);
 	
     updateDisplay();
 }
@@ -201,9 +201,8 @@ function updateGameStatus(isAsync) {
                 updateDisplayIntervalTime = parseInt(data["updateDisplayIntervalTime"]);
                 updateDisplay();
             }
-        })
+        });
     }
-;
 }
 
 function removeObsoleteMarkers(key) {
@@ -222,6 +221,7 @@ function removeObsoleteMarkers(key) {
         resetMessageSelection();
     }
 }
+
 function drawMarkers(theMarker) {
     drawPlayerMarkerAtLatitudeLongitude(
         parseFloat(theMarker.latitude),
@@ -229,6 +229,19 @@ function drawMarkers(theMarker) {
         parseInt(theMarker.id), parseInt(theMarker.range),
         parseInt(theMarker.packetCount));
 }
+
+function updateMessageMarkers(theMarker) {
+    if (theMarker.ownerId == playerId) {
+        messageUnderway = true;
+    }
+    drawMessageMarkerAtLatitudeLongitude(theMarker.latitude,
+        theMarker.longitude, theMarker.status, theMarker.id);
+}
+
+function removeObsoleteMessageMarkers(key) {
+    messageMarkersArray[key].setMap(null);
+}
+
 /**
  * update the markers on the canvas to show the actual positions of the players
  */
@@ -251,22 +264,18 @@ function updateMarkerPositions() {
                 }
             });
 			
-			markerObservers.update(data["playerMarkers"]);
+			playerMarkerObservers.update(data["playerMarkers"]);
 
             messageUnderway = false;
             // Nachrichten-Marker aktualisieren
             $.each(data["messageMarkers"], function(key, theMarker) {
-                if (theMarker.ownerId == playerId) {
-                    messageUnderway = true;
-                }
-                drawMessageMarkerAtLatitudeLongitude(theMarker.latitude,
-                    theMarker.longitude, theMarker.status, theMarker.id);
+                updateMessageMarkers(theMarker);
             });
 
             $.each(messageMarkersArray, function(key, theMarker) {
                 if (theMarker != undefined
                     && data["messageMarkers"][key] == undefined) {
-                    messageMarkersArray[key].setMap(null);
+                    removeObsoleteMessageMarkers(key);
                 }
             });
         }
@@ -331,21 +340,7 @@ function drawPlayerMarkerAtLatitudeLongitude(latitude, longitude, name,
     .addListener(
         playerMarkersArray[playerId],
         'click',
-        function() {
-            if (!messageUnderway) {
-                if (!selectedSourceNode) {
-                    setSourceFlag(playerId,latlng);
-                } else if (!selectedDestinationNode
-                    && playerMarkersArray
-                    .indexOf(playerMarkersArray[playerId]) != selectedSourceNode) {
-                    setDestinationFlag(playerId,latlng);
-                } else {
-                    resetMessageSelection();
-                    setSourceFlag(playerId,latlng);
-                }
-            // updatePlayerStatus();
-            }
-        });
+        createOnClick(playerId, latlng));
 
     // Bonusmarker zeichnen
     if (playerId == bonusGoal) {
@@ -353,6 +348,24 @@ function drawPlayerMarkerAtLatitudeLongitude(latitude, longitude, name,
     }
 
     drawCircleOnMapAtPositionWithRadius(latlng, range, playerId);
+}
+
+function createOnClick(playerId, latlng) {
+    return function() {
+        if (!messageUnderway) {
+            if (!selectedSourceNode) {
+                setSourceFlag(playerId,latlng);
+            } else if (!selectedDestinationNode
+                && playerMarkersArray
+                .indexOf(playerMarkersArray[playerId]) != selectedSourceNode) {
+                setDestinationFlag(playerId,latlng);
+            } else {
+                resetMessageSelection();
+                setSourceFlag(playerId,latlng);
+            }
+            // updatePlayerStatus();
+        }
+    };
 }
 
 function setSourceFlag(playerId,latlng) {
@@ -428,14 +441,6 @@ function drawBonusGoalMarker(latlng, playerId) {
             bonusGoalMarker.setMap(map);
         }
     ;
-    }
-}
-
-function clearPlayerMarkers() {
-    if (playerMarkersArray) {
-        for (i in playerMarkersArray) {
-            playerMarkersArray[i].setMap(null);
-        }
     }
 }
 

@@ -12,7 +12,9 @@ files = [
   JASMINE_ADAPTER,
   'war/js/collections.js',
   'war/js/observers.js',
-  'war/js/test/*.js'
+  'war/js/level2.js',
+  'war/js/test/*.js',
+  'war/js/lib/jquery-1.6.min.js'
 ];
 
 
@@ -56,7 +58,7 @@ autoWatch = true;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['Chrome'];
+browsers = ['IE'];
 
 
 // If browser does not capture in given timeout [ms], kill it
