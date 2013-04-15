@@ -206,6 +206,29 @@ function updateGameStatus(isAsync) {
 ;
 }
 
+function removeObsoleteMarkers(key) {
+    playerMarkersArray[key].setMap(null);
+    radiusCirclesArray[key].setMap(null);
+
+    // Bonuszielicon entfernen
+    if (bonusGoal == parseInt(key)) {
+        bonusGoalMarker.setMap(null);
+    }
+
+    // wenn gerad als Ziel oder Start ausgewählt, Auswahl
+    // zurücksetzen
+    if (selectedSourceNode == parseInt(key)
+        || selectedDestinationNode == parseInt(key)) {
+        resetMessageSelection();
+    }
+}
+function drawMarkers(theMarker) {
+    drawPlayerMarkerAtLatitudeLongitude(
+        parseFloat(theMarker.latitude),
+        parseFloat(theMarker.longitude), theMarker.name,
+        parseInt(theMarker.id), parseInt(theMarker.range),
+        parseInt(theMarker.packetCount));
+}
 /**
  * update the markers on the canvas to show the actual positions of the players
  */
@@ -217,31 +240,14 @@ function updateMarkerPositions() {
         success : function(data) {
             // Spieler-Marker aktualisieren
             $.each(data["playerMarkers"], function(key, theMarker) {
-                drawPlayerMarkerAtLatitudeLongitude(
-                    parseFloat(theMarker.latitude),
-                    parseFloat(theMarker.longitude), theMarker.name,
-                    parseInt(theMarker.id), parseInt(theMarker.range),
-                    parseInt(theMarker.packetCount));
+                drawMarkers(theMarker);
             });
 
             // Player Maker entfernen die nicht mehr vorhanden sind
             $.each(playerMarkersArray, function(key, theMarker) {
                 if (theMarker != undefined
                     && data["playerMarkers"][key] == undefined) {
-                    playerMarkersArray[key].setMap(null);
-                    radiusCirclesArray[key].setMap(null);
-
-                    // Bonuszielicon entfernen
-                    if (bonusGoal == parseInt(key)) {
-                        bonusGoalMarker.setMap(null);
-                    }
-
-                    // wenn gerad als Ziel oder Start ausgewählt, Auswahl
-                    // zurücksetzen
-                    if (selectedSourceNode == parseInt(key)
-                        || selectedDestinationNode == parseInt(key)) {
-                        resetMessageSelection();
-                    }
+                    removeObsoleteMarkers(key);
                 }
             });
 			
