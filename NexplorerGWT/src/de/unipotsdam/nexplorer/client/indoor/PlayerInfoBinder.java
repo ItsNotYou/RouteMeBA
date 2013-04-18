@@ -46,14 +46,14 @@ public class PlayerInfoBinder extends HasTable {
 	DivElement statusMessage;
 	@UiField
 	DivElement bonusGoal;
-	
+
 	/**
 	 * contains either NewMessageBinder or NewRouteRequestBinder or ResetPLayerMessageBinder
 	 */
 	@UiField
 	DivElement playOptions;
-	private SimpleIndoorBinder simpleIndoorBinder;
-	private IndoorStatsTimer indoorStatsUpdater;	
+	private final SimpleIndoorBinder simpleIndoorBinder;
+	private IndoorStatsTimer indoorStatsUpdater;
 
 	/**
 	 * depending on the state either the message table is shown or the messageStatusTable depending on the Status of the message gameOptions are blended in
@@ -68,16 +68,16 @@ public class PlayerInfoBinder extends HasTable {
 		// store simpleIndoorBinder for hooks
 		this.simpleIndoorBinder = simpleIndoorBinder;
 		// create intervals
-		getFrequency();		
+		getFrequency();
 	}
 
 	public void finishConstructorAfterUpdate(int frequency) {
 		// indoor service
 		this.indoorStatsUpdater = new IndoorStatsTimer(this);
-		indoorStatsUpdater.scheduleRepeating(frequency);		
-		
+		indoorStatsUpdater.scheduleRepeating(frequency);
+
 	}
-	
+
 	private void getFrequency() {
 		IndoorServiceImpl indoorServiceImpl = new IndoorServiceImpl();
 		indoorServiceImpl.getUpdateDisplayFrequency(new FrequencyUpdater<Integer>(this));
@@ -92,7 +92,7 @@ public class PlayerInfoBinder extends HasTable {
 	 * 
 	 * @param result
 	 */
-	public void updatePlayerInfos(PlayerInfo result) {		
+	public void updatePlayerInfos(PlayerInfo result) {
 		if (result.getPlayer() != null) {
 			this.currentPlayerName.setInnerText(result.getPlayer().name);
 			this.currentPlayerScore.setInnerText(result.getPlayer().score + "");
@@ -101,16 +101,15 @@ public class PlayerInfoBinder extends HasTable {
 			this.sourceNode.setInnerText(result.getDataPacketSend().getMessageDescription().getSourceNodeId() + "");
 			this.destinationNode.setInnerText(result.getDataPacketSend().getMessageDescription().getDestinationNodeId() + "");
 
-//			this.hintMessage.setInnerHTML(getHintMessage(result));
-			this.hintMessage.setInnerHTML(statusToHTMLString(result));			
+			// this.hintMessage.setInnerHTML(getHintMessage(result));
+			this.hintMessage.setInnerHTML(statusToHTMLString(result));
 			this.currentNodeId.setInnerHTML(result.getDataPacketSend().getPlayersByCurrentNodeId().getId() + "");
-		}		
-		else {
+		} else {
 			this.hintMessage.setInnerHTML(getHintMessage(result));
 		}
 		this.remainingPlayingTime.setInnerText(TimeManager.convertToReadableTimeSpan(result.getRemainingTime()));
 		this.bonusGoal.setInnerText(result.getBonusGoal());
-		
+
 	}
 
 	/**
@@ -131,16 +130,16 @@ public class PlayerInfoBinder extends HasTable {
 		case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 			return "Deine Nachricht ist unterwegs!";
 		case Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE:
-			return "Das Packet wartet auf eine Route!";	
+			return "Das Packet wartet auf eine Route!";
 		case Aodv.DATA_PACKET_STATUS_CANCELLED:
-			return "Datentransfer wurde abgebrochen!";		
+			return "Datentransfer wurde abgebrochen!";
 		default:
 			return "";
 		}
 	}
 
 	/**
-	 * Gibt HilfeNachrichten aus
+	 * Gibt Hilfenachrichten aus
 	 * 
 	 * @return
 	 */
@@ -148,7 +147,7 @@ public class PlayerInfoBinder extends HasTable {
 		if (result.getHint() != null) {
 			return result.getHint();
 		}
-		return "Wenn du eine Nachricht erfolgreich zum Bonuszielknoten (der Knoten mit dem kleinen Stern) sendest, erhältst du 150% der üblichen Punkte." + "Der Bonsuzielknoten wird neue gesetzt sobald ein Spieler eine Nachricht erfolgreich zu ihm gesendet hat oder der Knoten aus dem Spiel ausscheidet." + "Nachrichten über kurze Strecken sind weniger von Stöhrungen betroffen, bringen aber auch weniger Punkte.";
+		return "Wenn du eine Nachricht erfolgreich zum Bonuszielknoten (der Knoten mit dem kleinen Stern) sendest, erhältst du 150% der üblichen Punkte. " + "Der Bonuszielknoten wird neu gesetzt sobald ein Spieler eine Nachricht erfolgreich zu ihm gesendet hat oder der Knoten aus dem Spiel ausscheidet. " + "Nachrichten über kurze Strecken sind weniger von Störungen betroffen, bringen aber auch weniger Punkte. ";
 	}
 
 	public DivElement getStatus() {

@@ -1,225 +1,120 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
 	<div>
-<!-- <?php $currentPlayer = Doctrine::getTable("Player")->find($_POST["playerId"]) ?> -->
-<div style="width:100%; text-align:center; font-weight:bold">***Spielstatus***</div>
-<table style="width:100%">
-	<tr>
-		<td>
-			<img src="media/images/icons/clock-select-remain.png" style="vertical-align: middle" />
-		</td>
-		<td>
-			Verbleibende Spielzeit
-		</td>
-		<td>
-		    <div ui:field="remainingPlayingTime"></div>
-<!-- 			<?php echo $gameSettings->remainingPlayingTime ?> Sekunden -->
-		</td>
-	</tr>
-</table>
-<hr/>
+		<div style="width:100%; text-align:center; font-weight:bold">***Spielstatus***</div>
+		<table style="width:100%">
+			<tr>
+				<td>
+					<img src="media/images/icons/clock-select-remain.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Verbleibende Spielzeit
+				</td>
+				<td>
+					<div ui:field="remainingPlayingTime"></div>
+				</td>
+			</tr>
+		</table>
+		<hr />
 
-<div style="width:100%; text-align:center; font-weight:bold">***Spielerstatus***</div>
-<table style="width:100%">
-	<tr>
-		<td>
-			<img src="media/images/icons/user.png" style="vertical-align: middle" />
-		</td>
-		<td>
-			Spielername
-		</td>
-		<td>
-		    <div ui:field="currentPlayerName"></div>
-<!-- 			<?php echo $currentPlayer->name; ?> -->
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<img src="media/images/icons/points.png" style="vertical-align: middle" />
-		</td>
-		<td>
-			Punktzahl
-		</td>
-		<td>
-<!-- 			<?php echo $currentPlayer->score; ?> -->
-			<div ui:field="currentPlayerScore"></div>
-		</td>
-	</tr>
-</table>
-<hr/>
-<div style="width:100%; text-align:center; font-weight:bold">***Nachrichtenstatus***</div>
-<!-- <?php -->
-<!-- 	if ($gameSettings->protocol == "aodv") { -->
-<!-- 		$messageTable = "AODVDataPacket"; -->
-<!-- 	} -->
-<!-- ?> -->
-<!-- <?php $playerMessage = Doctrine_Query::create()->from($messageTable)->where("ownerId = ?", $currentPlayer->id)->execute()->getFirst() ?> -->
-
-
-<!-- vgl: $("#playerInfo").html(data);
-				if (!selectedSourceNode) {
-					$("#sourceNode").html("nicht gewählt");
-				} else {
-					$("#sourceNode").html(playerMarkersArray[selectedSourceNode].getTitle());
-				}
-				if (!selectedDestinationNode) {
-					$("#destinationNode").html("nicht gewählt");
-				} else {
-					$("#destinationNode").html(playerMarkersArray[selectedDestinationNode].getTitle());
-				}
-				if (selectedSourceNode && selectedDestinationNode) {
-					$("#sendMessageButton").removeAttr('disabled');
-					$("#sendMessageButton").bind("click", function() {
-						insertNewMessage(selectedSourceNode, selectedDestinationNode);
-					});
-				} else {
-					$("#sendMessageButton").attr('disabled', 'disabled');
-					$("#sendMessageButton").unbind("click");
-				} -->
-<!-- <?php if ((empty($playerMessage))): ?> -->
-	<table style="width:100%" ui:field="messageTable">
-		<th colspan="3" style="text-align:center; width:300px">
-			Start- und Zielknoten wählen
-		</th>
-		<tr>
-			<td>
-				<img src="media/images/icons/flag-white.png" style="vertical-align: middle" />
-			</td>
-			<td>
-				Startknoten-ID:
-			</td>
-			<td>
-				<span ui:field="sourceNode"></span>
-<!-- 				<span id="sourceNode"></span>								 -->
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<img src="media/images/icons/flag-black.png" style="vertical-align: middle" />
-			</td>
-			<td>
-				Zielknoten-ID
-			</td>
-			<td>
-<!-- 				<span id="destinationNode"></span> -->
-				<span ui:field="destinationNode"></span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<img src="media/images/icons/star.png" style="vertical-align: middle" />
-			</td>
-			<td>
-				Bonusziel-ID
-			</td>
-			<td>
-			    <div ui:field="bonusGoal"></div>
-<!-- 				<?php echo $gameSettings->bonusGoal ?> -->
-			</td>
-		</tr>
-	</table>
-	<div style="width:100%; text-align:center">
-<!-- 		<button id="sendMessageButton" type="button">absenden</button> -->
-<!-- 		<button type="button" onclick="resetPlayerMessage()"> -->
-<!-- 			zurücksetzen -->
-<!-- 		</button> -->
-	</div>
-<!-- <?php else: ?> -->
-	<table style="width:100%" ui:field="messageStatusTable">
-		<tr>
-			<td>
-				<img src="media/images/icons/network-wireless-small.png" style="vertical-align: middle" />
-			</td>
-			<td>
-				Akt. Knoten-ID
-			</td>
-			<td>
-			    <div ui:field="currentNodeId"></div>
-<!-- 				<?php echo $playerMessage->CurrentNode->id ?> -->
-			</td>
-		</tr>
-<!-- 		<tr> -->
-<!-- 			<td>			     -->
-<!-- 				<img src="media/images/icons/network-wireless-small.png" style="vertical-align: middle" /> -->
-<!-- 			</td> -->
-<!-- 			<td> -->
-<!-- 				Zielknoten-ID -->
-<!-- 			</td> -->
-<!-- 			<td> -->
-<!-- 			    <div ui:field="destinationId"></div> -->
-<!-- 				<?php echo $playerMessage->Destination->id ?> -->
-<!-- 			</td> -->
-<!-- 		</tr> -->
-		<tr>
-			<td>
-				<img src="media/images/icons/box-search-result.png" style="vertical-align: middle" />
-			</td>
-			<td>
-				Status
-			</td>
-			<td>
-			    <div ui:field="statusMessage"></div>			    
-<!-- 				<?php echo $playerMessage->getStatus(true) ?> -->
-			</td>
-			<div ui:field="status"></div>
-		</tr>
-<!-- This should be appended dynamically to the table		 -->
-<!-- 		<?php if ($playerMessage->status == AODV_DATA_PACKET_STATUS_WAITING_FOR_ROUTE || $playerMessage->status == AODV_DATA_PACKET_STATUS_ERROR): ?> -->
-<!-- 			<tr> -->
-<!-- 				<td> -->
-
-<!-- 				</td> -->
-<!-- 				<td> -->
-<!-- 					<?php if ($gameSettings->protocol == "aodv"): ?> -->
-<!-- 						Anzahl Routenanfragen (RREQs) -->
-<!-- 					<?php endif ?> -->
-<!-- 				</td> -->
-<!-- 				<td> -->
-<!-- 					<?php if ($gameSettings->protocol == "aodv"): ?> -->
-<!-- 					 	<?php echo $RREQCount = Doctrine_Query::create()->from("AODVRoutingMessage")->where("type = ? AND sourceId = ? AND destinationId = ?", array(AODV_ROUTING_MESSAGE_TYPE_RREQ, $playerMessage->sourceId, $playerMessage->destinationId))->execute()->count(); ?> -->
-<!-- 					<?php endif ?> -->
-<!-- 				</td> -->
-<!-- 			</tr> -->
-<!-- 		<?php else: ?> -->
-<!-- 			<tr> -->
-<!-- 				<td> -->
-
-<!-- 				</td> -->
-<!-- 				<td> -->
-<!-- 					Sprünge -->
-<!-- 				</td> -->
-<!-- 				<td> -->
-<!-- 					<?php echo $playerMessage->hopsDone ?> -->
-<!-- 				</td> -->
-<!-- 			</tr> -->
-<!-- 		<?php endif ?> -->
-	</table>
-	<div ui:field="playOptions"></div>
-<!-- <?php endif ?> -->
-<hr/>
-<!-- <?php  -->
-<!-- 	if ($playerMessage->status == AODV_DATA_PACKET_STATUS_ARRIVED) { -->
-<!-- 		$hintMessage = "Deine Nachricht hat ihr Ziel erreicht. Gratuliere! Du hast ".$playerMessage->calculatePoints()." <img src='../media/images/icons/points.png' /> erhalten."; -->
-<!-- 		$hintStyle = "ui-state-highlight"; -->
-<!--     } else if ($playerMessage->status == AODV_DATA_PACKET_STATUS_ERROR && $RREQCount == 0) {	 -->
-<!-- 		$hintMessage = "Es konnte keine Route vom Start zum Ziel gefunden werden. Versende die Routenanfrage erneut oder wÃ¤hle zwei andere Knoten."; -->
-<!-- 		$hintStyle = "ui-state-error"; -->
-<!-- 	} else { -->
-<!-- 		$generalResponses = array( -->
-<!-- 			"Wenn du eine Nachricht erfolgreich zum Bonuszielknoten (der Knoten mit dem kleinen Stern) sendest, erhÃ¤ltst du 150% der Ã¼blichen Punkte.", -->
-<!-- 			"Der Bonsuzielknoten wird neue gesetzt sobald ein Spieler eine Nachricht erfolgreich zu ihm gesendet hat oder der Knoten aus dem Spiel ausscheidet.", -->
-<!-- 			"Nachrichten Ã¼ber kurze Strecken sind weniger von StÃ¶rungen betroffen, bringen aber auch weniger Punkte." -->
-<!-- 		); -->
-	
-<!-- 		$hintMessage = $generalResponses[mt_rand(0, count($generalResponses) - 1)]; -->
-<!-- 		$hintStyle = "ui-state-highlight"; -->
-<!-- inject class: class="ui-corner-all <?php echo $hintStyle ?>" in -->
-<!-- 	} -->
-<!-- ?> -->
-<div  style="text-align:center">
-	<span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span>
-<!-- 	<?php echo $hintMessage ?> -->
-	<div ui:field="hintMessage"></div>
-</div>
+		<div style="width:100%; text-align:center; font-weight:bold">***Spielerstatus***</div>
+		<table style="width:100%">
+			<tr>
+				<td>
+					<img src="media/images/icons/user.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Spielername
+				</td>
+				<td>
+					<div ui:field="currentPlayerName"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img src="media/images/icons/points.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Punktzahl
+				</td>
+				<td>
+					<!-- <?php echo $currentPlayer->score; ?> -->
+					<div ui:field="currentPlayerScore"></div>
+				</td>
+			</tr>
+		</table>
+		<hr />
+		<div style="width:100%; text-align:center; font-weight:bold">***Nachrichtenstatus***</div>
+		<table style="width:100%" ui:field="messageTable">
+			<th colspan="3" style="text-align:center; width:300px">
+				Start- und Zielknoten wählen
+			</th>
+			<tr>
+				<td>
+					<img src="media/images/icons/flag-white.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Startknoten-ID:
+				</td>
+				<td>
+					<span ui:field="sourceNode"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img src="media/images/icons/flag-black.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Zielknoten-ID
+				</td>
+				<td>
+					<span ui:field="destinationNode"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img src="media/images/icons/star.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Bonusziel-ID
+				</td>
+				<td>
+					<div ui:field="bonusGoal"></div>
+				</td>
+			</tr>
+		</table>
+		<div style="width:100%; text-align:center">
+		</div>
+		<table style="width:100%" ui:field="messageStatusTable">
+			<tr>
+				<td>
+					<img src="media/images/icons/network-wireless-small.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Akt. Knoten-ID
+				</td>
+				<td>
+					<div ui:field="currentNodeId"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img src="media/images/icons/box-search-result.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Status
+				</td>
+				<td>
+					<div ui:field="statusMessage"></div>
+				</td>
+				<div ui:field="status"></div>
+			</tr>
+		</table>
+		<div ui:field="playOptions"></div>
+		<hr />
+		<div style="text-align:center">
+			<span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span>
+			<div ui:field="hintMessage"></div>
+		</div>
 	</div>
 </ui:UiBinder>
