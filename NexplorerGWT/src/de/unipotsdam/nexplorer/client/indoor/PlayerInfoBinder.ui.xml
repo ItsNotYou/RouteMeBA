@@ -45,71 +45,7 @@
 		</table>
 		<hr />
 		<div style="width:100%; text-align:center; font-weight:bold">***Nachrichtenstatus***</div>
-		<table style="width:100%" ui:field="messageTable">
-			<th colspan="3" style="text-align:center; width:300px">
-				Start- und Zielknoten wählen
-			</th>
-			<tr>
-				<td>
-					<img src="media/images/icons/flag-white.png" style="vertical-align: middle" />
-				</td>
-				<td>
-					Startknoten-ID:
-				</td>
-				<td>
-					<span ui:field="sourceNode"></span>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="media/images/icons/flag-black.png" style="vertical-align: middle" />
-				</td>
-				<td>
-					Zielknoten-ID
-				</td>
-				<td>
-					<span ui:field="destinationNode"></span>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="media/images/icons/star.png" style="vertical-align: middle" />
-				</td>
-				<td>
-					Bonusziel-ID
-				</td>
-				<td>
-					<div ui:field="bonusGoal"></div>
-				</td>
-			</tr>
-		</table>
-		<div style="width:100%; text-align:center">
-		</div>
-		<table style="width:100%" ui:field="messageStatusTable">
-			<tr>
-				<td>
-					<img src="media/images/icons/network-wireless-small.png" style="vertical-align: middle" />
-				</td>
-				<td>
-					Akt. Knoten-ID
-				</td>
-				<td>
-					<div ui:field="currentNodeId"></div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="media/images/icons/box-search-result.png" style="vertical-align: middle" />
-				</td>
-				<td>
-					Status
-				</td>
-				<td>
-					<div ui:field="statusMessage"></div>
-				</td>
-				<div ui:field="status"></div>
-			</tr>
-		</table>
+		<div ui:field="currentRouteView"></div>
 		<div ui:field="playOptions"></div>
 		<hr />
 		<div style="text-align:center">

@@ -3,12 +3,11 @@ package de.unipotsdam.nexplorer.client.indoor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
+import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
 import de.unipotsdam.nexplorer.client.util.HasTable;
 import de.unipotsdam.nexplorer.shared.Aodv;
@@ -29,31 +28,18 @@ public class PlayerInfoBinder extends HasTable {
 	@UiField
 	DivElement currentPlayerScore;
 	@UiField
-	TableElement messageTable;
-	@UiField
-	SpanElement sourceNode;
-	@UiField
-	SpanElement destinationNode;
-	@UiField
-	DivElement currentNodeId;
-	@UiField
-	DivElement status;
-	@UiField
-	TableElement messageStatusTable;
-	@UiField
 	DivElement hintMessage;
 	@UiField
-	DivElement statusMessage;
-	@UiField
-	DivElement bonusGoal;
-
+	DivElement currentRouteView;
 	/**
 	 * contains either NewMessageBinder or NewRouteRequestBinder or ResetPLayerMessageBinder
 	 */
 	@UiField
 	DivElement playOptions;
+
 	private final SimpleIndoorBinder simpleIndoorBinder;
 	private IndoorStatsTimer indoorStatsUpdater;
+	private final ActiveRouting activeRouting;
 
 	/**
 	 * depending on the state either the message table is shown or the messageStatusTable depending on the Status of the message gameOptions are blended in
@@ -61,10 +47,8 @@ public class PlayerInfoBinder extends HasTable {
 	 */
 	public PlayerInfoBinder(SimpleIndoorBinder simpleIndoorBinder) {
 		setElement(uiBinder.createAndBindUi(this));
-		NewMessageBinder newMessageBinder = new NewMessageBinder();
-		// NewRouteRequestBinder newRouteRequestBinder = new NewRouteRequestBinder();
-		// ResetPlayerMessageBinder resetPlayerMessageBinder = new ResetPlayerMessageBinder();
-		this.status.appendChild(newMessageBinder.getElement());//
+		this.activeRouting = new ActiveRouting();
+		this.currentRouteView.appendChild(activeRouting.getElement());
 		// store simpleIndoorBinder for hooks
 		this.simpleIndoorBinder = simpleIndoorBinder;
 		// create intervals
@@ -98,17 +82,17 @@ public class PlayerInfoBinder extends HasTable {
 			this.currentPlayerScore.setInnerText(result.getPlayer().score + "");
 		}
 		if (result.getDataPacketSend() != null) {
-			this.sourceNode.setInnerText(result.getDataPacketSend().getMessageDescription().getSourceNodeId() + "");
-			this.destinationNode.setInnerText(result.getDataPacketSend().getMessageDescription().getDestinationNodeId() + "");
+			this.activeRouting.getSourceNode().setInnerText(result.getDataPacketSend().getMessageDescription().getSourceNodeId() + "");
+			this.activeRouting.getDestinationNode().setInnerText(result.getDataPacketSend().getMessageDescription().getDestinationNodeId() + "");
 
 			// this.hintMessage.setInnerHTML(getHintMessage(result));
 			this.hintMessage.setInnerHTML(statusToHTMLString(result));
-			this.currentNodeId.setInnerHTML(result.getDataPacketSend().getPlayersByCurrentNodeId().getId() + "");
+			this.activeRouting.getCurrentNodeId().setInnerHTML(result.getDataPacketSend().getPlayersByCurrentNodeId().getId() + "");
 		} else {
 			this.hintMessage.setInnerHTML(getHintMessage(result));
 		}
 		this.remainingPlayingTime.setInnerText(TimeManager.convertToReadableTimeSpan(result.getRemainingTime()));
-		this.bonusGoal.setInnerText(result.getBonusGoal());
+		this.activeRouting.getBonusGoal().setInnerText(result.getBonusGoal());
 
 	}
 
@@ -151,11 +135,10 @@ public class PlayerInfoBinder extends HasTable {
 	}
 
 	public DivElement getStatus() {
-		return status;
+		return this.activeRouting.getStatus();
 	}
 
 	public DivElement getStatusMessage() {
-		return statusMessage;
+		return this.activeRouting.getStatusMessage();
 	}
-
 }
