@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
+import de.unipotsdam.nexplorer.client.indoor.viewcontroller.ButtonSetShown;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
 import de.unipotsdam.nexplorer.client.util.HasTable;
 import de.unipotsdam.nexplorer.shared.Aodv;
@@ -134,11 +135,35 @@ public class PlayerInfoBinder extends HasTable {
 		return "Wenn du eine Nachricht erfolgreich zum Bonuszielknoten (der Knoten mit dem kleinen Stern) sendest, erhältst du 150% der üblichen Punkte. " + "Der Bonuszielknoten wird neu gesetzt sobald ein Spieler eine Nachricht erfolgreich zu ihm gesendet hat oder der Knoten aus dem Spiel ausscheidet. " + "Nachrichten über kurze Strecken sind weniger von Störungen betroffen, bringen aber auch weniger Punkte. ";
 	}
 
-	public DivElement getStatus() {
-		return this.activeRouting.getStatus();
+	public void switchToButtonState(ButtonSetShown state) {
+		DivElement divElement = this.activeRouting.getStatus();
+		if (state == ButtonSetShown.Other) {
+			removeShownButton();
+			showButtonsWhileMessageUnderway(divElement);
+		} else {
+			removeShownButton();
+			showNewMessageButton(divElement);
+		}
 	}
 
-	public DivElement getStatusMessage() {
-		return this.activeRouting.getStatusMessage();
+	private void showButtonsWhileMessageUnderway(DivElement divElement) {
+		divElement.appendChild((new NewRouteRequestBinder().getElement()));
+		divElement.appendChild((new ResetPlayerMessageBinder().getElement()));
+	}
+
+	private void showNewMessageButton(DivElement divElement) {
+		divElement.appendChild(new NewMessageBinder().getElement());
+	}
+
+	private void removeShownButton() {
+		doRemoveButtons();
+		// ja, das ist Absicht!!
+		doRemoveButtons();
+	}
+
+	private void doRemoveButtons() {
+		if (this.activeRouting.getStatus().hasChildNodes()) {
+			this.activeRouting.getStatus().getChild(0).removeFromParent();
+		}
 	}
 }
