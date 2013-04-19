@@ -157,13 +157,7 @@ public class PlayerInfoBinder extends HasTable {
 	}
 
 	private void removeShownButton() {
-		doRemoveButtons();
-		// ja, das ist Absicht!!
-		doRemoveButtons();
-	}
-
-	private void doRemoveButtons() {
-		if (this.activeRouting.getStatus().hasChildNodes()) {
+		while (this.activeRouting.getStatus().hasChildNodes()) {
 			this.activeRouting.getStatus().getChild(0).removeFromParent();
 		}
 	}
