@@ -1,5 +1,6 @@
 [Bb]in
 [Gg]en
+.idea
 
 NexplorerGWT/.gwt/
 NexplorerGWT/gwt-unitCache/
@@ -12,6 +13,5 @@ NexplorerGWT/war/nexplorergwt/
 NexplorerGWT/war/logs
 NexplorerGWT/war/WEB-INF/deploy/
 NexplorerGWT/war/WEB-INF/classes/
-NexplorerGWT/war/js/.idea/
 NexplorerGWT/war/js/.settings/
 NexplorerGWT/war/js/.nbproject/
