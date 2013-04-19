@@ -7,16 +7,14 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.UIObject;
 
-import de.unipotsdam.nexplorer.client.indoor.NewRouteRequestBinder;
-import de.unipotsdam.nexplorer.client.indoor.ResetPlayerMessageBinder;
+import de.unipotsdam.nexplorer.client.indoor.NewMessageBinder;
 
-public class ActiveRouting extends UIObject {
+public class LevelOneRouteSelection extends RoutingLevel {
 
-	private static ActiveRoutingUiBinder uiBinder = GWT.create(ActiveRoutingUiBinder.class);
+	private static LevelOneRouteSelectionUiBinder uiBinder = GWT.create(LevelOneRouteSelectionUiBinder.class);
 
-	interface ActiveRoutingUiBinder extends UiBinder<Element, ActiveRouting> {
+	interface LevelOneRouteSelectionUiBinder extends UiBinder<Element, LevelOneRouteSelection> {
 	}
 
 	@UiField
@@ -36,10 +34,9 @@ public class ActiveRouting extends UIObject {
 	@UiField
 	DivElement bonusGoal;
 
-	public ActiveRouting() {
+	public LevelOneRouteSelection() {
 		setElement(uiBinder.createAndBindUi(this));
-		this.status.appendChild((new NewRouteRequestBinder().getElement()));
-		this.status.appendChild((new ResetPlayerMessageBinder().getElement()));
+		this.status.appendChild((new NewMessageBinder().getElement()));
 	}
 
 	public void setSourceNode(String source) {

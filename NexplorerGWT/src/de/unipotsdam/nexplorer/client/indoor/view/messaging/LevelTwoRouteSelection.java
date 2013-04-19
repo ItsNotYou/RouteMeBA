@@ -5,9 +5,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.UIObject;
 
-public class LevelTwoRouteSelection extends UIObject {
+public class LevelTwoRouteSelection extends RoutingLevel {
 
 	private static LevelTwoRouteSelectionUiBinder uiBinder = GWT.create(LevelTwoRouteSelectionUiBinder.class);
 

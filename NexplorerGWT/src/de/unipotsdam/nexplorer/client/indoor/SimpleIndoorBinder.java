@@ -9,33 +9,21 @@ import com.google.gwt.user.client.ui.UIObject;
 
 public class SimpleIndoorBinder extends UIObject {
 
-	private static SimpleIndoorBinderUiBinder uiBinder = GWT
-			.create(SimpleIndoorBinderUiBinder.class);
+	private static SimpleIndoorBinderUiBinder uiBinder = GWT.create(SimpleIndoorBinderUiBinder.class);
 
-	interface SimpleIndoorBinderUiBinder extends
-			UiBinder<Element, SimpleIndoorBinder> {
+	interface SimpleIndoorBinderUiBinder extends UiBinder<Element, SimpleIndoorBinder> {
 	}
-	
+
 	@UiField
 	DivElement legendDiv;
-	
 	@UiField
 	DivElement playerInfoContainer;
 
-	private IndoorWrapper indoorWrapper;
-
 	public SimpleIndoorBinder(IndoorWrapper indoorWrapper) {
-		setElement(uiBinder.createAndBindUi(this));	
+		setElement(uiBinder.createAndBindUi(this));
 		LegendBinder legendBinder = new LegendBinder();
 		legendDiv.appendChild(legendBinder.getElement());
-		PlayerInfoBinder playerInfoBinder = new PlayerInfoBinder(this);
+		PlayerInfoBinder playerInfoBinder = new PlayerInfoBinder();
 		playerInfoContainer.appendChild(playerInfoBinder.getElement());
-		this.indoorWrapper = indoorWrapper;
 	}
-	
-	public IndoorWrapper getIndoorWrapper() {
-		return indoorWrapper;
-	}
-	
-	
 }

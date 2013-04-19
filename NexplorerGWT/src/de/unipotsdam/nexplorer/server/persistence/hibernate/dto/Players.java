@@ -23,6 +23,7 @@ import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.GwtTransient;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -81,7 +82,6 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 	private Set<Neighbours> nodesForNeighbour;
 	private Long baseNodeRange;
 	private Long itemCollectionRange;
-	private Long difficulty;
 	private Integer version;
 
 	@JsonProperty("neighbours")
@@ -153,6 +153,7 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 		this.difficulty = difficulty;
 	}
 
+	@Override
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -160,6 +161,7 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 		return this.id;
 	}
 
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -173,20 +175,24 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 		this.role = role;
 	}
 
+	@Override
 	@Column(name = "name", length = 45)
 	public String getName() {
 		return this.name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Override
 	@Column(name = "score")
 	public Long getScore() {
 		return this.score;
 	}
 
+	@Override
 	public void setScore(Long score) {
 		this.score = score;
 	}
@@ -443,22 +449,24 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 		this.itemCollectionRange = itemCollectionRange;
 	}
 
+	@Override
 	@JsonIgnore
 	@Column(name = "difficulty")
 	public Long getDifficulty() {
 		return this.difficulty;
 	}
 
+	@Override
 	public void setDifficulty(Long difficulty) {
 		this.difficulty = difficulty;
 	}
-	
+
 	@Version
 	@Column(name = "OPTLOCK")
 	public Integer getVersion() {
 		return this.version;
 	}
-	
+
 	public void setVersion(Integer version) {
 		this.version = version;
 	}

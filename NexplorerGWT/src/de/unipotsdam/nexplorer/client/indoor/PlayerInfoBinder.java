@@ -8,6 +8,9 @@ import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
+import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelOneRouteSelection;
+import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelTwoRouteSelection;
+import de.unipotsdam.nexplorer.client.indoor.view.messaging.RoutingLevel;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.UiInfo;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.ButtonSetShown;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
@@ -38,20 +41,21 @@ public class PlayerInfoBinder extends HasTable {
 	@UiField
 	DivElement playOptions;
 
-	private final SimpleIndoorBinder simpleIndoorBinder;
 	private IndoorStatsTimer indoorStatsUpdater;
 	private final ActiveRouting activeRouting;
+	private RoutingLevel level;
 
 	/**
 	 * depending on the state either the message table is shown or the messageStatusTable depending on the Status of the message gameOptions are blended in
 	 * 
+	 * @param level
+	 * 
 	 */
-	public PlayerInfoBinder(SimpleIndoorBinder simpleIndoorBinder) {
+	public PlayerInfoBinder() {
 		setElement(uiBinder.createAndBindUi(this));
 		this.activeRouting = new ActiveRouting();
-		this.currentRouteView.appendChild(activeRouting.getElement());
-		// store simpleIndoorBinder for hooks
-		this.simpleIndoorBinder = simpleIndoorBinder;
+		this.level = null;
+
 		// create intervals
 		getFrequency();
 	}
@@ -60,16 +64,11 @@ public class PlayerInfoBinder extends HasTable {
 		// indoor service
 		this.indoorStatsUpdater = new IndoorStatsTimer(this);
 		indoorStatsUpdater.scheduleRepeating(frequency);
-
 	}
 
 	private void getFrequency() {
 		IndoorServiceImpl indoorServiceImpl = new IndoorServiceImpl();
 		indoorServiceImpl.getUpdateDisplayFrequency(new FrequencyUpdater<Integer>(this));
-	}
-
-	public SimpleIndoorBinder getSimpleIndoorBinder() {
-		return simpleIndoorBinder;
 	}
 
 	/**
@@ -78,6 +77,16 @@ public class PlayerInfoBinder extends HasTable {
 	 * @param info
 	 */
 	public void updatePlayerInfos(UiInfo info) {
+		// Set level sensitive routing panel if not already set
+		if (level == null) {
+			if (info.getPlayer().getDifficulty() == 1) {
+				level = new LevelOneRouteSelection();
+			} else if (info.getPlayer().getDifficulty() == 2) {
+				level = new LevelTwoRouteSelection();
+			}
+			this.currentRouteView.appendChild(level.getElement());
+		}
+
 		if (info.getPlayer() != null) {
 			this.currentPlayerName.setInnerText(info.getPlayer().getName());
 			this.currentPlayerScore.setInnerText(info.getPlayer().getScore());
@@ -85,8 +94,6 @@ public class PlayerInfoBinder extends HasTable {
 		if (info.getDataPacketSend() != null) {
 			this.activeRouting.setSourceNode(info.getDataPacketSend().getSourceNodeId());
 			this.activeRouting.setDestinationNode(info.getDataPacketSend().getDestinationNodeId());
-
-			// this.hintMessage.setInnerHTML(getHintMessage(result));
 			this.hintMessage.setInnerHTML(statusToHTMLString(info));
 			this.activeRouting.setCurrentNodeId(info.getDataPacketSend().getCurrentNodeId());
 		} else {
@@ -137,28 +144,19 @@ public class PlayerInfoBinder extends HasTable {
 	}
 
 	public void switchToButtonState(ButtonSetShown state) {
-		DivElement divElement = this.activeRouting.getStatus();
+		DivElement divElement = this.currentRouteView;
 		if (state == ButtonSetShown.Other) {
-			removeShownButton();
-			showButtonsWhileMessageUnderway(divElement);
+			removeChildren(divElement);
+			divElement.appendChild(activeRouting.getElement());
 		} else {
-			removeShownButton();
-			showNewMessageButton(divElement);
+			removeChildren(divElement);
+			divElement.appendChild(level.getElement());
 		}
 	}
 
-	private void showButtonsWhileMessageUnderway(DivElement divElement) {
-		divElement.appendChild((new NewRouteRequestBinder().getElement()));
-		divElement.appendChild((new ResetPlayerMessageBinder().getElement()));
-	}
-
-	private void showNewMessageButton(DivElement divElement) {
-		divElement.appendChild(new NewMessageBinder().getElement());
-	}
-
-	private void removeShownButton() {
-		while (this.activeRouting.getStatus().hasChildNodes()) {
-			this.activeRouting.getStatus().getChild(0).removeFromParent();
+	private void removeChildren(DivElement element) {
+		while (element.hasChildNodes()) {
+			element.getChild(0).removeFromParent();
 		}
 	}
 }

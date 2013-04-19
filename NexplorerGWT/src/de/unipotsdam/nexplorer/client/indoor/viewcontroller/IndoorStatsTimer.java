@@ -7,13 +7,14 @@ import de.unipotsdam.nexplorer.client.indoor.PlayerInfoBinder;
 
 /**
  * cron job für die aktualisierung der Indoor Oberfläche
+ * 
  * @author Julian
- *
+ * 
  */
 public class IndoorStatsTimer extends Timer {
 
-	private PlayerInfoBinder playerInfoBinder;
-	private IndoorServiceImpl indoorServiceImpl;
+	private final PlayerInfoBinder playerInfoBinder;
+	private final IndoorServiceImpl indoorServiceImpl;
 
 	public IndoorStatsTimer(PlayerInfoBinder playerInfoBinder) {
 		this.playerInfoBinder = playerInfoBinder;
@@ -22,8 +23,7 @@ public class IndoorStatsTimer extends Timer {
 
 	@Override
 	public void run() {
-		indoorServiceImpl.getPlayerInfo(getId(), new PlayerInfoUpdater(
-				this.playerInfoBinder));
+		indoorServiceImpl.getPlayerInfo(getId(), new PlayerInfoUpdater(this.playerInfoBinder));
 	}
 
 	private native int getId() /*-{
@@ -33,5 +33,4 @@ public class IndoorStatsTimer extends Timer {
 	private native void setID(Long id) /*-{
 		$wnd.setPlayerId(id);
 	}-*/;
-
 }

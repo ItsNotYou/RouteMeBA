@@ -31,6 +31,7 @@ public class PlayerInfoUpdater implements AsyncCallback<PlayerInfo> {
 		}
 		// update other parts of the view
 		updateUiWith(result);
+
 		// update button
 		if (result.getDataPacketSend() != null) {
 			Byte status = result.getDataPacketSend().getStatus();

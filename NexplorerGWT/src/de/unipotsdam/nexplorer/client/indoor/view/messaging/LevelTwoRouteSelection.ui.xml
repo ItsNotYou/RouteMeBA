@@ -1,5 +1,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
-	<div style="width:100%" ui:field="routes">
+	<div>
+		<div style="width:100%" ui:field="routes">
+		    Sie sehen hier eine Level-2-Ansicht
+		</div>
+		<div style="width:100%; text-align:center">
+			<button type="button" onclick="insertNewMessage()"
+				class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+				role="button">
+				Neue Nachricht
+			</button>
+		</div>
 	</div>
 </ui:UiBinder>

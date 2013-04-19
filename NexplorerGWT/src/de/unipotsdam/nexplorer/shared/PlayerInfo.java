@@ -2,7 +2,6 @@ package de.unipotsdam.nexplorer.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 
 public class PlayerInfo implements IsSerializable {
@@ -14,9 +13,8 @@ public class PlayerInfo implements IsSerializable {
 	public PlayerInfo() {
 	}
 
-	public PlayerInfo(Messager player, Settings settings,
-			DataPacket dataPacketSend) {
-		this.player = (Messager) player;
+	public PlayerInfo(Messager player, Settings settings, DataPacket dataPacketSend) {
+		this.player = player;
 		this.settings = settings;
 		this.dataPacketSend = dataPacketSend;
 	}
@@ -26,7 +24,7 @@ public class PlayerInfo implements IsSerializable {
 	}
 
 	public void setPlayer(Messager player) {
-		this.player = (Messager) player;
+		this.player = player;
 	}
 
 	public Long getRemainingTime() {
