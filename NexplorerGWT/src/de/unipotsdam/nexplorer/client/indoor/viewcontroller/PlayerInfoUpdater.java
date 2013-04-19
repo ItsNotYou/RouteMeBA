@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import de.unipotsdam.nexplorer.client.indoor.PlayerInfoBinder;
+import de.unipotsdam.nexplorer.client.indoor.view.messaging.UiInfo;
 import de.unipotsdam.nexplorer.shared.Aodv;
 import de.unipotsdam.nexplorer.shared.PlayerInfo;
 
@@ -29,7 +30,7 @@ public class PlayerInfoUpdater implements AsyncCallback<PlayerInfo> {
 			return;
 		}
 		// update other parts of the view
-		this.playerInfoBinder.updatePlayerInfos(result);
+		updateUiWith(result);
 		// update button
 		if (result.getDataPacketSend() != null) {
 			Byte status = result.getDataPacketSend().getStatus();
@@ -50,5 +51,10 @@ public class PlayerInfoUpdater implements AsyncCallback<PlayerInfo> {
 				buttonSetShown = ButtonSetShown.NewMessage;
 			}
 		}
+	}
+
+	private void updateUiWith(PlayerInfo result) {
+		UiInfo info = new UiInfo(result);
+		this.playerInfoBinder.updatePlayerInfos(info);
 	}
 }

@@ -41,27 +41,23 @@ public class ActiveRouting extends UIObject {
 		this.status.appendChild(newMessageBinder.getElement());//
 	}
 
-	public Element getSourceNode() {
-		return this.sourceNode;
-	}
-
-	public Element getDestinationNode() {
-		return this.destinationNode;
-	}
-
-	public Element getCurrentNodeId() {
-		return this.currentNodeId;
-	}
-
-	public Element getBonusGoal() {
-		return this.bonusGoal;
-	}
-
 	public DivElement getStatus() {
 		return this.status;
 	}
 
-	public DivElement getStatusMessage() {
-		return this.statusMessage;
+	public void setSourceNode(String source) {
+		this.sourceNode.setInnerText(source);
+	}
+
+	public void setDestinationNode(String destination) {
+		this.destinationNode.setInnerText(destination);
+	}
+
+	public void setCurrentNodeId(String current) {
+		this.currentNodeId.setInnerText(current);
+	}
+
+	public void setBonusGoal(String bonusGoal) {
+		this.bonusGoal.setInnerText(bonusGoal);
 	}
 }
