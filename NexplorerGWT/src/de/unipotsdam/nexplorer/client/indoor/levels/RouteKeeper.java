@@ -11,6 +11,7 @@ public class RouteKeeper {
 	private final List<RouteListener> listeners;
 	private List<Node> availableNodes;
 	private final Random random;
+	private int routeCount;
 
 	public RouteKeeper() {
 		this.viewedRoutes = new ArrayList<Route>();
@@ -35,6 +36,7 @@ public class RouteKeeper {
 	}
 
 	public void setRouteCount(int routeCount) {
+		this.routeCount = routeCount;
 	}
 
 	public void updateAvailableNodes(List<Node> nodes) {
@@ -48,16 +50,13 @@ public class RouteKeeper {
 		updateListeners();
 	}
 
-	private long factorial(long length) {
-		if (length <= 0) {
-			return 1;
-		} else {
-			return length * factorial(length - 1);
-		}
+	private long maxRouteCount(long length) {
+		return length * (length - 1);
 	}
 
 	private void fillWithAvailableNodes(List<Route> current, List<Node> available) {
-		long max = factorial(available.size());
+		long max = maxRouteCount(available.size());
+		max = Math.min(max, routeCount);
 		while (current.size() < max) {
 			addRandomRoute(current, available);
 		}

@@ -12,6 +12,8 @@ import org.junit.Test;
 
 public class RouteKeeperTest {
 
+	private static final int routeCount = 10;
+
 	private RouteKeeper sut;
 	private RouteListener listener;
 	private Node one;
@@ -32,7 +34,7 @@ public class RouteKeeperTest {
 
 		this.listener = mock(RouteListener.class);
 		this.sut = new RouteKeeper();
-		this.sut.setRouteCount(10);
+		this.sut.setRouteCount(routeCount);
 		this.sut.updateAvailableNodes(Arrays.asList(one, two, three));
 		this.sut.addRouteListener(listener);
 	}
@@ -53,5 +55,11 @@ public class RouteKeeperTest {
 	public void testRemovedUsed() {
 		sut.removedUsed(new Route("1", "2"));
 		verify(listener).updateRoutes(argThat(new HasSameContent(new Route("2", "1"), new Route("2", "3"), new Route("3", "2"), new Route("1", "3"), new Route("3", "1"))));
+	}
+
+	@Test
+	public void testMaxRouteCountHonoured() {
+		sut.updateAvailableNodes(Arrays.asList(one, two, three, four));
+		verify(listener).updateRoutes(argThat(new HasLength(routeCount)));
 	}
 }
