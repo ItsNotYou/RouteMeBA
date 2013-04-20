@@ -1,0 +1,48 @@
+﻿\section{Konzeptionelle Überlegungen für Spielerweiterungen}
+
+\subsection{Ping}
+Benutzer finden sich untereinander nur noch, wenn sie einen Ping aussenden. Wie soll der Prozess des Findens und Haltens von Nachbarn umgesetzt werden?
+
+Blick auf das AODV-Protokoll: Knoten senden regelmäßig HELLO-Nachrichten aus. Wenn HELLO-Nachrichten zu lange ausbleiben wird Abbruch der Verbindung angenommen, Routing-Tabelle aktualisiert und RERR gesendet.
+
+HELLO-Nachrichten werden nur gesendet, wenn Knoten Teil einer aktiven Route ist. Außerdem tragen HELLO-Nachrichten eine Sequence-Number in sich, die zur Bestimmung der Aktualität von Routen verwendet wird.
+
+\begin{itemize}
+	\item Spielidee: Knoten bekommen Punkte für den Aufbau einer Route. Vermutung: Dadurch wird das Aufbauen von Routen gestärkt, was auch der Sinn eines MANETs ist. Außerdem sollen HELLO-Nachrichten laut RFC nur gesendet werden, wenn Knoten Teil einer aktiven Route ist. Deshalb muss für die sinnvolle / standardkonforme Nutzung von HELLO-Nachrichten der Aufbau von Routen gefördert werden.
+	\item Ziel: Routenbewusstsein stärken? Idee: Aktive Routen anzeigen. Einwand: Wenig Platz auf Smartphone-Screen, da Button für Gegenstand einsammeln und ein paar Gegenstands-Informationen sowie Hilfstexte verwendet wird. Lässt sich dieser Platz besser nutzen? Ja!
+\end{itemize}
+
+Umsetzung auf Mobile: Spieler senden Pings manuell aus. Sollen sie Nachbarn finden, indem sie selbst einen Ping aussenden (Aktiv-Sonar eines U-Bootes) oder sollen sich Nachbarn zeigen, indem der Spieler ihren Ping empfängt?
+
+Häufigkeit der Pings: Spieler sollten nicht durchgehend ohne Nachteil pingen können, da sonst Effekt des manuellen Pings verloren geht. Verschiedene Möglichkeiten:
+
+\begin{itemize}
+	\item Bestimmte Anzahl an Pings für Spieler verfügbar, neue werden zeitlich oder über Item verfügbar
+	\item Pings sind nur mit Cooldown verfügbar
+	\item Pings haben Malus-Effekt (z.B. auf Batterie oder Punkte)
+\end{itemize}
+
+Wie werden Nachbarschaftsverhältnisse wieder aufgebhoben? Sollen Nachbarschaftsverhältnisse automatisiert aufgehoben werden?
+
+Blick auf AODV-Protokoll: Für HELLO-Nachrichten gilt ein HELLO_INTERVAL und ein ALLOWED_HELLO_LOSS. Daraus ergibt sich, wann Routen als ungültig erkannt werden sollen.
+
+\begin{itemize}
+	\item Spielerische Idee: Vor Ablauf des HELLO_INTERVAL*ALLOWED_HELLO_LOSS den Knoten warnen, der das HELLO ausgesendet hat, damit seine Routen und gültigen Nachbarn nicht verloren gehen. So lässt sich leichter ein Gefühl für HELLO_INTERVAL entwickeln.
+\end{itemize}
+
+\subsection{Nachrichten-Vorgaben}
+Auf Level zwei dürfen Routen nicht mehr selbst gewählt werden sondern müssen aus einer Liste von Vorgaben ausgewählt werden. Was soll auf dem Auswahlfeld angezeigt werden?
+
+\begin{itemize}
+	\item Nickname der Knoten, zwischen denen geroutet werden soll. Nicknamen sind keine Beschränkungen auferlegt, außerdem geben Nicknamen keine Auskunft über Position / Status / Distanz der Route / Punkte der Route etc. Indoor-Spieler bauen bisher keine Verbindung zu einzelnen Knoten (also Verknüpfung von Nickname und Position / Verhalten), was bringen also Nicknames?
+	\item Alternative: Distanz / Anforderung / Vermutete Punkte / Vermutete Hops
+	\item Außerdem: Bonus-Eigenschaft
+	\item Bei Maus-Hover: Start- und Zielknoten auf Karte hervorheben
+\end{itemize}
+
+Welche Routen sollen zur Verfügung gestellt werden?
+
+\begin{itemize}
+	\item Nur derzeit verknüpfte Wege
+	\item Beliebige Auswahl an Knoten. Bei 6 Knoten sind das 720 (6!) mögliche Wege
+\end{itemize}
