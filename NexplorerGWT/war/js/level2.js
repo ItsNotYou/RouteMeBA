@@ -47,6 +47,11 @@ function RandomRoutes() {
         }
     }
 
+    /**
+     *
+     * @param {Array} keys
+     * @returns {{from: *, to: *}}
+     */
     function createRandomRoute(keys) {
         var firstIndex = Math.floor(Math.random() * keys.length);
         var secondIndex = Math.floor(Math.random() * keys.length);
@@ -62,8 +67,8 @@ function RandomRoutes() {
 
     /**
      * Tests if an element within the given array equals the given element based on the "from" and "to" key
-     * @param {Object} element Object with "from" and "to" key
-     * @param {Array} array Array to search in
+     * @param {{from: *, to: *}} element Object with "from" and "to" key
+     * @param {{from: *, to: *}[]} array Array to search in
      * @returns {boolean}
      */
     this.contains = function (element, array) {
