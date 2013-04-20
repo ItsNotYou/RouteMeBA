@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.indoor.levels;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -42,17 +43,61 @@ public class RouteKeeper {
 	}
 
 	private void updateRoutes() {
-		viewedRoutes.clear();
-		for (Node source : availableNodes) {
-			for (Node dest : availableNodes) {
-				if (source.getId().equals(dest.getId())) {
-					continue;
-				}
+		removeUnavailableRoutes(viewedRoutes, availableNodes);
+		fillWithAvailableNodes(viewedRoutes, availableNodes);
+		updateListeners();
+	}
 
-				viewedRoutes.add(new Route(source.getId(), dest.getId()));
+	private long factorial(long length) {
+		if (length <= 0) {
+			return 1;
+		} else {
+			return length * factorial(length - 1);
+		}
+	}
+
+	private void fillWithAvailableNodes(List<Route> current, List<Node> available) {
+		long max = factorial(available.size());
+		while (current.size() < max) {
+			addRandomRoute(current, available);
+		}
+	}
+
+	private void addRandomRoute(List<Route> current, List<Node> available) {
+		Route route = null;
+		do {
+			route = createRandomRoute(available);
+		} while (current.contains(route));
+		current.add(route);
+	}
+
+	private void removeUnavailableRoutes(List<Route> current, List<Node> available) {
+		Iterator<Route> it = current.iterator();
+		while (it.hasNext()) {
+			Route disputable = it.next();
+			if (isUnavailable(disputable.getSource(), available) || isUnavailable(disputable.getDestination(), available)) {
+				it.remove();
 			}
 		}
+	}
 
-		updateListeners();
+	private boolean isUnavailable(String id, List<Node> available) {
+		for (Node check : available) {
+			if (check.getId().equals(id)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private Route createRandomRoute(List<Node> nodes) {
+		int source = random.nextInt(nodes.size());
+		int dest = random.nextInt(nodes.size());
+
+		Route result = new Route(nodes.get(source).getId(), nodes.get(dest).getId());
+		if (result.getSource().equals(result.getDestination())) {
+			result = createRandomRoute(nodes);
+		}
+		return result;
 	}
 }

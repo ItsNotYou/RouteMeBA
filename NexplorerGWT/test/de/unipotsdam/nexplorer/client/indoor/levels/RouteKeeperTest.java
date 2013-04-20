@@ -28,7 +28,7 @@ public class RouteKeeperTest {
 		this.three = mock(Node.class);
 		when(three.getId()).thenReturn("3");
 		this.four = mock(Node.class);
-		when(four.getId()).thenReturn("3");
+		when(four.getId()).thenReturn("4");
 
 		this.listener = mock(RouteListener.class);
 		this.sut = new RouteKeeper();
