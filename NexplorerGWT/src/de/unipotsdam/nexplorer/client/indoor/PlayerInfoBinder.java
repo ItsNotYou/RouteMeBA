@@ -7,11 +7,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
+import de.unipotsdam.nexplorer.client.indoor.dto.UiInfo;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelOneRouteSelection;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelTwoRouteSelection;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.RoutingLevel;
-import de.unipotsdam.nexplorer.client.indoor.view.messaging.UiInfo;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.ButtonSetShown;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
 import de.unipotsdam.nexplorer.client.util.HasTable;

@@ -1,4 +1,4 @@
-package de.unipotsdam.nexplorer.client.indoor.view.messaging;
+package de.unipotsdam.nexplorer.client.indoor.dto;
 
 import de.unipotsdam.nexplorer.shared.PlayerInfo;
 
