@@ -16,7 +16,7 @@ import com.google.gwt.uibinder.client.UiField;
 import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 import de.unipotsdam.nexplorer.client.indoor.levels.RouteListener;
 
-public class LevelTwoRouteSelection extends RoutingLevel implements RouteListener, RouteClickListener {
+public class LevelTwoRouteSelection extends RoutingLevel implements RouteListener {
 
 	private static LevelTwoRouteSelectionUiBinder uiBinder = GWT.create(LevelTwoRouteSelectionUiBinder.class);
 
@@ -56,6 +56,7 @@ public class LevelTwoRouteSelection extends RoutingLevel implements RouteListene
 		for (Route route : routes) {
 			if (!routesModel.containsKey(route)) {
 				RouteBinder view = new RouteBinder(route);
+				view.setClickHandler(new Notify(clickObservers));
 				this.routes.appendChild(view.getElement());
 				routesModel.put(route, view);
 			}
@@ -64,12 +65,5 @@ public class LevelTwoRouteSelection extends RoutingLevel implements RouteListene
 
 	public void addClickHandler(final RouteClickListener listener) {
 		this.clickObservers.add(listener);
-	}
-
-	@Override
-	public void onRouteClick(Route route) {
-		for (RouteClickListener listener : clickObservers) {
-			listener.onRouteClick(route);
-		}
 	}
 }
