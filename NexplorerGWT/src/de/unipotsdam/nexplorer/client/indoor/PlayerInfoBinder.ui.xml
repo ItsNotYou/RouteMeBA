@@ -44,7 +44,7 @@
 			</tr>
 		</table>
 		<hr />
-		<div style="width:100%; text-align:center; font-weight:bold">***Nachrichtenstatus***</div>
+		<div style="width:100%; text-align:center; font-weight:bold">***Nachrichten***</div>
 		<div ui:field="currentRouteView"></div>
 		<div ui:field="playOptions"></div>
 		<hr />
