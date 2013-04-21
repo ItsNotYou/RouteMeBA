@@ -83,6 +83,8 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 	private Long baseNodeRange;
 	private Long itemCollectionRange;
 	private Integer version;
+	private Long lastPing;
+	private long pingDuration;
 
 	@JsonProperty("neighbours")
 	@Transient
@@ -469,5 +471,34 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@Column(name = "last_ping")
+	public Long getLastPing() {
+		return this.lastPing;
+	}
+
+	public void setLastPing(Long lastPing) {
+		this.lastPing = lastPing;
+	}
+
+	@Column(name = "ping_duration")
+	public long getPingDuration() {
+		return this.pingDuration;
+	}
+
+	public void setPingDuration(long pingDuration) {
+		this.pingDuration = pingDuration;
+	}
+
+	@Transient
+	public boolean isPingActive() {
+		if (this.lastPing == null) {
+			return false;
+		}
+
+		long now = new Date().getTime();
+		long diff = now - lastPing;
+		return diff <= getPingDuration();
 	}
 }

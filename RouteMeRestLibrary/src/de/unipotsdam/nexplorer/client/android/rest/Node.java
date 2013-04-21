@@ -14,6 +14,7 @@ public class Node {
 	private Integer nextItemDistance;
 	private int itemInCollectionRange;
 	private Integer hasRangeBooster;
+	private boolean pingActive;
 
 	public Double getBatterieLevel() {
 		return batterieLevel;
@@ -105,5 +106,13 @@ public class Node {
 
 	public void setHasRangeBooster(Integer hasRangeBooster) {
 		this.hasRangeBooster = hasRangeBooster;
+	}
+
+	public void setPingActive(boolean pingActive) {
+		this.pingActive = pingActive;
+	}
+
+	public boolean isPingActive() {
+		return pingActive;
 	}
 }

@@ -26,8 +26,8 @@ public class Player implements Locatable {
 	@InjectLogger
 	private Logger logger;
 	private final Players inner;
-	private DatabaseImpl dbAccess;
-	private NeighbourSet neighbours;
+	private final DatabaseImpl dbAccess;
+	private final NeighbourSet neighbours;
 
 	@Inject
 	public Player(@Assisted Players player, DatabaseImpl dbAccess, DataFactory data) {
@@ -204,6 +204,7 @@ public class Player implements Locatable {
 	 * Adds itself as known neighbour to all nodes within range. Does not add the neighbours within range to its own known neighbours. Result: All neighbours know this node, but this node does not know its neighbours.
 	 */
 	public void pingNeighbourhood() {
+		inner.setLastPing(new Date().getTime());
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 		for (Player neighbour : reachableNodes) {
 			Set<Player> knowNeighbours = neighbour.getNeighbours();

@@ -124,4 +124,8 @@ public class GameStatusTest extends AndroidTestCase {
 	public void testRemainingPlayingTime() {
 		assertEquals((Long) 1234567890l, status.getStats().getRemainingPlayingTime());
 	}
+
+	public void testIsPingActive() {
+		assertFalse(status.getNode().isPingActive());
+	}
 }

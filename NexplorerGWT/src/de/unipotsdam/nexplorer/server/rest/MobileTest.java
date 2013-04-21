@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.ws.rs.GET;
@@ -33,6 +34,8 @@ public class MobileTest {
 		result.node.setNextItemDistance(3l);
 		result.node.setRange(10);
 		result.node.setScore(180l);
+		result.node.setLastPing(new Date().getTime());
+		result.node.setPingDuration(1000);
 
 		result.node.setNearbyItems(new ArrayList<Items>());
 		result.node.getNearbyItemsJSON().setItemMap(new HashMap<Long, Items>());
