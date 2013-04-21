@@ -1,8 +1,5 @@
 package de.unipotsdam.nexplorer.client.indoor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
@@ -11,7 +8,8 @@ import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
 import de.unipotsdam.nexplorer.client.indoor.dto.UiInfo;
-import de.unipotsdam.nexplorer.client.indoor.levels.Route;
+import de.unipotsdam.nexplorer.client.indoor.levels.AvailableNodeUpdater;
+import de.unipotsdam.nexplorer.client.indoor.levels.RouteKeeper;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelOneRouteSelection;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelTwoRouteSelection;
@@ -89,11 +87,11 @@ public class PlayerInfoBinder extends HasTable {
 				LevelTwoRouteSelection level = new LevelTwoRouteSelection();
 				level.addClickHandler(new LevelTwoHandler());
 
-				List<Route> routes = new ArrayList<Route>();
-				routes.add(new Route("1", "2"));
-				routes.add(new Route("2", "3"));
-				routes.add(new Route("3", "4"));
-				level.updateRoutes(routes);
+				RouteKeeper keeper = new RouteKeeper();
+				keeper.setRouteCount(10);
+				keeper.addRouteListener(level);
+				AvailableNodeUpdater.addListener(keeper);
+				level.addClickHandler(new RouteRemover(keeper));
 
 				this.level = level;
 			}

@@ -270,7 +270,8 @@ function updateMarkerPositions() {
                     removeObsoleteMarkers(key);
                 }
             });
-			
+
+            updateAvailableNodes(data["playerMarkers"]);
 			playerMarkerObservers.update(data["playerMarkers"]);
 
             messageUnderway = false;

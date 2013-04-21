@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class RouteKeeper {
+public class RouteKeeper implements NodeListener {
 
 	private final List<Route> viewedRoutes;
 	private final List<RouteListener> listeners;
@@ -39,6 +39,7 @@ public class RouteKeeper {
 		this.routeCount = routeCount;
 	}
 
+	@Override
 	public void updateAvailableNodes(List<Node> nodes) {
 		this.availableNodes = nodes;
 		updateRoutes();
