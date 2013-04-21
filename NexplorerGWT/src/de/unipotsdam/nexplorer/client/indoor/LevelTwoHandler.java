@@ -31,6 +31,7 @@ public class LevelTwoHandler implements RouteClickListener {
 		int src = Integer.parseInt(route.getSource());
 		int dest = Integer.parseInt(route.getDestination());
 
+		setRoute(src, dest);
 		hoverRoute(src, dest);
 	}
 

@@ -51,9 +51,8 @@
 					<br />
 					<label>Schwierigkeitsgrad:</label>
 					<select ui:field="difficulty" name="difficulty">
-						<option value="1">einfach (geringe Anforderungen / starke
-							Assistenz)</option>
-						<option value="2">mittel (geringe Anforderungen / mittlere Assistenz)</option>
+						<option value="1">einfach (geringe Anforderungen / starke Assistenz)</option>
+						<option value="2">mittel (geringe Anforderungen / verringerte Assistenz)</option>
 					</select>
 					<br />
 					<label>Routing-Protokoll</label>
