@@ -35,7 +35,6 @@ public class RadiusBlinker implements Locatable, Pingable, Rangeable {
 	public RadiusBlinker(GoogleMap map, Activity host) {
 		this.map = map;
 		this.host = host;
-
 	}
 
 	@Override

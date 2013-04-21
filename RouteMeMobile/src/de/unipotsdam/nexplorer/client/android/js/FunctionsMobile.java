@@ -45,6 +45,7 @@ public class FunctionsMobile implements PositionWatcher {
 	private boolean itemInCollectionRange;
 	private boolean hasRangeBooster;
 	private String hint = "Achte auf die Hinweise!";
+	private String gameDifficulty;
 
 	private boolean gameIsRunning;
 	private boolean gameExists;
@@ -180,7 +181,7 @@ public class FunctionsMobile implements PositionWatcher {
 		int oldRange = playerRange;
 
 		// Spielstatus und Spielinformationen
-
+		gameDifficulty = data.stats.getGameDifficulty();
 		gameIsRunning = data.stats.settings.isRunningBoolean();
 		remainingPlayingTime = data.stats.getRemainingPlayingTime();
 		gameExists = data.stats.isGameExistingBoolean();
@@ -206,7 +207,7 @@ public class FunctionsMobile implements PositionWatcher {
 			this.rangeObserver.fire((double) playerRange);
 		}
 
-		mapTasks.removeInvisibleMarkers(neighbours, nearbyItems);
+		mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
 
 		// Spiel entsprechend der erhaltenen Informationen
 		// anpassen
@@ -239,7 +240,7 @@ public class FunctionsMobile implements PositionWatcher {
 	 */
 	void updateDisplay() {
 		mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
-		mapTasks.drawMarkers(neighbours, nearbyItems);
+		mapTasks.drawMarkers(neighbours, nearbyItems, gameDifficulty);
 
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
@@ -266,7 +267,10 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 	}
 
-	public static boolean isNaN(double result) {
+	public static boolean isNaN(Integer result) {
+		if (result == null) {
+			return true;
+		}
 		return Double.isNaN(result);
 	}
 

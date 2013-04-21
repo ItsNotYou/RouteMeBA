@@ -11,6 +11,9 @@ import java.util.Map;
 import android.app.Activity;
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.commons.Location;
+import de.unipotsdam.nexplorer.client.android.maps.LevelOneNeighbourDrawer;
+import de.unipotsdam.nexplorer.client.android.maps.LevelTwoNeighbourDrawer;
+import de.unipotsdam.nexplorer.client.android.maps.NeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
@@ -19,7 +22,7 @@ public class MapRelatedTasks {
 	private final SenchaMap senchaMap;
 	private final Activity host;
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
-	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
+	private NeighbourDrawer neighbourDrawer;
 
 	private Location oldLocation;
 	private Integer oldPlayerRange;
@@ -32,19 +35,36 @@ public class MapRelatedTasks {
 		this.oldLocation = null;
 		this.oldPlayerRange = null;
 		this.oldItemRange = null;
+		this.neighbourDrawer = null;
 	}
 
-	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems) {
-		if (neighbours != null) {
-			for (Map.Entry<Integer, Neighbour> entry : neighbours.entrySet()) {
-				drawNeighbourMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
-			}
+	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty) {
+		ensureNeighbourDrawer(difficulty);
+
+		if (neighbours != null && neighbourDrawer != null) {
+			neighbourDrawer.draw(neighbours);
 		}
 
 		if (nearbyItems != null) {
 			for (Map.Entry<Integer, Item> entry : nearbyItems.entrySet()) {
 				drawNearbyItemMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getItemType(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
 			}
+		}
+	}
+
+	private void ensureNeighbourDrawer(String difficulty) {
+		if (neighbourDrawer != null) {
+			return;
+		}
+
+		if (difficulty == null) {
+			return;
+		}
+
+		if (difficulty.equals("1")) {
+			neighbourDrawer = new LevelOneNeighbourDrawer(senchaMap, host);
+		} else if (difficulty.equals("2")) {
+			neighbourDrawer = new LevelTwoNeighbourDrawer(senchaMap, host);
 		}
 	}
 
@@ -88,50 +108,16 @@ public class MapRelatedTasks {
 		}
 	}
 
-	void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems) {
-		for (Map.Entry<Integer, Marker> entry : neighbourMarkersArray.entrySet()) {
-			if (entry.getValue() != null && neighbours.get(entry.getKey()) == null) {
-				neighbourMarkersArray.get(entry.getKey()).setMap(null);
-			}
+	void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems, String difficulty) {
+		ensureNeighbourDrawer(difficulty);
+
+		if (neighbours != null && neighbourDrawer != null) {
+			neighbourDrawer.removeInvisible(neighbours);
 		}
 
 		for (Map.Entry<Integer, Marker> entry : nearbyItemMarkersArray.entrySet()) {
 			if (entry.getValue() != null && nearbyItems.get(entry.getKey()) == null) {
 				nearbyItemMarkersArray.get(entry.getKey()).setMap(null);
-			}
-		}
-	}
-
-	/**
-	 * draw the neighbours
-	 * 
-	 * @param playerId
-	 * @param latitude
-	 * @param longitude
-	 */
-	void drawNeighbourMarkerAtLatitudeLongitude(final int playerId, double latitude, double longitude) {
-		final LatLng latlng = new LatLng(latitude, longitude);
-
-		final MarkerImage image = new MarkerImage(drawable.network_wireless_small);
-
-		if (neighbourMarkersArray.get(playerId) == null) {
-			Marker marker = new Marker(ui) {
-
-				protected void setData() {
-					position = latlng;
-					map = senchaMap.map;
-					title = "(" + playerId + ") ";
-					icon = image;
-					zIndex = 1;
-				}
-			};
-
-			neighbourMarkersArray.put(playerId, marker);
-		} else {
-			neighbourMarkersArray.get(playerId).setPosition(latlng);
-			neighbourMarkersArray.get(playerId).setTitle("(" + playerId + ") " /* + name */);
-			if (neighbourMarkersArray.get(playerId).map == null) {
-				neighbourMarkersArray.get(playerId).setMap(senchaMap.map);
 			}
 		}
 	}
