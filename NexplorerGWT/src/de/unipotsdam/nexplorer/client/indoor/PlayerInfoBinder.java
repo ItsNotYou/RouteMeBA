@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.client.indoor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
@@ -18,6 +21,7 @@ import de.unipotsdam.nexplorer.client.indoor.viewcontroller.ButtonSetShown;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
 import de.unipotsdam.nexplorer.client.util.HasTable;
 import de.unipotsdam.nexplorer.shared.Aodv;
+import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.TimeManager;
 
 public class PlayerInfoBinder extends HasTable {
@@ -46,6 +50,7 @@ public class PlayerInfoBinder extends HasTable {
 	private IndoorStatsTimer indoorStatsUpdater;
 	private final ActiveRouting activeRouting;
 	private RoutingLevel level;
+	private final List<StateSwitchListener> stateSwitchListeners;
 
 	/**
 	 * depending on the state either the message table is shown or the messageStatusTable depending on the Status of the message gameOptions are blended in
@@ -57,6 +62,7 @@ public class PlayerInfoBinder extends HasTable {
 		setElement(uiBinder.createAndBindUi(this));
 		this.activeRouting = new ActiveRouting();
 		this.level = null;
+		this.stateSwitchListeners = new LinkedList<StateSwitchListener>();
 
 		// create intervals
 		getFrequency();
@@ -91,7 +97,8 @@ public class PlayerInfoBinder extends HasTable {
 				keeper.setRouteCount(10);
 				keeper.addRouteListener(level);
 				AvailableNodeUpdater.addListener(keeper);
-				level.addClickHandler(new RouteRemover(keeper));
+
+				this.addStateSwitchListener(new RouteRemover(keeper));
 
 				this.level = level;
 			}
@@ -154,7 +161,7 @@ public class PlayerInfoBinder extends HasTable {
 		}
 	}
 
-	public void switchToButtonState(ButtonSetShown state) {
+	public void switchToButtonState(ButtonSetShown state, DataPacket reason) {
 		DivElement divElement = this.currentRouteView;
 		if (state == ButtonSetShown.Other) {
 			removeChildren(divElement);
@@ -163,11 +170,23 @@ public class PlayerInfoBinder extends HasTable {
 			removeChildren(divElement);
 			divElement.appendChild(level.getElement());
 		}
+
+		notifySwitched(state, reason);
 	}
 
 	private void removeChildren(DivElement element) {
 		while (element.hasChildNodes()) {
 			element.getChild(0).removeFromParent();
 		}
+	}
+
+	private void notifySwitched(ButtonSetShown state, DataPacket reason) {
+		for (StateSwitchListener listener : stateSwitchListeners) {
+			listener.stateSwitchedTo(state, reason);
+		}
+	}
+
+	public void addStateSwitchListener(StateSwitchListener listener) {
+		this.stateSwitchListeners.add(listener);
 	}
 }

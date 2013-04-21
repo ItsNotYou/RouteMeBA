@@ -2,9 +2,10 @@ package de.unipotsdam.nexplorer.client.indoor;
 
 import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 import de.unipotsdam.nexplorer.client.indoor.levels.RouteKeeper;
-import de.unipotsdam.nexplorer.client.indoor.view.messaging.RouteClickListener;
+import de.unipotsdam.nexplorer.client.indoor.viewcontroller.ButtonSetShown;
+import de.unipotsdam.nexplorer.shared.DataPacket;
 
-public class RouteRemover implements RouteClickListener {
+public class RouteRemover implements StateSwitchListener {
 
 	private final RouteKeeper keeper;
 
@@ -13,11 +14,11 @@ public class RouteRemover implements RouteClickListener {
 	}
 
 	@Override
-	public void onRouteClick(Route route) {
-		keeper.removedUsed(route);
-	}
+	public void stateSwitchedTo(ButtonSetShown state, DataPacket reason) {
+		long source = reason.getMessageDescription().getSourceNodeId();
+		long destination = reason.getMessageDescription().getDestinationNodeId();
 
-	@Override
-	public void onRouteHovered(Route route) {
+		Route usedRoute = new Route(Long.toString(source), Long.toString(destination));
+		keeper.removedUsed(usedRoute);
 	}
 }

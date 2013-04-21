@@ -41,13 +41,13 @@ public class PlayerInfoUpdater implements AsyncCallback<PlayerInfo> {
 			case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 			case Aodv.DATA_PACKET_STATUS_ERROR:
 				if (!(buttonSetShown.equals(ButtonSetShown.Other))) {
-					playerInfoBinder.switchToButtonState(ButtonSetShown.Other);
+					playerInfoBinder.switchToButtonState(ButtonSetShown.Other, result.getDataPacketSend());
 				}
 				buttonSetShown = ButtonSetShown.Other;
 				break;
 			default:
 				if (!(buttonSetShown.equals(ButtonSetShown.NewMessage))) {
-					playerInfoBinder.switchToButtonState(ButtonSetShown.NewMessage);
+					playerInfoBinder.switchToButtonState(ButtonSetShown.NewMessage, result.getDataPacketSend());
 				}
 				buttonSetShown = ButtonSetShown.NewMessage;
 			}
