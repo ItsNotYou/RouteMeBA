@@ -38,7 +38,7 @@ public class RouteBinder extends UIObject {
 		setElement(uiBinder.createAndBindUi(this));
 		source.setInnerText(route.getSource());
 		destination.setInnerText(route.getDestination());
-		DOM.sinkEvents(this.getElement(), Event.ONCLICK);
+		DOM.sinkEvents(this.getElement(), Event.ONCLICK | Event.ONMOUSEOVER);
 	}
 
 	public void setClickHandler(final RouteClickListener handler) {
@@ -46,7 +46,11 @@ public class RouteBinder extends UIObject {
 
 			@Override
 			public void onBrowserEvent(Event event) {
-				handler.onRouteClick(route);
+				if (event.getTypeInt() == Event.ONCLICK) {
+					handler.onRouteClick(route);
+				} else if (event.getTypeInt() == Event.ONMOUSEOVER) {
+					handler.onRouteHovered(route);
+				}
 			}
 		});
 	}

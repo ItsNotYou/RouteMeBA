@@ -8,11 +8,17 @@
 var map;
 var playerMarkersArray = [];
 var radiusCirclesArray = [];
+var radiusCircleOptionsArray = [];
 var messageMarkersArray = [];
 var messageUnderway = false;
+
 var selectedSourceNode = 0;
-var sourceNodeFlagMarker;
 var selectedDestinationNode = 0;
+
+var hoveredSourceNode = 0;
+var hoveredDestinationNode = 0;
+
+var sourceNodeFlagMarker;
 var destinationNodeFlagMarker;
 var bonusGoalMarker;
 
@@ -208,6 +214,7 @@ function updateGameStatus(isAsync) {
 function removeObsoleteMarkers(key) {
     playerMarkersArray[key].setMap(null);
     radiusCirclesArray[key].setMap(null);
+    radiusCircleOptionsArray[key].map = null;
 
     // Bonuszielicon entfernen
     if (bonusGoal == parseInt(key)) {
@@ -450,7 +457,7 @@ function drawCircleOnMapAtPositionWithRadius(position, radius, markerId) {
     // "+radius+" for "+markerId);
     if (radius > 0) {
         if (radiusCirclesArray[markerId] == undefined) {
-            circle = new google.maps.Circle({
+            radiusCircleOptionsArray[markerId] = {
                 center : position,
                 radius : radius,
                 strokeColor : "#0000FF",
@@ -461,15 +468,29 @@ function drawCircleOnMapAtPositionWithRadius(position, radius, markerId) {
                 map : map,
                 zIndex : 1,
                 clickable : false
-            });
+            };
 
+            circle = new google.maps.Circle(radiusCircleOptionsArray[markerId]);
             radiusCirclesArray[markerId] = circle;
         } else {
             radiusCirclesArray[markerId].setCenter(position);
+            radiusCircleOptionsArray[markerId].center = position;
+
             radiusCirclesArray[markerId].setRadius(parseInt(radius));
+            radiusCircleOptionsArray[markerId].radius = parseInt(radius);
+
             if (radiusCirclesArray[markerId].getMap() == null) {
                 radiusCirclesArray[markerId].setMap(map);
+                radiusCircleOptionsArray[markerId].map = map;
             }
+        }
+
+        if (markerId == hoveredSourceNode || markerId == hoveredDestinationNode) {
+            radiusCircleOptionsArray[markerId].fillColor = "#FF8000";
+            radiusCirclesArray[markerId].setOptions(radiusCircleOptionsArray[markerId]);
+        } else if (radiusCircleOptionsArray[markerId].fillColor == "#FF8000") {
+            radiusCircleOptionsArray[markerId].fillColor = "#0000FF";
+            radiusCirclesArray[markerId].setOptions(radiusCircleOptionsArray[markerId]);
         }
     }
 }

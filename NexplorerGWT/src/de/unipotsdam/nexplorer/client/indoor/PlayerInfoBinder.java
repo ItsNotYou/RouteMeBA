@@ -86,17 +86,18 @@ public class PlayerInfoBinder extends HasTable {
 			if (info.getPlayer().getDifficulty() == 1) {
 				level = new LevelOneRouteSelection();
 			} else if (info.getPlayer().getDifficulty() == 2) {
-				level = new LevelTwoRouteSelection();
-			}
-			this.currentRouteView.appendChild(level.getElement());
+				LevelTwoRouteSelection level = new LevelTwoRouteSelection();
+				level.addClickHandler(new LevelTwoHandler());
 
-			if (level instanceof LevelTwoRouteSelection) {
 				List<Route> routes = new ArrayList<Route>();
 				routes.add(new Route("1", "2"));
-				routes.add(new Route("0", "0"));
-				routes.add(new Route("7", "0"));
-				((LevelTwoRouteSelection) level).updateRoutes(routes);
+				routes.add(new Route("2", "3"));
+				routes.add(new Route("3", "4"));
+				level.updateRoutes(routes);
+
+				this.level = level;
 			}
+			this.currentRouteView.appendChild(level.getElement());
 		}
 
 		if (info.getPlayer() != null) {

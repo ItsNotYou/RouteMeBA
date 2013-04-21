@@ -18,4 +18,11 @@ public class Notify implements RouteClickListener {
 			listener.onRouteClick(route);
 		}
 	}
+
+	@Override
+	public void onRouteHovered(Route route) {
+		for (RouteClickListener listener : observers) {
+			listener.onRouteHovered(route);
+		}
+	}
 }
