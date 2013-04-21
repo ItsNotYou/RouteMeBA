@@ -10,6 +10,9 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unipotsdam.nexplorer.testing.HasLength;
+import de.unipotsdam.nexplorer.testing.HasSameContent;
+
 public class RouteKeeperTest {
 
 	private static final int routeCount = 10;

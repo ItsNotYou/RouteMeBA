@@ -1,10 +1,12 @@
-package de.unipotsdam.nexplorer.client.indoor.levels;
+package de.unipotsdam.nexplorer.testing;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+
+import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 
 public class HasSameContent extends BaseMatcher<List<Route>> {
 

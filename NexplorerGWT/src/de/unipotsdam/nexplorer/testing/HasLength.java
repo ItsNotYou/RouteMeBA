@@ -1,9 +1,11 @@
-package de.unipotsdam.nexplorer.client.indoor.levels;
+package de.unipotsdam.nexplorer.testing;
 
 import java.util.List;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+
+import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 
 public class HasLength extends BaseMatcher<List<Route>> {
 
