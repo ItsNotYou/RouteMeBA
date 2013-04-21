@@ -93,6 +93,11 @@
 						type="text" name="updateDisplayIntervalTime" value="3000" />
 					Millisekunden
 					<br />
+                    <label>Dauer eines Pings (AODV Level 2):</label>
+                    <input ui:field="pingDuration" class="ui-corner-all"
+                      type="text" name="pingDuration" value="1000" />
+                    Millisekunden
+                    <br />
 					<div id="buttonContainer">
 						<button ui:field="submitButton"
 							class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">

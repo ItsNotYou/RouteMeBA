@@ -74,10 +74,13 @@ public class PlayerDummy extends Thread {
 	public void run() {
 		super.run();
 
+		long locationSendCount = 0;
 		Location loc = locations.generateStartLocation(random.nextInt(360));
 		while (gameStatus != HASENDED) {
 			// Send location and generate new one
 			connection.sendLocation(loc);
+			locationSendCount++;
+			pingIfNecessary(loc, locationSendCount);
 			loc = locations.generateNextLocation(random.nextDouble() * 2, random.nextInt(91) - 45);
 
 			for (int count = 0; count < 5; count++) {
@@ -92,6 +95,13 @@ public class PlayerDummy extends Thread {
 				} catch (InterruptedException e) {
 				}
 			}
+		}
+	}
+
+	private void pingIfNecessary(Location loc, long locationSendCount) {
+		// Send a ping once in five location updates
+		if (locationSendCount % 5 == 0) {
+			connection.ping();
 		}
 	}
 

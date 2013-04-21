@@ -74,4 +74,17 @@ public class Connection {
 		} catch (Exception e) {
 		}
 	}
+
+	public void ping() {
+		try {
+			Client client = getClient();
+			Stopwatch watch = Stopwatch.start("ping");
+
+			WebResource res = client.resource("http://" + host + "/rest/ping/");
+			res.post(new Ping(this.id));
+
+			watch.stop();
+		} catch (Exception e) {
+		}
+	}
 }

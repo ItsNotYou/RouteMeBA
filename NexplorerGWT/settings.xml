@@ -14,4 +14,5 @@
 <entry key="numberOfBoosters">2</entry>
 <entry key="protocol">aodv</entry>
 <entry key="playingFieldUpperLeftLongitude">13.13081675662238</entry>
+<entry key="pingDuration">1000</entry>
 </properties>

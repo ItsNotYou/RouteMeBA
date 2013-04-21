@@ -49,6 +49,7 @@ public class Login {
 					newPlayer.setLongitude(setting.inner().getPlayingFieldUpperLeftLongitude());
 					newPlayer.setSequenceNumber(1l);
 					newPlayer.setHasSignalRangeBooster(0l);
+					newPlayer.setPingDuration(setting.inner().getPingDuration());
 				}
 
 				thePlayer = data.create(newPlayer);

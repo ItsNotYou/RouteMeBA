@@ -18,27 +18,21 @@ import de.unipotsdam.nexplorer.client.admin.viewcontroller.DefaultValueUpdater;
 import de.unipotsdam.nexplorer.client.admin.viewcontroller.GameStartedHandler;
 import de.unipotsdam.nexplorer.client.admin.viewcontroller.InitialStatsUpdater;
 import de.unipotsdam.nexplorer.client.admin.viewcontroller.StatsUpdateTimer;
-import de.unipotsdam.nexplorer.client.util.DivElementWrapper;
-import de.unipotsdam.nexplorer.client.util.HasWrapper;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 import de.unipotsdam.nexplorer.shared.GameStats;
-import de.unipotsdam.nexplorer.shared.GameStatus;
 
 /**
- * Dies ist die Hauptklasse von der AdminGUI 
- * Hier wird das Eingabefeld am Anfang bearbeitet,
- * wie auch die Adminsicht waehrend dem Spiel
+ * Dies ist die Hauptklasse von der AdminGUI Hier wird das Eingabefeld am Anfang bearbeitet, wie auch die Adminsicht waehrend dem Spiel
  * 
  * @author Julian
  * 
  */
-public class AdminBinder extends UIObject  {
+public class AdminBinder extends UIObject {
 
 	@UiField
 	DivElement gameStats;
 	@UiField
-	public
-	DivElement startGameForm;
+	public DivElement startGameForm;
 	@UiField
 	DivElement itemStats;
 	@UiField
@@ -72,6 +66,8 @@ public class AdminBinder extends UIObject  {
 	@UiField
 	InputElement updateDisplayIntervalTime;
 	@UiField
+	InputElement pingDuration;
+	@UiField
 	ButtonElement submitButton;
 
 	/**
@@ -94,7 +90,7 @@ public class AdminBinder extends UIObject  {
 	 * Show the status of the messages (items)
 	 */
 	private ItemStatsBinder itemStatsBinder;
-	
+
 	/**
 	 * black magic
 	 */
@@ -109,7 +105,7 @@ public class AdminBinder extends UIObject  {
 	 * @param firstName
 	 */
 	public AdminBinder() {
-		setElement(uiBinder.createAndBindUi(this));		
+		setElement(uiBinder.createAndBindUi(this));
 
 		// initialize Service
 		this.adminService = new AdminServiceImpl(this);
@@ -122,28 +118,25 @@ public class AdminBinder extends UIObject  {
 		// wrap playerstats
 		this.playerStatsBinder = new PlayerStatsBinder();
 		// wrap itemstats
-		this.itemStatsBinder = new ItemStatsBinder();					
+		this.itemStatsBinder = new ItemStatsBinder();
 
 		// wrap submitButton
 		wrapSubmitButton();
-		
+
 		// set default values if the game has not started and the admin is trying to pick the details
 		adminService.getDefaultGameStats(new DefaultValueUpdater<Settings>(this));
 
 		// see if game is started or start
 		this.adminService.getGameStats(new InitialStatsUpdater<GameStats>(this));
 	}
-	
-	public void startUpdateIntevals(Long frequency) {	
+
+	public void startUpdateIntevals(Long frequency) {
 		StatsUpdateTimer statsUpdateTimer = new StatsUpdateTimer(this.getAdminService(), this);
 		statsUpdateTimer.scheduleRepeating(frequency.intValue());
 	}
 
 	/**
-	 * diese Methode macht aus dem HTML Button einen GWT Button
-	 * der ClickHandler haben kann, eigentlich gibt es
-	 * von GWT eine statische Methode Button.wrap(), aber das funktioniert 
-	 * aus einem mir unbekannten Grund nicht
+	 * diese Methode macht aus dem HTML Button einen GWT Button der ClickHandler haben kann, eigentlich gibt es von GWT eine statische Methode Button.wrap(), aber das funktioniert aus einem mir unbekannten Grund nicht
 	 */
 	private void wrapSubmitButton() {
 		Button button = new Button(submitButton.getInnerHTML());
@@ -230,8 +223,6 @@ public class AdminBinder extends UIObject  {
 		return itemStatsBinder;
 	}
 
-	
-	
 	/**
 	 * gamestats hinzufügen
 	 */
@@ -252,10 +243,10 @@ public class AdminBinder extends UIObject  {
 	public void showItemStats() {
 		itemStats.appendChild(itemStatsBinder.getElement());
 	}
-	
 
 	/**
-	 * @param myMapCanvas the myMapCanvas to set
+	 * @param myMapCanvas
+	 *            the myMapCanvas to set
 	 */
 	public void setMyMapCanvas(MyMapCanvas1 myMapCanvas) {
 		this.myMapCanvas = myMapCanvas;
@@ -267,7 +258,9 @@ public class AdminBinder extends UIObject  {
 	public MyMapCanvas1 getMyMapCanvas() {
 		return myMapCanvas;
 	}
-	
-	
+
+	public InputElement getPingDuration() {
+		return pingDuration;
+	}
 
 }

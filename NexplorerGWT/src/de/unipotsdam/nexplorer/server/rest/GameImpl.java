@@ -99,7 +99,7 @@ public class GameImpl {
 	@POST
 	@Path("start")
 	@Produces("application/json")
-	public OK startGame(@FormParam("playingTime") String playingTime, @FormParam("baseNodeRange") String baseNodeRange, @FormParam("itemCollectionRange") String itemCollectionRange, @FormParam("maxBatteries") String maxBatteries, @FormParam("maxBoosters") String maxBoosters, @FormParam("difficulty") String difficulty, @FormParam("protocol") String protocol, @FormParam("playingFieldUpperLeftLatitude") String playingFieldUpperLeftLatitude, @FormParam("playingFieldUpperLeftLongitude") String playingFieldUpperLeftLongitude, @FormParam("playingFieldLowerRightLatitude") String playingFieldLowerRightLatitude, @FormParam("playingFieldLowerRightLongitude") String playingFieldLowerRightLongitude, @FormParam("updatePositionIntervalTime") String updatePositionIntervalTime, @FormParam("updateDisplayIntervalTime") String updateDisplayIntervalTime) {
+	public OK startGame(@FormParam("playingTime") String playingTime, @FormParam("baseNodeRange") String baseNodeRange, @FormParam("itemCollectionRange") String itemCollectionRange, @FormParam("maxBatteries") String maxBatteries, @FormParam("maxBoosters") String maxBoosters, @FormParam("difficulty") String difficulty, @FormParam("protocol") String protocol, @FormParam("playingFieldUpperLeftLatitude") String playingFieldUpperLeftLatitude, @FormParam("playingFieldUpperLeftLongitude") String playingFieldUpperLeftLongitude, @FormParam("playingFieldLowerRightLatitude") String playingFieldLowerRightLatitude, @FormParam("playingFieldLowerRightLongitude") String playingFieldLowerRightLongitude, @FormParam("updatePositionIntervalTime") String updatePositionIntervalTime, @FormParam("updateDisplayIntervalTime") String updateDisplayIntervalTime, @FormParam("pingDuration") String pingDuration) {
 		Location lowerRight = new Location();
 		lowerRight.setLongitude(Double.parseDouble(playingFieldLowerRightLongitude));
 		lowerRight.setLatitude(Double.parseDouble(playingFieldLowerRightLatitude));
@@ -121,10 +121,11 @@ public class GameImpl {
 		settings.setRemainingPlaytime(Long.parseLong(playingTime));
 		// settings.setRunning(false);
 		settings.setRunningSince(new Date());
+		settings.setPingDuration(Long.parseLong(pingDuration));
 		admin.startGame(settings);
 
 		// extracted for debugging purposes
-		convertAjaxToJava(playingTime, baseNodeRange, itemCollectionRange, maxBatteries, maxBoosters, difficulty, protocol, playingFieldUpperLeftLatitude, playingFieldUpperLeftLongitude, playingFieldLowerRightLatitude, playingFieldLowerRightLongitude, updatePositionIntervalTime, updateDisplayIntervalTime);
+		convertAjaxToJava(playingTime, baseNodeRange, itemCollectionRange, maxBatteries, maxBoosters, difficulty, protocol, playingFieldUpperLeftLatitude, playingFieldUpperLeftLongitude, playingFieldLowerRightLatitude, playingFieldLowerRightLongitude, updatePositionIntervalTime, updateDisplayIntervalTime, pingDuration);
 		/**
 		 * FIMI: Hier die businessLogic einbauen, damit ein Spiel gestartet wird playingTime=5 &baseNodeRange=9 &itemCollectionRange=4 &maxBatteries=5 &maxBoosters=2 &difficulty=1 &protocol=aodv &playingFieldUpperLeftLatitude=52.39358362957616 &playingFieldUpperLeftLongitude=13.130382746458054 &playingFieldLowerRightLatitude=52.39328409876577 &playingFieldLowerRightLongitude=13.130974173545837 &updatePositionIntervalTime=3000 &updateDisplayIntervalTime=3000 Unter Umst�nden, wird das hier zus�tzlich �ber xml rpc geregelt...
 		 */
@@ -132,7 +133,7 @@ public class GameImpl {
 		return new OK();
 	}
 
-	private void convertAjaxToJava(String playingTime, String baseNodeRange, String itemCollectionRange, String maxBatteries, String maxBoosters, String difficulty, String protocol, String playingFieldUpperLeftLatitude, String playingFieldUpperLeftLongitude, String playingFieldLowerRightLatitude, String playingFieldLowerRightLongitude, String updatePositionIntervalTime, String updateDisplayIntervalTime) {
+	private void convertAjaxToJava(String playingTime, String baseNodeRange, String itemCollectionRange, String maxBatteries, String maxBoosters, String difficulty, String protocol, String playingFieldUpperLeftLatitude, String playingFieldUpperLeftLongitude, String playingFieldLowerRightLatitude, String playingFieldLowerRightLongitude, String updatePositionIntervalTime, String updateDisplayIntervalTime, String pingDurationValue) {
 		System.out.println("visited");
 		try {
 			Long updateDisplayTime = Long.parseLong(updateDisplayIntervalTime.trim());
@@ -144,7 +145,8 @@ public class GameImpl {
 			Long baseNodeRangeLong = Long.parseLong(baseNodeRange.trim());
 			Long itemCollectionLong = Long.parseLong(itemCollectionRange.trim());
 			Double playingFieldLeftUpperLong = Double.parseDouble(playingFieldUpperLeftLatitude.trim());
-			GameStats gameStats = new GameStats(new Settings((byte) 1, timeStarted, 0l, (byte) 0, difficultyLong, playingTimeLong, 0l, protocol.trim(), baseNodeRangeLong, itemCollectionLong, playingFieldLeftUpperLong, Double.parseDouble(playingFieldUpperLeftLongitude.trim()), Double.parseDouble(playingFieldLowerRightLatitude.trim()), Double.parseDouble(playingFieldLowerRightLongitude.trim()), Long.parseLong(maxBatteries.trim()), maxBoosterLong, 0l, 0l, 0l, Long.parseLong(updatePositionTime), updateDisplayTime));
+			long pingDuration = Long.parseLong(pingDurationValue);
+			GameStats gameStats = new GameStats(new Settings((byte) 1, timeStarted, 0l, (byte) 0, difficultyLong, playingTimeLong, 0l, protocol.trim(), baseNodeRangeLong, itemCollectionLong, playingFieldLeftUpperLong, Double.parseDouble(playingFieldUpperLeftLongitude.trim()), Double.parseDouble(playingFieldLowerRightLatitude.trim()), Double.parseDouble(playingFieldLowerRightLongitude.trim()), Long.parseLong(maxBatteries.trim()), maxBoosterLong, 0l, 0l, 0l, Long.parseLong(updatePositionTime), updateDisplayTime, pingDuration));
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}

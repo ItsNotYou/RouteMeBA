@@ -67,11 +67,12 @@ public class Settings implements java.io.Serializable {
 	@JsonIgnore
 	public Long currentDataPacketProcessingRound;
 	private Integer version;
+	private long pingDuration;
 
 	public Settings() {
 	}
 
-	public Settings(Byte isRunning, Long runningSince, Long lastPause, Byte didEnd, Long difficulty, Long playingTime, Long remainingPlayingTime, String protocol, Long baseNodeRange, Long itemCollectionRange, Double playingFieldUpperLeftLatitude, Double playingFieldUpperLeftLongitude, Double playingFieldLowerRightLatitude, Double playingFieldLowerRightLongitude, Long maxBatteries, Long maxBoosters, Long currentRoutingMessageProcessingRound, Long currentDataPacketProcessingRound, Long bonusGoal, Long updatePositionIntervalTime, Long updateDisplayIntervalTime) {
+	public Settings(Byte isRunning, Long runningSince, Long lastPause, Byte didEnd, Long difficulty, Long playingTime, Long remainingPlayingTime, String protocol, Long baseNodeRange, Long itemCollectionRange, Double playingFieldUpperLeftLatitude, Double playingFieldUpperLeftLongitude, Double playingFieldLowerRightLatitude, Double playingFieldLowerRightLongitude, Long maxBatteries, Long maxBoosters, Long currentRoutingMessageProcessingRound, Long currentDataPacketProcessingRound, Long bonusGoal, Long updatePositionIntervalTime, Long updateDisplayIntervalTime, long pingDuration) {
 		this.isRunning = isRunning;
 		this.runningSince = runningSince;
 		this.lastPause = lastPause;
@@ -93,6 +94,7 @@ public class Settings implements java.io.Serializable {
 		this.bonusGoal = bonusGoal;
 		this.updatePositionIntervalTime = updatePositionIntervalTime;
 		this.updateDisplayIntervalTime = updateDisplayIntervalTime;
+		this.pingDuration = pingDuration;
 	}
 
 	@Id
@@ -336,8 +338,17 @@ public class Settings implements java.io.Serializable {
 	public Integer getVersion() {
 		return this.version;
 	}
-	
+
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@Column(name = "ping_duration")
+	public long getPingDuration() {
+		return this.pingDuration;
+	}
+
+	public void setPingDuration(long pingDuration) {
+		this.pingDuration = pingDuration;
 	}
 }

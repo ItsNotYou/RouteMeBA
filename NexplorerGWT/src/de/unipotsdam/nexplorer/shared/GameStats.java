@@ -6,13 +6,10 @@ import java.util.Date;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 
 /**
- * This class aggregates the raw settings to a more managable set of business
- * properties
+ * This class aggregates the raw settings to a more managable set of business properties
  * 
  * @author Julian
  * 
@@ -35,7 +32,7 @@ public class GameStats implements Serializable {
 	 */
 	public GameStats(Settings settings) {
 		// fill the fields for gwt
-		this.settings = settings;		
+		this.settings = settings;
 		this.setPlayingField(new PlayingField(settings));
 	}
 
@@ -56,8 +53,7 @@ public class GameStats implements Serializable {
 
 	@JsonProperty("gameExists")
 	public int getGameExists() {
-		if (this.getGameStatus().equals(GameStatus.ISRUNNING)
-				|| this.getGameStatus().equals(GameStatus.ISPAUSED)) {
+		if (this.getGameStatus().equals(GameStatus.ISRUNNING) || this.getGameStatus().equals(GameStatus.ISPAUSED)) {
 			return 1;
 		} else {
 			return 0;
@@ -132,8 +128,7 @@ public class GameStats implements Serializable {
 	}
 
 	public void setCurrentRoutingRound(Long currentRoutingRound) {
-		this.settings
-				.setCurrentRoutingMessageProcessingRound(currentRoutingRound);
+		this.settings.setCurrentRoutingMessageProcessingRound(currentRoutingRound);
 	}
 
 	public Long getCurrentDataRound() {
@@ -178,4 +173,7 @@ public class GameStats implements Serializable {
 		settings.setGameState(gameStatus);
 	}
 
+	public void setPingDuration(long pingDuration) {
+		settings.setPingDuration(pingDuration);
+	}
 }

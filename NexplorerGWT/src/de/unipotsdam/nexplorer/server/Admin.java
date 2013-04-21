@@ -85,6 +85,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			gameSettings.setProtocol(request.getProtocol());
 			gameSettings.setUpdateDisplayIntervalTime(request.getUpdateDisplayIntervalTime());
 			gameSettings.setUpdatePositionIntervalTime(request.getUpdatePositionIntervalTime());
+			gameSettings.setPingDuration(request.getPingDuration());
 
 			dbAccess.persist(gameSettings);
 		} finally {
@@ -397,6 +398,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 				props.setProperty("playingFieldLowerRightLongitude", "13.131460486785954");
 				props.setProperty("updateDisplayIntervalTime", "1000");
 				props.setProperty("updatePositionIntervalTime", "1000");
+				props.setProperty("pingDuration", "1000");
 				fileOutputStream = new FileOutputStream(new File(PROPERTIES_PATH));
 				props.storeToXML(fileOutputStream, null);
 			}
@@ -433,6 +435,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		Double playingFieldUpperLeftLongitude = Double.parseDouble(props.getProperty("playingFieldUpperLeftLongitude"));
 		Double playingFieldLowerRightLatitude = Double.parseDouble(props.getProperty("playingFieldLowerRightLatitude"));
 		Double playingFieldLowerRightLongitude = Double.parseDouble(props.getProperty("playingFieldLowerRightLongitude"));
+		long pingDuration = Long.parseLong(props.getProperty("pingDuration"));
 		Settings settingsGWT = new Settings();
 		settingsGWT.setProtocol(protocol);
 		settingsGWT.setBaseNodeRange(baseNodeRange);
@@ -447,11 +450,11 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		settingsGWT.setPlayingFieldLowerRightLongitude(playingFieldLowerRightLongitude);
 		settingsGWT.updateDisplayIntervalTime = Long.parseLong(props.getProperty("updateDisplayIntervalTime"));
 		settingsGWT.updatePositionIntervalTime = Long.parseLong(props.getProperty("updatePositionIntervalTime"));
+		settingsGWT.setPingDuration(pingDuration);
 
 		long end = System.currentTimeMillis();
 		performance.trace("getDefaultGameStats took {}ms", end - begin);
 		return settingsGWT;
-
 	}
 
 	public void updateNeighbours() {
