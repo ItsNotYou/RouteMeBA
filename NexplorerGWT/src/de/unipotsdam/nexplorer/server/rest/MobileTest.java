@@ -3,12 +3,14 @@ package de.unipotsdam.nexplorer.server.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
@@ -51,6 +53,14 @@ public class MobileTest {
 		result.node.getNearbyItemsJSON().getItemMap().get(2l).setLongitude(56.78);
 
 		result.node.setNearbyItemsCount(2);
+
+		Players src = result.node;
+		Players neigh = new Players();
+		neigh.setId(7l);
+		neigh.setLastPing(new Date().getTime());
+		neigh.setPingDuration(1000);
+		result.node.setNeighbourses(new HashSet<Neighbours>());
+		result.node.getNeighbourses().add(new Neighbours(neigh, src));
 
 		result.gameStats = new GameStats(new Settings());
 		result.gameStats.getSettings().setBaseNodeRange(9l);
