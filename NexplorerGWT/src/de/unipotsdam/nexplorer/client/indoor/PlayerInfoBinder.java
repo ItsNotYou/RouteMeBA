@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.client.indoor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
@@ -8,6 +11,7 @@ import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
 import de.unipotsdam.nexplorer.client.indoor.dto.UiInfo;
+import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelOneRouteSelection;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelTwoRouteSelection;
@@ -85,6 +89,14 @@ public class PlayerInfoBinder extends HasTable {
 				level = new LevelTwoRouteSelection();
 			}
 			this.currentRouteView.appendChild(level.getElement());
+
+			if (level instanceof LevelTwoRouteSelection) {
+				List<Route> routes = new ArrayList<Route>();
+				routes.add(new Route("1", "2"));
+				routes.add(new Route("0", "0"));
+				routes.add(new Route("7", "0"));
+				((LevelTwoRouteSelection) level).updateRoutes(routes);
+			}
 		}
 
 		if (info.getPlayer() != null) {

@@ -1,11 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
-  <button type="button" role="button" ui:field="clicker"
-    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-    <label>Von </label>
-    <label ui:field="source"></label>
-    <label> nach </label>
-    <image ui:field="bonus"></image>
-    <label ui:field="destination"></label>
-  </button>
+	<div>
+		<button type="button" role="button" ui:field="clicker"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+			<label>Von </label>
+			<label ui:field="source"></label>
+			<label> nach </label>
+			<div ui:field="bonus"></div>
+			<label ui:field="destination"></label>
+		</button>
+	</div>
 </ui:UiBinder>

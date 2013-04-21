@@ -2,13 +2,15 @@ package de.unipotsdam.nexplorer.client.indoor.view.messaging;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.LabelElement;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.UIObject;
 
 import de.unipotsdam.nexplorer.client.indoor.levels.Route;
@@ -27,20 +29,39 @@ public class RouteBinder extends UIObject {
 	@UiField
 	LabelElement destination;
 	@UiField
-	ImageElement bonus;
+	DivElement bonus;
 
-	private Route route;
+	private final Route route;
 
 	public RouteBinder(Route route) {
+		this.route = route;
+
 		setElement(uiBinder.createAndBindUi(this));
 		source.setInnerText(route.getSource());
 		destination.setInnerText(route.getDestination());
-		this.route = route;
+
+		addClickHandler(new RouteClickListener() {
+
+			@Override
+			public void onRouteClick(Route route) {
+				com.google.gwt.user.client.Window.alert("Button pressed");
+			}
+		});
 	}
 
-	@UiHandler("clicker")
-	public void onButtonClicked(ClickEvent event) {
-		com.google.gwt.user.client.Window.alert("Button pressed");
+	private void addClickHandler(final RouteClickListener handler) {
+		Button button = new Button(clicker.getInnerHTML());
+		DivElement divElement = (DivElement) clicker.getParentElement();
+		clicker.removeFromParent();
+		DOM.sinkEvents(button.getElement(), Event.ONCLICK);
+		DOM.setEventListener(button.getElement(), new EventListener() {
+
+			@Override
+			public void onBrowserEvent(Event event) {
+				handler.onRouteClick(route);
+			}
+		});
+		divElement.appendChild(button.getElement());
 	}
 
 	// public void addClickHandler(final RouteClickListener listener) {

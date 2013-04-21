@@ -26,8 +26,8 @@ public class LevelTwoRouteSelection extends RoutingLevel implements RouteListene
 	@UiField
 	DivElement routes;
 
-	private HashMap<Route, RouteBinder> routesModel;
-	private Collection<RouteClickListener> clickObservers;
+	private final HashMap<Route, RouteBinder> routesModel;
+	private final Collection<RouteClickListener> clickObservers;
 
 	public LevelTwoRouteSelection() {
 		setElement(uiBinder.createAndBindUi(this));
