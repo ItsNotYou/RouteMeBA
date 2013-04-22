@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.maps.LevelOneNeighbourDrawer;
@@ -156,6 +160,18 @@ public class MapRelatedTasks {
 					}
 					collectionRadius.setRadius(itemCollectionRange);
 				}
+			}
+		});
+	}
+
+	public void setOnMapClickListener(final OnMapClickListener listener) {
+		this.senchaMap.map.getMap().setOnMapClickListener(listener);
+		this.senchaMap.map.getMap().setOnMarkerClickListener(new OnMarkerClickListener() {
+
+			@Override
+			public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
+				listener.onMapClick(marker.getPosition());
+				return true;
 			}
 		});
 	}

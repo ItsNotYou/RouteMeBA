@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.model.LatLng;
+
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
@@ -22,7 +25,7 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
  * 
  * @author Julian Dehne
  */
-public class FunctionsMobile implements PositionWatcher {
+public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 
 	private final MapRelatedTasks mapTasks;
 	private final Intervals intervals;
@@ -98,6 +101,7 @@ public class FunctionsMobile implements PositionWatcher {
 		this.rangeObserver.add(radiusBlinker);
 
 		intervals.ensurePositionWatch(this);
+		mapTasks.setOnMapClickListener(this);
 	}
 
 	/**
@@ -249,7 +253,6 @@ public class FunctionsMobile implements PositionWatcher {
 	 * collect items
 	 */
 	public void collectItem() {
-		this.pingObserver.fire();
 		this.collectObserver.fire(itemCollectionRange);
 	}
 
@@ -287,5 +290,10 @@ public class FunctionsMobile implements PositionWatcher {
 
 	public void shakeDetected() {
 		collectItem();
+	}
+
+	@Override
+	public void onMapClick(LatLng arg0) {
+		this.pingObserver.fire();
 	}
 }
