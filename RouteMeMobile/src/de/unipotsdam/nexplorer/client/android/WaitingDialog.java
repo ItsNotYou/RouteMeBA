@@ -9,6 +9,7 @@ public class WaitingDialog extends Dialog {
 		super(context);
 
 		setContentView(R.layout.dialog_waiting);
+		setTitle("Bitte warten");
 		setCancelable(false);
 	}
 }

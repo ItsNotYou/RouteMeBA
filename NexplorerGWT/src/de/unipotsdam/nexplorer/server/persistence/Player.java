@@ -208,7 +208,19 @@ public class Player implements Locatable {
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 		for (Player neighbour : reachableNodes) {
 			Set<Player> knowNeighbours = neighbour.getNeighbours();
+
+			Integer size = null;
+			for (Player neigh : knowNeighbours) {
+				if (neigh.getId() == getId()) {
+					size = knowNeighbours.size();
+				}
+			}
+
 			knowNeighbours.add(this);
+
+			if (size != null) {
+				System.out.println("Neighbour was known, size changed from " + size + " to " + knowNeighbours.size());
+			}
 		}
 	}
 }

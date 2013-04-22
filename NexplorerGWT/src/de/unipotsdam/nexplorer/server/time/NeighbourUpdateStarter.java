@@ -19,13 +19,10 @@ public class NeighbourUpdateStarter extends StatelessTimer {
 	@Override
 	public void doRun() {
 		try {
-			long begin = System.currentTimeMillis();
 			UUID turn = UUID.randomUUID();
 			logger.trace("Updating neighbours (turn {})", turn);
 			admin.updateNeighbours();
 			logger.trace("Updated neighbours (turn {})", turn);
-			long end = System.currentTimeMillis();
-			System.out.println("Updating neighbours took " + (end - begin) + "ms");
 		} catch (Exception e) {
 			logger.error("Updating neighbours failed", e);
 		}
