@@ -12,7 +12,7 @@ public class NeighbourUpdateStarter extends StatelessTimer {
 
 	@Inject
 	public NeighbourUpdateStarter(Admin admin) {
-		super(new Milliseconds(500), false);
+		super(new Milliseconds(2000), false);
 		this.admin = admin;
 	}
 

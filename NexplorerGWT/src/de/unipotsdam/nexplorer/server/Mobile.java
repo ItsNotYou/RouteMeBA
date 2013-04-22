@@ -140,9 +140,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			List<Player> nodes = dbAccess.getAllActiveNodesInRandomOrder();
 			for (Player node : nodes) {
-				if (node.getDifficulty() == 1) {
-					instance.updateNeighbours(node.getId());
-				}
+				instance.updateNeighbours(node.getId());
 			}
 		} finally {
 			unit.close();

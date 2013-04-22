@@ -22,7 +22,6 @@ public class PingMessages {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public PingResponse addPing(PingRequest request) {
-		System.out.println("Ping from " + request.getNodeId() + " received");
 		return mobile.addPing(request);
 	}
 }

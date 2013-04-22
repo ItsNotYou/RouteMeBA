@@ -26,6 +26,7 @@ public class Neighbours implements java.io.Serializable {
 	private Players neighbour;
 	private Players node;
 	private Integer version;
+	private Long lastPing;
 
 	public Neighbours() {
 	}
@@ -97,5 +98,14 @@ public class Neighbours implements java.io.Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@Column(name = "last_ping")
+	public Long getLastPing() {
+		return this.lastPing;
+	}
+
+	public void setLastPing(Long lastPing) {
+		this.lastPing = lastPing;
 	}
 }

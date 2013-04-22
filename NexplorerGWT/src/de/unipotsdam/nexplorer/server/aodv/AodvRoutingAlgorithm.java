@@ -100,7 +100,11 @@ public class AodvRoutingAlgorithm {
 	 */
 	public void updateNeighbourhood(Player player) {
 		NeighbourAction routing = factory.create(player);
-		player.updateNeighbourhood(routing);
+		if (player.getDifficulty() == 1) {
+			player.updateNeighbourhood(routing);
+		} else if (player.getDifficulty() == 2) {
+			player.removeOutdatedNeighbours(routing);
+		}
 	}
 
 	private Setting getGameSettings() {

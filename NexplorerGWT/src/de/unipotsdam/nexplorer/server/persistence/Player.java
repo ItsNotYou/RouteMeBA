@@ -4,6 +4,7 @@ import static com.google.gwt.thirdparty.guava.common.collect.Collections2.filter
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import com.google.inject.assistedinject.Assisted;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.shared.Locatable;
 import de.unipotsdam.nexplorer.shared.Location;
@@ -28,12 +30,14 @@ public class Player implements Locatable {
 	private final Players inner;
 	private final DatabaseImpl dbAccess;
 	private final NeighbourSet neighbours;
+	private final DataFactory data;
 
 	@Inject
 	public Player(@Assisted Players player, DatabaseImpl dbAccess, DataFactory data) {
 		this.inner = player;
 		this.dbAccess = dbAccess;
 		this.neighbours = data.neighbours(inner);
+		this.data = data;
 	}
 
 	public long getRange() {
@@ -207,19 +211,47 @@ public class Player implements Locatable {
 		inner.setLastPing(new Date().getTime());
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 		for (Player neighbour : reachableNodes) {
-			Set<Player> knowNeighbours = neighbour.getNeighbours();
+			neighbour.receivePingFrom(this);
+		}
+	}
 
-			Integer size = null;
-			for (Player neigh : knowNeighbours) {
-				if (neigh.getId() == getId()) {
-					size = knowNeighbours.size();
-				}
+	public void receivePingFrom(Player player) {
+		// Search for existing neighbour connection
+		Neighbours existingConnection = null;
+		for (Neighbours neigh : inner.getNeighbourses()) {
+			if (neigh.getNeighbour().getId() == player.getId()) {
+				existingConnection = neigh;
+				break;
 			}
+		}
 
-			knowNeighbours.add(this);
+		if (existingConnection != null) {
+			// If connection exists -> update it
+			existingConnection.setLastPing(player.inner.getLastPing());
+		} else {
+			// If no connection exists -> create it
+			Neighbours neigh = new Neighbours(player.inner, inner);
+			neigh.setLastPing(player.inner.getLastPing());
+			inner.getNeighbourses().add(neigh);
+		}
+	}
 
-			if (size != null) {
-				System.out.println("Neighbour was known, size changed from " + size + " to " + knowNeighbours.size());
+	public synchronized void removeOutdatedNeighbours(NeighbourAction routing) {
+		int allowedHelloLosses = 8;
+		long tooOld = new Date().getTime() - allowedHelloLosses * inner.getPingDuration();
+
+		Set<Neighbours> knownNeighbours = inner.getNeighbourses();
+		Iterator<Neighbours> neighIterator = knownNeighbours.iterator();
+		while (neighIterator.hasNext()) {
+			Neighbours neighbour = neighIterator.next();
+			if (neighbour.getLastPing() != null && neighbour.getLastPing() < tooOld) {
+				Players inner = neighbour.getNode();
+
+				neighIterator.remove();
+				dbAccess.persist(inner);
+				dbAccess.delete(neighbour);
+
+				routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()));
 			}
 		}
 	}
