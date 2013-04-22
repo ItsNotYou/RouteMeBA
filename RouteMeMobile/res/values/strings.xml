@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">RouteMe Mobile</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="please_wait">Bitte warten</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="default_logingreeting">Bitte geben Sie ihren gewünschten Spielernamen ein. Wenn sie ein unterbrochenes Spiel wieder aufnehmen wollen, benutzen Sie bitte den gleichen Namen wie zuvor.</string>
