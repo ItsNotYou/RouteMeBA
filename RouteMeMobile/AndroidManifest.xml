@@ -32,7 +32,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="de.unipotsdam.nexplorer.client.android.MapActivity"
-            android:label="@string/title_activity_map" >
+            android:label="@string/title_activity_map"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
