@@ -36,7 +36,7 @@ public class MobileTest {
 		result.node.setNextItemDistance(3l);
 		result.node.setRange(10);
 		result.node.setScore(180l);
-		result.node.setLastPing(new Date().getTime());
+		result.node.setLastPing(new Date().getTime() - 2000);
 		result.node.setPingDuration(1000);
 
 		result.node.setNearbyItems(new ArrayList<Items>());

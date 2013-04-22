@@ -23,7 +23,9 @@ public class LevelTwoNeighbourDrawer extends LevelOneNeighbourDrawer implements 
 	@Override
 	protected void drawNeighbourMarkerAtLatitudeLongitude(int playerId, Neighbour neighbour) {
 		super.drawNeighbourMarkerAtLatitudeLongitude(playerId, neighbour);
-		surroundWithPing(playerId, neighbour);
+		if (neighbour.isPingActive()) {
+			surroundWithPing(playerId, neighbour);
+		}
 	}
 
 	private void surroundWithPing(int playerId, Neighbour neighbour) {

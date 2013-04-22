@@ -126,7 +126,7 @@ public class GameStatusTest extends AndroidTestCase {
 	}
 
 	public void testIsPingActive() {
-		assertTrue(status.getNode().isPingActive());
+		assertFalse(status.getNode().isPingActive());
 	}
 
 	public void testIsNeighbourPingActive() {
