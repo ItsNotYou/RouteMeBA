@@ -4,6 +4,9 @@ public class Ping {
 
 	private int nodeId;
 
+	public Ping() {
+	}
+
 	public Ping(int id) {
 		this.nodeId = id;
 	}

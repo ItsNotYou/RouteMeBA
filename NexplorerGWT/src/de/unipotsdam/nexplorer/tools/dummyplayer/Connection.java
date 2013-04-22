@@ -1,7 +1,13 @@
 package de.unipotsdam.nexplorer.tools.dummyplayer;
 
+import javax.ws.rs.core.MediaType;
+
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 public class Connection {
 
@@ -16,7 +22,9 @@ public class Connection {
 
 	private static synchronized void createClientOnce() {
 		if (client == null) {
-			client = Client.create();
+			ClientConfig cc = new DefaultClientConfig();
+			cc.getClasses().add(JacksonJsonProvider.class);
+			client = Client.create(cc);
 		}
 	}
 
@@ -81,10 +89,11 @@ public class Connection {
 			Stopwatch watch = Stopwatch.start("ping");
 
 			WebResource res = client.resource("http://" + host + "/rest/ping/");
-			res.post(new Ping(this.id));
+			res.type(MediaType.APPLICATION_JSON).post(new Ping(this.id));
 
 			watch.stop();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

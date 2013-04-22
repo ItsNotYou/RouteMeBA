@@ -1,7 +1,10 @@
 package de.unipotsdam.nexplorer.tools.dummyplayer;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import de.unipotsdam.nexplorer.shared.GameStatus;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GameSettings {
 
 	public double playingFieldLowerRightLatitude;
