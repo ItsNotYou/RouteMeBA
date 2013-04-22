@@ -4,6 +4,11 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
+import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
+import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
+import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
+import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
+import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
 import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RequestPing;
@@ -30,6 +35,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	private final MapRelatedTasks mapTasks;
 	private final Intervals intervals;
 	private final UI ui;
+	private final UILogin uiLogin;
+	private final UISensors uiSensors;
+	private final UIGameEvents uiGameEvents;
 	private final AppWrapper app;
 
 	// TODO: Parameter flexibilisieren
@@ -44,7 +52,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	private int score;
 	private int playerRange;
 	private java.util.Map<Integer, Item> nearbyItems;
-	private Object nextItemDistance;
+	private Integer nextItemDistance;
 	private boolean itemInCollectionRange;
 	private boolean hasRangeBooster;
 	private String hint = "Achte auf die Hinweise!";
@@ -73,6 +81,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 		this.intervals = intervals;
 		this.app = app;
 		this.ui = ui;
+		this.uiLogin = ui;
+		this.uiSensors = ui;
+		this.uiGameEvents = ui;
 		this.rest = rest;
 
 		SendLocation sendLocation = new SendLocation(rest);
@@ -112,7 +123,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	 */
 	public void loginPlayer(final String name, final boolean isMobile) {
 		if (name != "") {
-			ui.labelButtonForLogin();
+			uiLogin.loginStarted(name);
 
 			rest.login(name, isMobile, new AjaxResult<LoginAnswer>() {
 
@@ -123,7 +134,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 
 				@Override
 				public void error() {
-					ui.showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?");
+					uiLogin.loginFailed(LoginError.CAUSE_UNKNOWN);
 				}
 			});
 		}
@@ -138,7 +149,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 			return;
 		}
 
-		ui.hideNoPositionOverlay();
+		uiSensors.positionReceived();
 
 		this.currentLocation = location;
 		updateDisplay();
@@ -150,7 +161,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	 * callback for the geolocation
 	 */
 	public void positionError(Exception error) {
-		ui.showNoPositionOverlay();
+		uiSensors.noPositionReceived();
 	}
 
 	/**
@@ -217,7 +228,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 		// anpassen
 		if (gameDidEnd) {
 			intervals.stopIntervals();
-			ui.showGameEnded();
+			uiGameEvents.gameEnded();
 		} else {
 			if (battery > 0) {
 				if (!gameExists && gameDidExist) {
@@ -227,14 +238,14 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 					ui.showWaitingForGameStart();
 				} else if (gameExists && gameDidExist && !gameIsRunning) {
 					intervals.restartIntervals(this);
-					ui.showGamePaused();
+					uiGameEvents.gamePaused();
 				} else {
 					intervals.startIntervals(this);
-					ui.hideWaitingForGameOverlay();
+					uiGameEvents.gameResumed();
 				}
 			} else {
 				intervals.stopIntervals();
-				ui.showBatteryEmpty();
+				uiGameEvents.playerRemoved(RemovalReason.NO_BATTERY);
 			}
 		}
 	}
@@ -259,14 +270,14 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	private void loginSuccess(LoginAnswer data) {
 		if (!isNaN(parseInt(data.id))) {
 			playerId = parseInt(data.id);
-			ui.hideLoginOverlay();
+			uiLogin.loginSucceeded(playerId);
 			updateGameStatus(false);
 			intervals.startGameStatusInterval(this);
 			// $("#mainContent").html("");
 
 			this.loginObserver.fire(playerId);
 		} else {
-			ui.showLoginError("Keine id bekommen");
+			uiLogin.loginFailed(LoginError.NO_ID);
 		}
 	}
 

@@ -35,13 +35,12 @@ public class Window {
 
 		Text beginDialog = new Text(beginText, host);
 
-		MainPanelToolbar mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host);
-
 		Overlay loginOverlay = new Overlay(loginDialog, host);
 
 		Overlay waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		Overlay noPositionOverlay = new Overlay(noPositionDialog, host);
 
+		MainPanelToolbar mainPanelToolbar = new MainPanelToolbar(score, neighbourCount, remainingPlayingTime, battery, host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText, beginDialog, loginOverlay, waitingForGameOverlay, noPositionOverlay);
 		UI result = new UI(host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText, beginDialog, mainPanelToolbar, loginOverlay, waitingForGameOverlay, noPositionOverlay);
 
 		playerMarker = new Marker(host) {

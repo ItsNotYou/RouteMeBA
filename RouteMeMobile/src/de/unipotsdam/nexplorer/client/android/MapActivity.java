@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -41,6 +42,10 @@ public class MapActivity extends FragmentActivity implements ShakeListener {
 		MapRotator map = new MapRotator(this, R.id.map);
 		map.setUpMapIfNeeded(true);
 		GoogleMap googleMap = map.getMap();
+		if (googleMap == null) {
+			Toast.makeText(this, "Map-Service ist nicht installiert", Toast.LENGTH_LONG).show();
+			return;
+		}
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(this);

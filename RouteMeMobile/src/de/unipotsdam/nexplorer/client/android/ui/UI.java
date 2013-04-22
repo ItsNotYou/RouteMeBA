@@ -1,113 +1,49 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
 import android.app.Activity;
-import de.unipotsdam.nexplorer.client.android.R;
+import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
+import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
+import de.unipotsdam.nexplorer.client.android.callbacks.UICallback;
+import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
+import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
+import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
 
-public class UI extends UIElement {
+public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
 	private final Button collectItemButton;
 	private final Button loginButton;
-	private final Text activeItems;
-	private final Text hint;
-	private final Text nextItemDistance;
 	private final Text waitingText;
 	private Text beginDialog;
-	private MainPanelToolbar mainPanelToolbar;
+	private UICallback mainPanelToolbar;
 	private Overlay loginOverlay;
 	private Overlay noPositionOverlay;
 	private Overlay waitingForGameOverlay;
-	private boolean isCollectingItem;
 
-	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, MainPanelToolbar mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay) {
+	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, UICallback mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay) {
 		super(host);
 		this.collectItemButton = collectItemButton;
 		this.loginButton = loginButton;
-		this.activeItems = activeItems;
-		this.hint = hint;
-		this.nextItemDistance = nextItemDistance;
 		this.waitingText = waitingText;
 		this.beginDialog = beginDialog;
 		this.mainPanelToolbar = mainPanelToolbar;
 		this.loginOverlay = loginOverlay;
 		this.noPositionOverlay = noPositionOverlay;
 		this.waitingForGameOverlay = waitingForGameOverlay;
-
-		this.isCollectingItem = false;
 	}
 
-	private String addZ(double n) {
-		return (n < 10 ? "0" : "") + n;
-	}
-
-	/**
-	 * 
-	 * @param ms
-	 * @returns {String}
-	 */
-	private String convertMS(Long seconds) {
-		if (seconds == null) {
-			return null;
-		}
-
-		double s = seconds;
-		double ms = s % 1000;
-		s = (s - ms) / 1000;
-		double secs = s % 60;
-		s = (s - secs) / 60;
-		double mins = s % 60;
-
-		return addZ(mins);
-	}
-
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Object nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
 		runOnUIThread(new Runnable() {
 
 			@Override
 			public void run() {
-				updateStatusHeader(score, neighbourCount, remainingPlayingTime, battery);
-				updateStatusFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+				mainPanelToolbar.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
+				mainPanelToolbar.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 			}
 		});
 	}
 
-	private void updateStatusHeader(final Integer score, final Integer neighbourCount, final Long remainingPlayingTime, final Double battery) {
-		mainPanelToolbar.items.getItems()[0].setText(score + "");
-		mainPanelToolbar.items.getItems()[2].setText(neighbourCount + "");
-		mainPanelToolbar.items.getItems()[4].setText(convertMS(remainingPlayingTime));
-		mainPanelToolbar.items.getItems()[6].setText((battery + "%").replace(".", ","));
-	}
-
-	private void updateStatusFooter(final Object nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
-		this.hint.setText(hint);
-
-		if (nextItemDistance != null)
-			this.nextItemDistance.setText("Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
-		else
-			this.nextItemDistance.setText("Keine Gegenstände in der Nähe.");
-
-		int boosterImageElement;
-		if (hasRangeBooster) {
-			boosterImageElement = R.drawable.mobile_phone_cast;
-		} else {
-			boosterImageElement = R.drawable.mobile_phone_cast_gray;
-		}
-
-		activeItems.html("Aktive Gegenstände: ", boosterImageElement);
-
-		if (!this.isCollectingItem) {
-			collectItemButton.html("Gegenstand einsammeln");
-
-			boolean isDisabled = collectItemButton.isDisabled();
-			if (itemInCollectionRange && isDisabled) {
-				collectItemButton.enable();
-			} else if (!itemInCollectionRange && !isDisabled) {
-				collectItemButton.disable();
-			}
-		}
-	}
-
 	public void disableButtonForItemCollection() {
-		this.isCollectingItem = true;
+		mainPanelToolbar.setIsCollectingItem(true);
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -119,10 +55,10 @@ public class UI extends UIElement {
 	}
 
 	public void enableButtonForItemCollection() {
-		this.isCollectingItem = false;
+		mainPanelToolbar.setIsCollectingItem(false);
 	}
 
-	public void hideLoginOverlay() {
+	private void hideLoginOverlay() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -132,7 +68,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void labelButtonForLogin() {
+	private void labelButtonForLogin() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -142,7 +78,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void showLoginError(String string) {
+	private void showLoginError(String string) {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -153,7 +89,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void hideNoPositionOverlay() {
+	private void hideNoPositionOverlay() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -163,7 +99,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void showNoPositionOverlay() {
+	private void showNoPositionOverlay() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -173,7 +109,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void showGameEnded() {
+	private void showGameEnded() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -195,7 +131,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void showGamePaused() {
+	private void showGamePaused() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -206,7 +142,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void hideWaitingForGameOverlay() {
+	private void hideWaitingForGameOverlay() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -216,7 +152,7 @@ public class UI extends UIElement {
 		});
 	}
 
-	public void showBatteryEmpty() {
+	private void showBatteryEmpty() {
 		runOnUIThread(new Runnable() {
 
 			@Override
@@ -225,5 +161,63 @@ public class UI extends UIElement {
 				waitingForGameOverlay.show();
 			}
 		});
+	}
+
+	@Override
+	public void loginStarted(String name) {
+		labelButtonForLogin();
+	}
+
+	@Override
+	public void loginSucceeded(int playerId) {
+		hideLoginOverlay();
+	}
+
+	@Override
+	public void loginFailed(LoginError reason) {
+		switch (reason) {
+		case NO_ID:
+			showLoginError("Keine id bekommen");
+			break;
+		case CAUSE_UNKNOWN:
+		default:
+			showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?");
+			break;
+		}
+
+	}
+
+	@Override
+	public void noPositionReceived() {
+		showNoPositionOverlay();
+	}
+
+	@Override
+	public void positionReceived() {
+		hideNoPositionOverlay();
+	}
+
+	@Override
+	public void gamePaused() {
+		showGamePaused();
+	}
+
+	@Override
+	public void gameResumed() {
+		hideWaitingForGameOverlay();
+	}
+
+	@Override
+	public void gameEnded() {
+		showGameEnded();
+	}
+
+	@Override
+	public void playerRemoved(RemovalReason reason) {
+		switch (reason) {
+		case NO_BATTERY:
+		default:
+			showBatteryEmpty();
+		}
 	}
 }
