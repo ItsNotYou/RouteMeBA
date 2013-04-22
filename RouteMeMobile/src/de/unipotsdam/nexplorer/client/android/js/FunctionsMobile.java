@@ -284,4 +284,8 @@ public class FunctionsMobile implements PositionWatcher {
 		}
 		return Integer.parseInt(value);
 	}
+
+	public void shakeDetected() {
+		collectItem();
+	}
 }

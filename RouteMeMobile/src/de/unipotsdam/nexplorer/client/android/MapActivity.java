@@ -19,15 +19,19 @@ import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.js.SenchaMap;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
+import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
+import de.unipotsdam.nexplorer.client.android.sensors.ShakeListener;
 import de.unipotsdam.nexplorer.client.android.support.MapRotator;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
-public class MapActivity extends FragmentActivity {
+public class MapActivity extends FragmentActivity implements ShakeListener {
+
+	private static final String HOST_ADRESS = "http://routeme.dnsdynamic.com:8080";
 
 	private FunctionsMobile js;
 	private boolean firstStart;
 	private LoginDialog loginDialog;
-	private static final String HOST_ADRESS = "http://routeme.dnsdynamic.com:8080";
+	private ShakeDetector shaker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class MapActivity extends FragmentActivity {
 		MapRotator map = new MapRotator(this, R.id.map);
 		map.setUpMapIfNeeded(true);
 		GoogleMap googleMap = map.getMap();
+
+		shaker = new ShakeDetector(this, 1, 750);
+		shaker.addShakeListener(this);
 
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
@@ -86,9 +93,26 @@ public class MapActivity extends FragmentActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		shaker.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		shaker.onPause();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_map, menu);
 		return true;
+	}
+
+	@Override
+	public void shakeDetected(float accel) {
+		js.shakeDetected();
 	}
 }
