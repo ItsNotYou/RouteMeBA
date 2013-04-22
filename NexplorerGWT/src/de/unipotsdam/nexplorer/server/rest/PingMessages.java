@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.server.rest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
@@ -19,8 +20,8 @@ public class PingMessages {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public PingResponse addPing(PingRequest request) {
-		System.out.println("Ping requested");
 		return mobile.addPing(request);
 	}
 }
