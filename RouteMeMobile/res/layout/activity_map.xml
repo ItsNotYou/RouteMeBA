@@ -82,7 +82,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#C9DAEF"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/nextItemDistance"
