@@ -140,7 +140,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			List<Player> nodes = dbAccess.getAllActiveNodesInRandomOrder();
 			for (Player node : nodes) {
-				instance.updateNeighbours(node.getId());
+				if (node.getDifficulty() == 1) {
+					instance.updateNeighbours(node.getId());
+				}
 			}
 		} finally {
 			unit.close();
@@ -178,6 +180,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			AodvNode node = unit.resolve(AodvFactory.class).create(player);
 
 			node.pingNeighbourhood();
+			node.player().decreaseBatteryBy(5);
 
 			PingResponse result = new PingResponse();
 			result.setPingId(0);
