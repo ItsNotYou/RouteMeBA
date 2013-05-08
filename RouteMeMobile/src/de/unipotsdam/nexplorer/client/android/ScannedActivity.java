@@ -8,9 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 import de.unipotsdam.nexplorer.client.android.sensors.WifiConnector;
-import de.unipotsdam.nexplorer.client.android.sensors.WifiListener;
 
-public class ScannedActivity extends Activity implements WifiListener {
+public class ScannedActivity extends Activity implements WifiConnector.WifiListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

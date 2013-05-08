@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 
 /**
  * Mainly taken from <a href="http://stackoverflow.com/questions/8818290/how-to-connect-to-a-specific-wifi-network-in-android-programmatically">stackoverflow</a>
@@ -42,5 +43,50 @@ public class WifiConnector {
 
 	public WifiTask asTask(WifiListener listener) {
 		return new WifiTask(this, listener);
+	}
+
+	public class WifiTask extends AsyncTask<String, Void, Boolean> {
+
+		private WifiConnector wifi;
+		private WifiListener listener;
+
+		public WifiTask(WifiConnector wifi, WifiListener listener) {
+			this.wifi = wifi;
+			this.listener = listener;
+		}
+
+		/**
+		 * Takes exactly two strings: Network SSID and PASSWORD.
+		 */
+		@Override
+		protected Boolean doInBackground(String... params) {
+			if (params.length != 2) {
+				return false;
+			}
+
+			return wifi.connectTo(params[0], params[1]);
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+				listener.connectSuccessful();
+			} else {
+				listener.connectFailed();
+			}
+		}
+
+		@Override
+		protected void onCancelled(Boolean result) {
+			listener.connectFailed();
+		}
+	}
+
+	public interface WifiListener {
+
+		public void connectSuccessful();
+
+		public void connectFailed();
 	}
 }

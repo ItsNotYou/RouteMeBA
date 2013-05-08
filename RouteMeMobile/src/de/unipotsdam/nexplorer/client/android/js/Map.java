@@ -6,7 +6,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
-import de.unipotsdam.nexplorer.client.android.support.MapRotator;
+import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.ui.UIElement;
 
 public class Map extends UIElement {

@@ -99,4 +99,9 @@ public class ShakeDetector implements SensorEventListener {
 	public void addShakeListener(ShakeListener listener) {
 		observers.add(listener);
 	}
+
+	public interface ShakeListener {
+
+		public void shakeDetected(float accel);
+	}
 }

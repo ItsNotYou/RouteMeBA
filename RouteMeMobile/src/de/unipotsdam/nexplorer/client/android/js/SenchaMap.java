@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.google.android.gms.maps.GoogleMap;
 
-import de.unipotsdam.nexplorer.client.android.support.MapRotator;
+import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 
 public class SenchaMap {
 
