@@ -17,3 +17,10 @@ NexplorerGWT/war/js/.settings/
 NexplorerGWT/war/js/.nbproject/
 NexplorerGWT/war/jasmine-1.1.0.js
 NexplorerGWT/war/JasmineAdapter-1.1.2.js
+
+*.aux
+*.bbl
+*.blg
+*.log
+*.toc
+*.tps

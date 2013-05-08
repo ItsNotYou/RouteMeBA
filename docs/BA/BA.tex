@@ -1,0 +1,447 @@
+\documentclass[german,12pt,a4paper]{article}
+\usepackage[ngerman]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[OT1, T1]{fontenc}
+\usepackage{setspace}
+\usepackage[printonlyused]{acronym}
+\bibliographystyle{plain}
+
+\title{Bachelorarbeit}
+\author{Hendrik Geßner, 751352}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\pagebreak
+
+\section{Grundlagen}
+
+\subsection{Spielidee}
+
+\subsection{Existierendes Spiel}
+
+\begin{itemize}
+	\item hält sich nicht ganz an AODV
+	\item RREQ / RREP / Routenaufbau nicht nach Standard -> kein RREP zurückgesendet
+	\item Automatisches Neighbour Find in einfachstem Schwierigkeitsgrad stellt Verknüpfungen zu Nachbarn her (RERR bei verlust des Nachbarn) -> nicht standardkonform
+\end{itemize}
+
+\subsection{Schwierigkeiten beim Spielen}
+
+In verschiedenen Testläufen mit dem existierenden Spiel sind wiederholt Schwierigkeiten aufgefallen, die das Spielerlebnis beeinträchtigt haben oder die Vorbereitungsphase sehr langwierig machten.
+
+Da für das Spiel immer wieder Smartphones verwendet wurden, die nicht für das RouteMe-System konfiguriert wurden, mussten vor jedem Spiel mit jedem Smartphone folgende Punkte überprüft werden:
+
+\begin{itemize}
+	\item WLAN eingerichtet: Jedes Smartphone musste mit dem eingesetzten Router verbunden sein, um mit dem Server kommunizieren zu können. Hilf half der Einsatz von \ac{WPS}.
+	\item Akku geladen: Jedes Smartphone musste vollständig geladen sein, um während des Spieles nicht auszugehen. Dabei ist zu beachten, dass die im Spiel genutzten Hardware-Ressourcen Display, GPS-Empfänger und WLAN-Modul besonders energieverbrauchend sind.
+	\item URL-Lesezeichen einrichten: Die eingesetzte URL basierte auf einer IP-Adresse und case-sensitiven URL-Bestandteilen. Nicht alle Spieler hatten Vorerfahrung in der Benutzung von Android-Smartphones. Somit stellte sich bereits das Starten eines Browsers oder das Eingeben einer URL auf der Touch-Tastatur als Herausforderung dar. Um beim Spielen zu vermeiden, dass dass die Spieler bei einem Bedienungs-Fehler oder Software-Fehler die URL vollständig eingeben müssen, wurden Lesezeichen auf dem Startbildschirm der Smartphones eingerichtet.
+\end{itemize}
+
+Zudem sind verschiedene menschliche Aufgaben in Vorbereitung auf das Spiel notwendig. So müssen alle Spieler in die Funktionsweise und Ziele des Spieles eingeführt werden. Da das Spiel mit wechselnden Gruppen gespielt wurde, wurde jede Gruppe in die Funktionsweise eines Spiel-Interfaces eingeführt, direkt bevor sie dieses Interface verwenden sollte. Da die Instruktoren keine ausgebildeten Trainer sind, ist es vorgekommen, dass die Erklärung zwischen den Gruppen unterschiedlich war. Außerdem konnte es passieren, dass einzelne Punkte besonders ausführlich erklärt oder vergessen wurden.
+
+Zusammenfassend ist festzuhalten, dass die Einrichtung von acht Smartphones etwa zwei Stunden benötigt hat. Zusammen mit der Einrichtung des Servers und des erforderlichen Netzwerkes wurden etwa vier Stunden benötigt.
+
+\begin{itemize}
+	\item Übersichtlichkeit in Indoor-UI mangelhaft
+	\item Verbindungen zwischen Knoten / aktuelles Netzwerk nur mit Erfahrung oder Zeit zu erkennen
+	\item Spiel-Geschwindigkeit und Spieler-Geschwindigkeit passen nicht zusammen -> Routing-Vorgänge fühlen sich langsam an, Spieler bewegen zu schnell, um Routen, die mehr als drei Knoten beinhalten, zu nutzen
+\end{itemize}
+
+\begin{itemize}
+	\item server ausgelastet
+	\item lange, ständig wechselnde ip-basierte addressen
+	\item IP muss immer auf jedem einzelnen Client geändert werden
+	\item Sehr ähnliche IPs -> automatische vervollständigung des Browsers unnütz, da nicht alle passenden IPs angezeigt
+	\item Spielfeld rechteckig entlang längen- und breitengrade, aber nicht drehbar oder in Form änderbar
+\end{itemize}
+
+\subsection{AODV}
+
+\ac{AODV} ist Routing-Algorithmus, der für \ac{MANETs} ausgelegt ist. Jeder Knoten ist gleichberechtigt. Durch das Versenden und Weiterleiten von Nachrichten an Nachbarn entsteht ein Netzwerk. Dieses Netzwerk ist ständigen Veränderungen unterworfen, da sich Nachbarschaftsverhältnisse ändern und Knoten ausfallen können. Diese Veränderungen erfordern eine permanente Anpassung der Routen.
+
+\ac{AODV} gehört zu den reaktiven Routing-Algorithmen. Routen werden erst bei Bedarf ermittelt. Alle an der Route beteiligten Knoten überwachen die Aktualität und senden Fehlernachrichten, falls eine Route ausfällt.
+
+Es wird an einem Nachfolger namens AODVv2 gearbeitet.
+
+\subsubsection{RREQ und RREP}
+
+Routen werden über eine Kombination von \ac{RREQ} und \ac{RREP} gefunden. Benötigt ein Quellknoten eine Route zu einem Zielknoten, so sendet er einen \ac{RREQ} an alle Nachbarknoten. Jeder Nachbarknoten überprüft, ob er bereits eine Route zum Zielknoten kennen. Falls eine Route bekannt zum Zielknoten bekannt ist oder falls der Knoten selbst der Zielknoten ist, so sendet er einen \ac{RREP} an den Quellknoten zurück. Ist keine Route bekannt, so leitet er den \ac{RREQ} an seine eigenen Nachbarknoten weiter. Nachbarknoten speichern eine Route zum Quellknoten des \ac{RREQ}.
+
+\subsubsection{Hello-Nachrichten}
+
+Knoten können Hello-Nachrichten versenden, um ihren Nachbarn Ver\-bin\-dungs-In\-for\-matio\-nen zu Verfügung zu stellen. Dabei sollen Hello-Nachrichten nur verwendet werden, wenn der aussendende Knoten teil einer aktiven Route ist. Bleiben Hello-Nachrichten für einen bestimmten Zeitraum aus, so kann der empfangende Knoten davon ausgehen, dass die Route ausgefallen ist.
+
+\subsubsection{RERR}
+
+Fällt eine Route aus, so wird ein \ac{RERR} versendet. Empfangende Knoten können anhand des \ac{RERR} ihre Routen-Einträge korrigieren.
+
+\subsection{Pervasive Games}
+
+\subsection{Android}
+
+\subsubsection{Programmiermodell}
+
+\begin{itemize}
+	\item Subject-Observer-Pattern
+	\item Besteht aus \texttt{Activity}s und \texttt{Service}s
+\end{itemize}
+
+Exceptions, die nicht abgefangen werden, lassen die Applikation abstürzen.
+
+\subsubsection{Lebenszyklus}
+
+HIER BILD AUS ANDROID-DOKU!
+
+\subsubsection{Rechtemanagement}
+
+Um Zugriff auf Hardware-Ressourcen oder sensible Informationen zu erlangen muss die Applikation vorher diese Rechte am System anmelden. Dies geschieht über das \texttt{ApplicationManifest}, in dem die benötigten Rechte eingetragen werden. Vor der Installation der Applikation bekommt der Benutzer eine Übersicht über die für die Applikation erforderlichen Rechte. Mit der Installation werden der Applikation die eingetragenen Rechte gewährt. Rechte werden immer vollständig gewährt. Es ist nicht möglich, Rechte im Nachhinein zu entziehen oder einzuschränken.
+
+Typische Rechte sind der Zugriff auf das Internet, Zugriff auf den GPS-Empfänger oder Zugriff auf die auf dem Smartphone gespeicherten Kontaktdaten.
+
+\subsubsection{UI-Thread}
+
+Wie viele andere Desktop-UIs setzt auch Android auf ein UI-Thread-Modell. Änderungen an GUI-Elementen dürfen nur auf dem UI-Thread durchgeführt werden. Versuche, Änderungen außerhalb des UI-Threads durchzuführen, werden mit Exceptions zurückgewiesen.
+
+Um Änderungen auf dem UI-Thread durchzuführen müssen Aufgabenblöcke, in Java \texttt{Runnable}s, explizit auf den UI-Thread geschoben werden.
+
+\subsubsection{Hintergrundoperationen}
+
+Es gibt verschiedene Möglichkeiten, Operationen im Hintergrund laufen zu lassen:
+
+\begin{itemize}
+	\item Android-AsyncTasks
+	\item Android-Services
+	\item Java-Threads
+\end{itemize}
+
+\paragraph{AsyncTasks} Hintergrundoperationen, die nur für eine sehr begrenzte Zeit laufen, können in einem \texttt{AsyncTask} durchgeführt werden. Aus Kompatibilitätsgründen wird pro Applikation und zu jedem Zeitpunkt standardmäßig immer nur ein \texttt{AsyncTask} ausgeführt. Ein \texttt{AsyncTask} muss vom UI-Thread gestartet werden. Android übernimmt die Bearbeitung im Hintergrund. Bei Beendigung der Bearbeitung wird eine Methode mit dem Ergebniss der Hintergrund-Aufgabe aufgerufen. Android stellt sicher, dass diese Methode im Kontext des UI-Threads läuft. Somit können UI-Manipulationen, die auf dem Ergebnis der Hintergrundoperation beruhen, ohne weiteren Aufwand durchgeführt werden.
+
+\paragraph{Services} Lange Hintergrundoperationen, die unabhängig von der GUI laufen sollen, können in Services durchgeführt werden. Wie eine \texttt{Activity} hat auch ein \texttt{Service} einen eigenen Lebenszyklus. Die Bindung zwischen \texttt{Activity} und \texttt{Service} wird beim Erstellen des \texttt{Service} festgelegt. \texttt{Service} und \texttt{Activity} können unabhängig voneinander arbeiten und undabhängig voneinander Lebenszyklus-Phasen durchlaufen.
+
+\paragraph{Threads} Die aus der Java-Welt bekannten Threads sind auch in Android verfügbar. Sie bieten feingranulare Zugriffs- und Einstellungsmöglichkeiten für parallele Verarbeitung, bieten aber keine Unterstützung für die Manipulation des UI-Thread. Sie sind am besten als Zwischenstufe für die Portierung von Java-Code auf Android-Systeme geeignet.
+
+\subsubsection{Fragments}
+
+Aus Einzelblöcken zusammengesetzte UI-Elemente, die wiederverwendet werden können, heißen \textit{Fragments}. Diese haben ein eigenes Layout und eigenen Java-Code. Kommunikation mit \textit{Fragments} erfolgt über Interfaces. Um die Übersichtlichkeit in Applikationen zu erhalten, wird empfohlen, logisch zusammenhängende Einheiten in \textit{Fragments} zu kapseln.
+
+Eines der bekannten \textit{Fragments} ist das \texttt{SupportMapFragment} für Googles Maps-Service.
+
+\subsubsection{Sensoren}
+
+Android-Smartphones besitzen eine Vielzahl von verfügbaren Sensoren. Dazu gehören unter anderem GPS-Empfänger, Beschleunigungs- und Lage-Sensoren. Die Vielzahl an automatisch auslesbaren Sensoren machen Smartphones besonders interessant für pervasive Anwendungen. Die große Verbreitung von Android sorgt dabei für eine Vielzahl an unterschiedlichen Smartphones mit sehr verschiedenen Konfigurationen und Ausstattungen.
+
+Android bietet einfachen Zugriff auf die verfügbaren Sensoren. Die Applikation ist dabei selbst verantwortlich, sich an das verfügbare System anzupassen und nicht vorhandene Sensoren zu kompensieren. Sensoren werden über den \texttt{SensorManager} angesprochen. Android verwendet auf für Sensoren das \textit{observer pattern}. Im Folgenden werden drei Sensoren vorgestellt, die in der Arbeit verwendet wurden.
+
+\begin{itemize}
+	\item Motion-Sensor
+	\item Tilt-Sensor
+	\item GPS-Sensor
+\end{itemize}
+
+\subsubsection{APIs}
+
+\begin{itemize}
+	\item Google Maps -> Play Services
+	\item Einbindung von Google Maps
+	\item Deployment und API-Keys
+	\item Aufbau und Benutzung sehr ähnlich zu JS-API Version 3
+\end{itemize}
+
+\subsubsection{Einbindung von Drittbibliotheken}
+
+Wie von Java bekannt können externe Bibliotheken über JAR-Archive eingebunden werden. Dabei ist allerdings ganz besonders auf die Kompatibilität mit der Android-VM zu achten. Android bietet nur eine Untermenge der aus der Java-API bekannten Klassen und Interfaces an. Somit lassen sich viele Bibliotheken nur mit Anpassung des Quellcodes nutzen.
+
+Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. Eine Android-Bibliothek ist ein Android-Projekt, bei dem das \texttt{android.library}-Flag gesetzt ist. Android-Bibliotheken sind nicht ausführbar und können deshalb auch nicht separat getestet werden. Android-Bibliotheken können sowohl von Android-Projekten als auch von Java-Projekten verwendet werden. Im Gegensatz dazu können Java-Projekte nicht als Bibliotheken in Android-Projekten eingebunden werden.
+
+\subsubsection{Audio}
+
+\begin{itemize}
+	\item Audio muss beantragt werden
+	\item Für kurze Audio-Schnippsel gibt es ein besonderes Flag, das Hintergrundgeräusche / Hintergrundmusik nicht stoppt, sondern nur herunterregelt
+\end{itemize}
+
+\subsection{GPS}
+
+\begin{itemize}
+	\item Anzahl GPS-Satelliten
+	\item Verfahren für Genauigkeit
+	\item Hindernisse
+	\item Fixierung auf Hardware
+	\item Alternativen zu GPS
+	\item Erweiterungen von GPS (AGPS, DGPS)
+	\item Für DGPS -> Anbieter oder Brandeburg Viewer + Eigene Implementierung
+\end{itemize}
+
+\subsection{Abstandsbestimmung auf der Erde}
+
+\begin{itemize}
+	\item Erde ist keine Kugel
+	\item Abstandsbestimmung zweier Punkte auf Oberfläche über direkten Weg gehen meist durch Oberfläche hindurch
+	\item Bei geringem Abstand und Fehlertoleranz kann Fehler vernachlässigt werden
+	\item Für unser Szenario ausreichen
+	\item GRAFIK FÜR ABSTANDSBERECHNUNG EINFÜGEN
+\end{itemize}
+
+\subsection{QR-Codes}
+
+\begin{itemize}
+	\item QR-Tags sind Schwarz-Weiß-Muster
+	\item Pervasive-Computing-Vorlesung
+	\item Benötigte Hardware: Kamera
+	\item Rest: Softwarelösung
+	\item Einfach in Herstellung, günstig, viele Leser
+\end{itemize}
+
+\subsection{WiFi}
+
+\begin{itemize}
+	\item Kommunikation mit Server
+	\item Alternative: GPRS / UMTS
+	\item Smartphones nicht mit SIM-Karte ausgestattet -> kein Zugriff auf diese Netze
+\end{itemize}
+
+\subsection{GWT / JSNI}
+
+\subsection{Rest / RESTful}
+
+\subsubsection{Ein- und Ausgabeformate}
+
+\begin{itemize}
+	\item Nicht festgelegt
+	\item XML und JSON am häufigsten
+\end{itemize}
+
+\subsubsection{Hyperlinks}
+
+\begin{itemize}
+	\item XML hat XLink
+	\item JSON fehler Hyperlinks
+	\item Verschiedene Ansätze, JSON um Links zu erweitern, bisher kein Standard
+\end{itemize}
+
+\section{Konzept}
+
+\subsection{Portierung}
+
+\begin{itemize}
+	\item Portierung von JS nach Android-Java
+	\item Struktur des Codes übernehmen
+	\item bereits Erfahrung in der Portierung von PHP nach Java
+	\item kopieren / einfügen, anschließend an Java-Syntax anpassen
+	\item Wrapper für UI-Elemente und Browser-Funktionen
+	\item UI vollständig anders umsetzen
+	\item Einstieg an Android-Gegebenheiten anpassen
+\end{itemize}
+
+\subsection{Umsetzung von Pervasivität}
+
+\begin{itemize}
+	\item Schüttel-Gesten für Einsammeln
+	\item Audio-Feedback für Ping aussenden / empfangen
+	\item Vibrations-Feedback für Ping empfangen
+	\item Pervasive Karte
+	\item Items an Horizont
+\end{itemize}
+
+\subsection{Hello-Nachrichten}
+
+Benutzer finden sich untereinander nur noch, wenn sie einen Ping aussenden. Wie soll der Prozess des Findens und Haltens von Nachbarn umgesetzt werden?
+
+Blick auf das AODV-Protokoll: Knoten senden regelmäßig HELLO-Nachrichten aus. Wenn HELLO-Nachrichten zu lange ausbleiben wird Abbruch der Verbindung angenommen, Routing-Tabelle aktualisiert und RERR gesendet.
+
+HELLO-Nachrichten werden nur gesendet, wenn Knoten Teil einer aktiven Route ist. Außerdem tragen HELLO-Nachrichten eine Sequence-Number in sich, die zur Bestimmung der Aktualität von Routen verwendet wird.
+
+\begin{itemize}
+	\item Spielidee: Knoten bekommen Punkte für den Aufbau einer Route. Vermutung: Dadurch wird das Aufbauen von Routen gestärkt, was auch der Sinn eines MANETs ist. Außerdem sollen HELLO-Nachrichten laut RFC nur gesendet werden, wenn Knoten Teil einer aktiven Route ist. Deshalb muss für die sinnvolle / standardkonforme Nutzung von HELLO-Nachrichten der Aufbau von Routen gefördert werden.
+	\item Ziel: Routenbewusstsein stärken? Idee: Aktive Routen anzeigen. Einwand: Wenig Platz auf Smartphone-Screen, da Button für Gegenstand einsammeln und ein paar Gegenstands-Informationen sowie Hilfstexte verwendet wird. Lässt sich dieser Platz besser nutzen? Ja!
+\end{itemize}
+
+Umsetzung auf Mobile: Spieler senden Pings manuell aus. Sollen sie Nachbarn finden, indem sie selbst einen Ping aussenden (Aktiv-Sonar eines U-Bootes) oder sollen sich Nachbarn zeigen, indem der Spieler ihren Ping empfängt?
+
+Häufigkeit der Pings: Spieler sollten nicht durchgehend ohne Nachteil pingen können, da sonst Effekt des manuellen Pings verloren geht. Verschiedene Möglichkeiten:
+
+\begin{itemize}
+	\item Bestimmte Anzahl an Pings für Spieler verfügbar, neue werden zeitlich oder über Item verfügbar
+	\item Pings sind nur mit Cooldown verfügbar
+	\item Pings haben Malus-Effekt (z.B. auf Batterie oder Punkte)
+\end{itemize}
+
+Wie werden Nachbarschaftsverhältnisse wieder aufgebhoben? Sollen Nachbarschaftsverhältnisse automatisiert aufgehoben werden?
+
+Blick auf AODV-Protokoll: Für HELLO-Nachrichten gilt ein HELLO\_INTERVAL und ein ALLOWED\_HELLO\_LOSS. Daraus ergibt sich, wann Routen als ungültig erkannt werden sollen.
+
+\begin{itemize}
+	\item Spielerische Idee: Vor Ablauf des HELLO\_INTERVAL*ALLOWED\_HELLO\_LOSS den Knoten warnen, der das HELLO ausgesendet hat, damit seine Routen und gültigen Nachbarn nicht verloren gehen. So lässt sich leichter ein Gefühl für HELLO\_INTERVAL entwickeln.
+\end{itemize}
+
+\subsection{Nachrichtenversand}
+
+Auf Level zwei dürfen Routen nicht mehr selbst gewählt werden sondern müssen aus einer Liste von Vorgaben ausgewählt werden. Was soll auf dem Auswahlfeld angezeigt werden?
+
+\begin{itemize}
+	\item Nickname der Knoten, zwischen denen geroutet werden soll. Nicknamen sind keine Beschränkungen auferlegt, außerdem geben Nicknamen keine Auskunft über Position / Status / Distanz der Route / Punkte der Route etc. Indoor-Spieler bauen bisher keine Verbindung zu einzelnen Knoten (also Verknüpfung von Nickname und Position / Verhalten), was bringen also Nicknames?
+	\item Alternative: Distanz / Anforderung / Vermutete Punkte / Vermutete Hops
+	\item Außerdem: Bonus-Eigenschaft
+	\item Bei Maus-Hover: Start- und Zielknoten auf Karte hervorheben
+\end{itemize}
+
+Welche Routen sollen zur Verfügung gestellt werden?
+
+\begin{itemize}
+	\item Nur derzeit verknüpfte Wege
+	\item Beliebige Auswahl an Knoten. Bei 6 Knoten sind das 15 ($\frac{n*(n-1)}{2}$) mögliche Wege. Bei Bidirektionalität sogar 30.
+\end{itemize}
+
+\subsection{Spielerleichterungen}
+
+\begin{itemize}
+	\item Nutze Möglichkeit, Android-Apps per URL zu starten
+	\item Parameterübergabe für WLAN-SSID und WLAN-Schlüssel über URL-Parameter
+	\item Nachteil: Kein Aufruf von URLs ohne Netzwerkverbindung. Nicht klar, warum dem so ist
+	\item Workarounds: QR-Reader aus App heraus starten. Nachteil: Abhängigkeit von bestimmter QR-App, die installiert sein muss
+	\item Alternative: Bild selbst untersuchen. Hoher Eigenaufwand
+	\item QR-Code wird bei Spielerstellung generiert. PDF mit QR-Code und kodierten Daten wird erstellt
+	\item Dynamisches DNS verhindert IP-Umstellung auf Clients
+\end{itemize}
+
+\subsection{Skalierbarkeit}
+
+\begin{itemize}
+	\item Zwei Standpunkte: Beserer Server und stärkere Clients
+	\item Servlerlosigkeit mit PushFork
+	\item RESTful-Philosophie umsetzen über dokumentbasiertes Vorgehen
+\end{itemize}
+
+\section{Implementation}
+
+\subsection{Umsetzung von Pervasivität}
+
+\begin{itemize}
+	\item Shake-Modul entwickelt
+	\item Modul für selbstdrehende Karte entwickelt (Umsetzung über Lagesensor und Kompass)
+	\item WLAN-Verbindungs-Modul entwickelt
+\end{itemize}
+
+\subsection{Hello-Nachrichten}
+
+\begin{itemize}
+	\item Auf Serverseite: Verbindungen bekommen Last-Ping-Timestamp
+	\item Anzeigeideen hinter Ping-Feedback
+	\item Synchronisierter Timestamp
+	\item Mit Server synchronisierter Timestamp
+	\item Server verbirgt Timestamp, arbeitet intern mit Server-Timestamp
+	\item Knoten senden ping und ping-invalidate
+\end{itemize}
+
+\begin{itemize}
+	\item In Verbindungstabelle ist last-ping angegeben.
+	\item Statischer Malus für jeden Ping von fünf Batterie-Punkten
+	\item Punkte für Nachbar haben bleibt gleich
+\end{itemize}
+
+\subsection{Nachrichtenversand}
+
+\begin{itemize}
+	\item Ziel: Möglichst viel Code behalten, um Aufwand gering zu halten
+	\item Mix aus GWT und JS
+	\item Originaler JS-Code für Maps erhalten, Click wird in JS an Server gesendet
+	\item Bei Update von Server wird Subset von Infos per JSNI nach GWT gegeben
+	\item GWT-UI reagiert darauf
+	\item Einfach und gut
+\end{itemize}
+
+\begin{itemize}
+	\item Routen werden per Zufall zwischen den verfügbaren Knoten in Client erstellt
+	\item Verhindert Server-Eingreifen und Server-Unterstützung
+\end{itemize}
+
+\paragraph{JS-Testing} Verwendung von Karma (vormals Testacular) als Testrunner, Jasmine als Framework.
+
+\begin{itemize}
+	\item 
+\end{itemize}
+
+\subsection{Spielerleichterungen}
+
+\begin{itemize}
+	\item QR-Code-Starten gestestet
+	\item Start über beliebige externe App
+\end{itemize}
+
+\subsection{Codestruktur}
+
+\begin{itemize}
+	\item Einsatz von ReSharper 101
+	\item ReSharper-Metrik "`Fat"' und "`Tangled"'
+\end{itemize}
+
+\section{Evaluierung}
+
+\begin{itemize}
+	\item Evaluation in großem Stil -> Julians Arbeit
+	\item Aus Zeitgründen war eine Evaluation des Lernerfolges nicht möglich
+	\item Deshalb: Funktionale Evaluation
+\end{itemize}
+
+Szenario: Ping versenden
+
+\begin{enumerate}
+	\item Spiel starten
+	\item 
+\end{enumerate}
+
+Szenario: Ping empfangen
+
+Szenario: Gegenstand einsammeln
+
+Szenario: 
+
+\section{Zusammenfassung / Ausblick}
+
+\begin{itemize}
+	\item Spielerische Aspekte stärken
+	\item Ausscheiden von Knoten: AODV definiert Reboot-Verfahren
+	\item Audio einbinden: Bei Ping senden / Ping empfangen
+	\item Vibration einsetzen: Bei Ping empfangen
+	\item Ablauf eines Pings verdeutlichen
+\end{itemize}
+
+\begin{itemize}
+	\item App benötigt noch viele Anpassungen
+	\item Weitere Level
+	\item Anzeige, wann Ping ausläuft
+	\item Stärkere Annäherung an Android best practices
+	\item Aufteilung in Async Tasks
+	\item Stärkere Entkopplung von Komponenten, um Wiederverwendbarkeit in anderen Android-Applikationen zu ermöglichen
+\end{itemize}
+
+\begin{itemize}
+	\item QR-Code-Generierung in Admin-Frontend einbauen
+	\item Abhängigkeit von externem QR-Reader lösen
+	\item Abhängigkeit von Netzwerk lösen, WLAN-Funktionalität sonst witzlos
+\end{itemize}
+
+\begin{itemize}
+	\item Indoor-Routen ein- und ausanimieren
+	\item UI-Anpassungen im Indoor
+\end{itemize}
+
+\section{Abkürzungsverzeichnis}
+
+\begin{acronym}[YTM]
+\setlength{\itemsep}{-\parsep}
+\acro{AODV}{Ad hoc On-Demand Distance Vector}
+\acro{MANETs}{Mobile Ad-hoc-Netzwerke}
+\acro{RREQ}{Route Request}
+\acro{RREP}{Route Reply}
+\acro{RERR}{Route Error}
+\acro{WPS}{Wi-Fi Protected Setup}
+\end{acronym}
+
+\bibliography{literatur}
+
+\end{document}
