@@ -22,6 +22,7 @@ import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
+import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
 import de.unipotsdam.nexplorer.client.android.support.MapInitializer;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
@@ -83,7 +84,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
 		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker);
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 
 	public void collectItem(View view) {

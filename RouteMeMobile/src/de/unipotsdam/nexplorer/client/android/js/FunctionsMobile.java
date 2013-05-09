@@ -18,6 +18,7 @@ import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
+import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
 import de.unipotsdam.nexplorer.client.android.support.CollectObserver;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
@@ -76,7 +77,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	private final CollectObserver collectObserver;
 	private final RangeObserver rangeObserver;
 
-	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker) {
+	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator) {
 		this.mapTasks = mapTasks;
 		this.intervals = intervals;
 		this.app = app;
@@ -90,6 +91,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 		CollectItem collectItem = new CollectItem(rest, ui);
 		RadiusBlinker radiusBlinker = blinker;
 		RequestPing requestPing = new RequestPing(rest);
+		CollectItemVibration vibration = new CollectItemVibration(vibrator);
 
 		this.locationObserver = new LocationObserver();
 		this.locationObserver.add(sendLocation);
@@ -107,6 +109,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 
 		this.collectObserver = new CollectObserver();
 		this.collectObserver.add(collectItem);
+		this.collectObserver.add(vibration);
 
 		this.rangeObserver = new RangeObserver();
 		this.rangeObserver.add(radiusBlinker);
