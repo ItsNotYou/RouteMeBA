@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -23,7 +22,6 @@ import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
-import de.unipotsdam.nexplorer.client.android.support.MapInitializer;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class MapActivity extends FragmentActivity implements ShakeDetector.ShakeListener {
@@ -40,15 +38,9 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 
-		MapInitializer mapInit = new MapInitializer(this, R.id.map);
-		GoogleMap googleMap = mapInit.initMap();
-		if (googleMap == null) {
-			Toast.makeText(this, "Map-Service ist nicht installiert", Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		MapRotator map = new MapRotator(this, googleMap);
-		map.setUpMapIfNeeded(true);
+		RotatingMapFragment mapFragment = (RotatingMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+		GoogleMap googleMap = mapFragment.getGoogleMap();
+		MapRotator map = mapFragment.getMapRotator();
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(this);
