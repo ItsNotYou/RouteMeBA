@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.setInterval;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.TimerTask;
@@ -27,7 +25,7 @@ public class Intervals {
 
 	private void startDisplayInterval(final FunctionsMobile functionsMobile) {
 		if (displayMarkerInterval == null || displayMarkerInterval == null) {
-			displayMarkerInterval = setInterval(new TimerTask() {
+			displayMarkerInterval = new Interval().set(new TimerTask() {
 
 				@Override
 				public void run() {
@@ -54,7 +52,7 @@ public class Intervals {
 
 	void startGameStatusInterval(final FunctionsMobile functionsMobile) {
 		if (gameStatusInterval == null || gameStatusInterval == null) {
-			gameStatusInterval = setInterval(new TimerTask() {
+			gameStatusInterval = new Interval().set(new TimerTask() {
 
 				@Override
 				public void run() {

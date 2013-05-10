@@ -14,10 +14,12 @@ public class Interval {
 		}
 	}
 
-	public void set(TimerTask task, long millisecond) {
+	public Interval set(TimerTask task, long millisecond) {
 		clear();
 
 		timer = new Timer();
 		timer.schedule(task, millisecond, millisecond);
+
+		return this;
 	}
 }

@@ -1,4 +1,4 @@
-package de.unipotsdam.nexplorer.client.android.js;
+package de.unipotsdam.nexplorer.client.android.sensors;
 
 import java.util.Random;
 

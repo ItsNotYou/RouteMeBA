@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import java.util.TimerTask;
-
 import android.app.Activity;
 import android.graphics.Color;
 
@@ -57,17 +55,5 @@ public class Window {
 		ui = host;
 
 		return result;
-	}
-
-	public static void clearInterval(Interval interval) {
-		if (interval != null) {
-			interval.clear();
-		}
-	}
-
-	public static Interval setInterval(TimerTask callback, long timeMillis) {
-		Interval interval = new Interval();
-		interval.set(callback, timeMillis);
-		return interval;
 	}
 }
