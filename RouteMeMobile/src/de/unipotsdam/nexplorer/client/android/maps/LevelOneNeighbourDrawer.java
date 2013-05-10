@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.maps;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,9 +14,11 @@ public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 
 	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
 	private de.unipotsdam.nexplorer.client.android.js.Map senchaMap;
+	private Activity host;
 
 	public LevelOneNeighbourDrawer(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host) {
 		this.senchaMap = senchaMap;
+		this.host = host;
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 		final MarkerImage image = new MarkerImage(drawable.network_wireless_small);
 
 		if (neighbourMarkersArray.get(playerId) == null) {
-			Marker marker = new Marker(ui) {
+			Marker marker = new Marker(host) {
 
 				protected void setData() {
 					position = latlng;

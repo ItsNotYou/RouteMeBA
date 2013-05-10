@@ -1,6 +1,8 @@
 package de.unipotsdam.nexplorer.client.android;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -12,19 +14,24 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.Intervals;
 import de.unipotsdam.nexplorer.client.android.js.Map;
 import de.unipotsdam.nexplorer.client.android.js.MapRelatedTasks;
+import de.unipotsdam.nexplorer.client.android.js.Marker;
+import de.unipotsdam.nexplorer.client.android.js.MarkerImage;
+import de.unipotsdam.nexplorer.client.android.js.PlayerRadius;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
-import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
+import de.unipotsdam.nexplorer.client.android.ui.Overlay;
+import de.unipotsdam.nexplorer.client.android.ui.Text;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class MapActivity extends FragmentActivity implements ShakeDetector.ShakeListener {
@@ -73,8 +80,26 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
-		UI ui = Window.createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG)), new MapRelatedTasks(new Map(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
+
+		Marker playerMarker = new Marker(this) {
+
+			protected void setData() {
+				MarkerImage image = new MarkerImage(R.drawable.home_network);
+				this.icon = image;
+			};
+		};
+
+		int strokeColor = Color.parseColor("#5A0000FF");
+		int strokeWeight = 2;
+		int fillColor = Color.parseColor("#330000FF");
+		PlayerRadius playerRadius = new PlayerRadius(this, strokeColor, strokeWeight, fillColor);
+		strokeColor = Color.parseColor("#5AFF0000");
+		strokeWeight = 1;
+		fillColor = Color.parseColor("#40FF0000");
+		PlayerRadius collectionRadius = new PlayerRadius(this, strokeColor, strokeWeight, fillColor);
+
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG)), new MapRelatedTasks(new Map(googleMap, this, map), this, playerMarker, playerRadius, collectionRadius), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 
 	/**
@@ -127,5 +152,19 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 	@Override
 	public void shakeDetected(float accel) {
 		js.shakeDetected();
+	}
+
+	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer) {
+		de.unipotsdam.nexplorer.client.android.ui.Button loginButton = new de.unipotsdam.nexplorer.client.android.ui.Button(login, host);
+
+		Text waitingText = new Text(waitingTextText, host);
+		Text beginDialog = new Text(beginText, host);
+
+		Overlay loginOverlay = new Overlay(loginDialog, host);
+
+		Overlay waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
+		Overlay noPositionOverlay = new Overlay(noPositionDialog, host);
+
+		return new UI(host, loginButton, waitingText, beginDialog, footer, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
 	}
 }

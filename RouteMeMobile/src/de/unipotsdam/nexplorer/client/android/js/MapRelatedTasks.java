@@ -1,10 +1,5 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import static de.unipotsdam.nexplorer.client.android.js.Window.collectionRadius;
-import static de.unipotsdam.nexplorer.client.android.js.Window.playerMarker;
-import static de.unipotsdam.nexplorer.client.android.js.Window.playerRadius;
-import static de.unipotsdam.nexplorer.client.android.js.Window.ui;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,13 +23,20 @@ public class MapRelatedTasks {
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private NeighbourDrawer neighbourDrawer;
 
+	private Marker playerMarker;
+	private PlayerRadius playerRadius;
+	private PlayerRadius collectionRadius;
+
 	private Location oldLocation;
 	private Integer oldPlayerRange;
 	private Integer oldItemRange;
 
-	public MapRelatedTasks(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host) {
+	public MapRelatedTasks(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host, Marker playerMarker, PlayerRadius playerRadius, PlayerRadius collectionRadius) {
 		this.senchaMap = senchaMap;
 		this.host = host;
+		this.playerMarker = playerMarker;
+		this.playerRadius = playerRadius;
+		this.collectionRadius = collectionRadius;
 
 		this.oldLocation = null;
 		this.oldPlayerRange = null;
@@ -93,7 +95,7 @@ public class MapRelatedTasks {
 		final MarkerImage image = new MarkerImage(imagePath);
 
 		if (nearbyItemMarkersArray.get(itemId) == null) {
-			Marker marker = new Marker(ui) {
+			Marker marker = new Marker(host) {
 
 				protected void setData() {
 					position = latlng;
