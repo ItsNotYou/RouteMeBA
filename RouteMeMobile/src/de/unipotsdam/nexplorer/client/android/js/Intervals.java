@@ -79,14 +79,7 @@ public class Intervals {
 
 	void ensurePositionWatch(FunctionsMobile functionsMobile) {
 		if (positionWatch == null) {
-			positionWatch = geolocation.watchPosition(functionsMobile, new NavigatorOptions() {
-
-				protected void setData() {
-					enableHighAccuracy = true;
-					maximumAge = 0;
-					timeout = 9000;
-				}
-			});
+			positionWatch = geolocation.watchPosition(functionsMobile);
 		}
 	}
 

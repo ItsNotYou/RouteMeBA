@@ -2,13 +2,14 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import android.app.Activity;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import de.unipotsdam.nexplorer.client.android.ui.UIElement;
 
 public class Marker extends UIElement {
 
-	public Map map;
+	public GoogleMap map;
 	private com.google.android.gms.maps.model.Marker inner = null;
 	protected LatLng position;
 	protected String title = "";
@@ -39,7 +40,7 @@ public class Marker extends UIElement {
 		});
 	}
 
-	public void setMap(final Map map2) {
+	public void setMap(final GoogleMap map2) {
 		this.map = map2;
 		runOnUIThread(new Runnable() {
 
@@ -48,7 +49,7 @@ public class Marker extends UIElement {
 				if (map2 == null && inner != null) {
 					inner.remove();
 				} else if (map2 != null) {
-					inner = map2.getMap().addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()).anchor(icon.getU(), icon.getV()));
+					inner = map2.addMarker(new MarkerOptions().position(position.create()).title(title).icon(icon.create()).anchor(icon.getU(), icon.getV()));
 				}
 			}
 		});

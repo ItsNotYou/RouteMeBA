@@ -2,6 +2,7 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import android.app.Activity;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 
@@ -9,7 +10,7 @@ import de.unipotsdam.nexplorer.client.android.ui.UIElement;
 
 public class PlayerRadius extends UIElement {
 
-	public Map map;
+	public GoogleMap map;
 	private Circle inner;
 	private LatLng latlng;
 	private double range;
@@ -37,7 +38,7 @@ public class PlayerRadius extends UIElement {
 		});
 	}
 
-	public void setMap(final Map map) {
+	public void setMap(final GoogleMap map) {
 		this.map = map;
 		runOnUIThread(new Runnable() {
 
@@ -47,7 +48,7 @@ public class PlayerRadius extends UIElement {
 					inner.remove();
 					inner = null;
 				} else if (map != null) {
-					inner = map.getMap().addCircle(new CircleOptions().center(latlng.create()).radius(range).strokeColor(strokeColor).strokeWidth(strokeWeight).fillColor(fillColor));
+					inner = map.addCircle(new CircleOptions().center(latlng.create()).radius(range).strokeColor(strokeColor).strokeWidth(strokeWeight).fillColor(fillColor));
 				}
 			}
 		});

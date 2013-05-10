@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+
+import com.google.android.gms.maps.GoogleMap;
+
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.js.LatLng;
 import de.unipotsdam.nexplorer.client.android.js.Marker;
@@ -13,10 +16,10 @@ import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 
 	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
-	private de.unipotsdam.nexplorer.client.android.js.Map senchaMap;
+	private GoogleMap senchaMap;
 	private Activity host;
 
-	public LevelOneNeighbourDrawer(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host) {
+	public LevelOneNeighbourDrawer(GoogleMap senchaMap, Activity host) {
 		this.senchaMap = senchaMap;
 		this.host = host;
 	}

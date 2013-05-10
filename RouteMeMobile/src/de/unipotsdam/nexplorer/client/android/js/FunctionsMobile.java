@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
 
+import de.unipotsdam.nexplorer.client.android.NexplorerMap;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
@@ -35,7 +36,7 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
  */
 public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 
-	private final MapRelatedTasks mapTasks;
+	private final NexplorerMap mapTasks;
 	private final Intervals intervals;
 	private final UI ui;
 	private final UILogin uiLogin;
@@ -79,7 +80,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	private final CollectObserver collectObserver;
 	private final RangeObserver rangeObserver;
 
-	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, MapRelatedTasks mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator) {
+	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator) {
 		this.mapTasks = mapTasks;
 		this.intervals = intervals;
 		this.app = app;

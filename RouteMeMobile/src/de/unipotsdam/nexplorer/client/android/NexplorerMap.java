@@ -1,25 +1,30 @@
-package de.unipotsdam.nexplorer.client.android.js;
+package de.unipotsdam.nexplorer.client.android;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import android.app.Activity;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 import de.unipotsdam.nexplorer.client.android.R.drawable;
+import de.unipotsdam.nexplorer.client.android.js.LatLng;
+import de.unipotsdam.nexplorer.client.android.js.Marker;
+import de.unipotsdam.nexplorer.client.android.js.MarkerImage;
+import de.unipotsdam.nexplorer.client.android.js.PlayerRadius;
 import de.unipotsdam.nexplorer.client.android.maps.LevelOneNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.LevelTwoNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.NeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
-public class MapRelatedTasks {
+public class NexplorerMap extends RotatingMapFragment {
 
-	private final de.unipotsdam.nexplorer.client.android.js.Map senchaMap;
-	private final Activity host;
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private NeighbourDrawer neighbourDrawer;
 
@@ -31,20 +36,34 @@ public class MapRelatedTasks {
 	private Integer oldPlayerRange;
 	private Integer oldItemRange;
 
-	public MapRelatedTasks(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host, Marker playerMarker, PlayerRadius playerRadius, PlayerRadius collectionRadius) {
-		this.senchaMap = senchaMap;
-		this.host = host;
-		this.playerMarker = playerMarker;
-		this.playerRadius = playerRadius;
-		this.collectionRadius = collectionRadius;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
 		this.oldLocation = null;
 		this.oldPlayerRange = null;
 		this.oldItemRange = null;
 		this.neighbourDrawer = null;
+
+		playerMarker = new Marker(getActivity()) {
+
+			protected void setData() {
+				MarkerImage image = new MarkerImage(R.drawable.home_network);
+				this.icon = image;
+			};
+		};
+
+		int strokeColor = Color.parseColor("#5A0000FF");
+		int strokeWeight = 2;
+		int fillColor = Color.parseColor("#330000FF");
+		playerRadius = new PlayerRadius(getActivity(), strokeColor, strokeWeight, fillColor);
+		strokeColor = Color.parseColor("#5AFF0000");
+		strokeWeight = 1;
+		fillColor = Color.parseColor("#40FF0000");
+		collectionRadius = new PlayerRadius(getActivity(), strokeColor, strokeWeight, fillColor);
 	}
 
-	void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty) {
+	public void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty) {
 		ensureNeighbourDrawer(difficulty);
 
 		if (neighbours != null && neighbourDrawer != null) {
@@ -68,9 +87,9 @@ public class MapRelatedTasks {
 		}
 
 		if (difficulty.equals("1")) {
-			neighbourDrawer = new LevelOneNeighbourDrawer(senchaMap, host);
+			neighbourDrawer = new LevelOneNeighbourDrawer(googleMap, getActivity());
 		} else if (difficulty.equals("2")) {
-			neighbourDrawer = new LevelTwoNeighbourDrawer(senchaMap, host);
+			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
 		}
 	}
 
@@ -95,11 +114,11 @@ public class MapRelatedTasks {
 		final MarkerImage image = new MarkerImage(imagePath);
 
 		if (nearbyItemMarkersArray.get(itemId) == null) {
-			Marker marker = new Marker(host) {
+			Marker marker = new Marker(getActivity()) {
 
 				protected void setData() {
 					position = latlng;
-					map = senchaMap;
+					map = googleMap;
 					icon = image;
 					zIndex = 1;
 				}
@@ -109,12 +128,12 @@ public class MapRelatedTasks {
 		} else {
 			nearbyItemMarkersArray.get(itemId).setPosition(latlng);
 			if (nearbyItemMarkersArray.get(itemId).map == null) {
-				nearbyItemMarkersArray.get(itemId).setMap(senchaMap);
+				nearbyItemMarkersArray.get(itemId).setMap(googleMap);
 			}
 		}
 	}
 
-	void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems, String difficulty) {
+	public void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems, String difficulty) {
 		ensureNeighbourDrawer(difficulty);
 
 		if (neighbours != null && neighbourDrawer != null) {
@@ -128,7 +147,22 @@ public class MapRelatedTasks {
 		}
 	}
 
-	void centerAtCurrentLocation(final Location currentLocation, final Integer playerRange, final Integer itemCollectionRange) {
+	private void setCenter(final LatLng latLng) {
+		getActivity().runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (map != null) {
+					map.setCurrentLocation(latLng.create());
+				} else {
+					CameraUpdate update = CameraUpdateFactory.newLatLng(latLng.create());
+					googleMap.moveCamera(update);
+				}
+			}
+		});
+	}
+
+	public void centerAtCurrentLocation(final Location currentLocation, final Integer playerRange, final Integer itemCollectionRange) {
 		if (currentLocation == oldLocation && playerRange.equals(oldPlayerRange) && itemCollectionRange.equals(oldItemRange)) {
 			return;
 		}
@@ -137,28 +171,28 @@ public class MapRelatedTasks {
 		this.oldPlayerRange = playerRange;
 		this.oldItemRange = itemCollectionRange;
 
-		host.runOnUiThread(new Runnable() {
+		getActivity().runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() {
 				if (currentLocation != null) {
 					// Karte zentrieren
-					senchaMap.setCenter(new LatLng(currentLocation));
+					setCenter(new LatLng(currentLocation));
 					// Spieler Marker zentrieren
 					playerMarker.setPosition(new LatLng(currentLocation));
 					if (playerMarker.map == null) {
-						playerMarker.setMap(senchaMap);
+						playerMarker.setMap(googleMap);
 					}
 					// Senderadius zentrieren
 					playerRadius.setCenter(new LatLng(currentLocation));
 					if (playerRadius.map == null) {
-						playerRadius.setMap(senchaMap);
+						playerRadius.setMap(googleMap);
 					}
 					playerRadius.setRadius(playerRange);
 					// Sammelradius zentrieren
 					collectionRadius.setCenter(new LatLng(currentLocation));
 					if (collectionRadius.map == null) {
-						collectionRadius.setMap(senchaMap);
+						collectionRadius.setMap(googleMap);
 					}
 					collectionRadius.setRadius(itemCollectionRange);
 				}
@@ -167,8 +201,8 @@ public class MapRelatedTasks {
 	}
 
 	public void setOnMapClickListener(final OnMapClickListener listener) {
-		this.senchaMap.getMap().setOnMapClickListener(listener);
-		this.senchaMap.getMap().setOnMarkerClickListener(new OnMarkerClickListener() {
+		googleMap.setOnMapClickListener(listener);
+		googleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 
 			@Override
 			public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {

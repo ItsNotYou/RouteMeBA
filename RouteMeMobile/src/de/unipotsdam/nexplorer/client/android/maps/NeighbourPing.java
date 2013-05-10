@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 
 import de.unipotsdam.nexplorer.client.android.js.LatLng;
-import de.unipotsdam.nexplorer.client.android.js.Map;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
 public class NeighbourPing extends TimerTask {
@@ -31,8 +30,8 @@ public class NeighbourPing extends TimerTask {
 	private Circle inner;
 	private long start;
 
-	public NeighbourPing(Map senchaMap, Neighbour neighbour, Activity host, LevelTwoNeighbourDrawer callback, int playerId) {
-		this.map = senchaMap.getMap();
+	public NeighbourPing(GoogleMap senchaMap, Neighbour neighbour, Activity host, LevelTwoNeighbourDrawer callback, int playerId) {
+		this.map = senchaMap;
 		this.latlng = new LatLng(neighbour.getLatitude(), neighbour.getLongitude());
 		this.repetitions = neighbour.getPingDuration() / frequency;
 		this.host = host;

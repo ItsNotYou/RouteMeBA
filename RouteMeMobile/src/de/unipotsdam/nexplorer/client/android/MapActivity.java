@@ -2,7 +2,6 @@ package de.unipotsdam.nexplorer.client.android;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,11 +18,6 @@ import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.Intervals;
-import de.unipotsdam.nexplorer.client.android.js.Map;
-import de.unipotsdam.nexplorer.client.android.js.MapRelatedTasks;
-import de.unipotsdam.nexplorer.client.android.js.Marker;
-import de.unipotsdam.nexplorer.client.android.js.MarkerImage;
-import de.unipotsdam.nexplorer.client.android.js.PlayerRadius;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
@@ -49,7 +43,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 
-		RotatingMapFragment mapFragment = (RotatingMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+		NexplorerMap mapFragment = (NexplorerMap) getSupportFragmentManager().findFragmentById(R.id.map);
 		GoogleMap googleMap = mapFragment.getGoogleMap();
 		MapRotator map = mapFragment.getMapRotator();
 
@@ -82,24 +76,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
 
-		Marker playerMarker = new Marker(this) {
-
-			protected void setData() {
-				MarkerImage image = new MarkerImage(R.drawable.home_network);
-				this.icon = image;
-			};
-		};
-
-		int strokeColor = Color.parseColor("#5A0000FF");
-		int strokeWeight = 2;
-		int fillColor = Color.parseColor("#330000FF");
-		PlayerRadius playerRadius = new PlayerRadius(this, strokeColor, strokeWeight, fillColor);
-		strokeColor = Color.parseColor("#5AFF0000");
-		strokeWeight = 1;
-		fillColor = Color.parseColor("#40FF0000");
-		PlayerRadius collectionRadius = new PlayerRadius(this, strokeColor, strokeWeight, fillColor);
-
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG)), new MapRelatedTasks(new Map(googleMap, this, map), this, playerMarker, playerRadius, collectionRadius), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG)), mapFragment, new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 
 	/**
