@@ -12,6 +12,7 @@ import java.util.TimerTask;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.location.Location;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
@@ -20,7 +21,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Pingable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Rangeable;
-import de.unipotsdam.nexplorer.client.android.commons.Location;
 
 public class RadiusBlinker implements Locatable, Pingable, Rangeable {
 

@@ -6,6 +6,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.TimerTask;
 
+import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
+import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.Geolocator;
+
 public class Intervals {
 
 	Geolocator positionWatch = null;
@@ -16,9 +19,9 @@ public class Intervals {
 	long updatePositionIntervalTime = 300;
 	long updateDisplayIntervalTime = 300;
 
-	private final Geolocation geolocation;
+	private final GpsReceiver geolocation;
 
-	public Intervals(Geolocation geolocation) {
+	public Intervals(GpsReceiver geolocation) {
 		this.geolocation = geolocation;
 	}
 

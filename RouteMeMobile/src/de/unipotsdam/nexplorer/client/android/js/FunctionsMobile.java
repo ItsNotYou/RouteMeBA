@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -9,7 +11,6 @@ import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
-import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RequestPing;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
@@ -18,6 +19,7 @@ import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
+import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
 import de.unipotsdam.nexplorer.client.android.support.CollectObserver;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;

@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
+import android.location.Location;
+
 public class LatLng {
 
 	private double latitude;
@@ -10,7 +12,7 @@ public class LatLng {
 		this.longitude = longitude;
 	}
 
-	public LatLng(de.unipotsdam.nexplorer.client.android.commons.Location location) {
+	public LatLng(Location location) {
 		this.latitude = location.getLatitude();
 		this.longitude = location.getLongitude();
 	}

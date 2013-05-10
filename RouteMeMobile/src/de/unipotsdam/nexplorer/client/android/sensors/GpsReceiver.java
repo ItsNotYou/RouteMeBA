@@ -1,4 +1,4 @@
-package de.unipotsdam.nexplorer.client.android.js;
+package de.unipotsdam.nexplorer.client.android.sensors;
 
 import static android.location.LocationManager.GPS_PROVIDER;
 
@@ -10,16 +10,24 @@ import java.util.TimerTask;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
+import de.unipotsdam.nexplorer.client.android.js.LocationGenerator;
+import de.unipotsdam.nexplorer.client.android.js.NavigatorOptions;
 
-public class Geolocation {
-
-	private static boolean IS_DEBUG = true;
+public class GpsReceiver {
 
 	private Activity host;
+	private boolean isDebug;
 
-	public Geolocation(Activity host) {
+	public GpsReceiver(Activity host) {
+		this(host, false);
+	}
+
+	public GpsReceiver(Activity host, boolean isDebug) {
 		this.host = host;
+		this.isDebug = isDebug;
 	}
 
 	public void clearWatch(Geolocator positionWatch) {
@@ -28,8 +36,8 @@ public class Geolocation {
 		}
 	}
 
-	public Geolocator watchPosition(FunctionsMobile functionsMobile, NavigatorOptions navigatorOptions) {
-		if (IS_DEBUG) {
+	public Geolocator watchPosition(PositionWatcher functionsMobile, NavigatorOptions navigatorOptions) {
+		if (isDebug) {
 			return new DummyGeolocator(functionsMobile);
 		} else {
 			return new ActiveGeolocator(functionsMobile, host);
@@ -39,9 +47,9 @@ public class Geolocation {
 	public class ActiveGeolocator extends Geolocator {
 
 		private LocationManager manager;
-		private FunctionsMobile callback;
+		private PositionWatcher callback;
 
-		public ActiveGeolocator(FunctionsMobile callback, Activity host) {
+		public ActiveGeolocator(PositionWatcher callback, Activity host) {
 			super(callback);
 			this.callback = callback;
 			this.manager = registerManager(host);
@@ -75,7 +83,7 @@ public class Geolocation {
 		private Random random;
 		private TimerTaskWrapper task;
 
-		public DummyGeolocator(FunctionsMobile callback) {
+		public DummyGeolocator(PositionWatcher callback) {
 			super(callback);
 			this.locations = new LocationGenerator(52.394317333573106, 13.129833250863612, 52.39410782938052, 13.131571322305263);
 			this.random = new Random();
@@ -109,5 +117,40 @@ public class Geolocation {
 				runnable.run();
 			}
 		}
+	}
+
+	public abstract class Geolocator implements LocationListener {
+
+		private PositionWatcher callback;
+
+		public Geolocator(PositionWatcher callback) {
+			this.callback = callback;
+		}
+
+		@Override
+		public void onLocationChanged(Location location) {
+			callback.positionReceived(location);
+		}
+
+		@Override
+		public void onProviderDisabled(String arg0) {
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+
+		public abstract void clear();
+	}
+
+	public interface PositionWatcher {
+
+		public void positionReceived(Location location);
+
+		public void positionError(Exception error);
 	}
 }

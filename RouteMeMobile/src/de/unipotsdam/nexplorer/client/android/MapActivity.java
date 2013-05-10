@@ -15,13 +15,13 @@ import com.google.android.gms.maps.GoogleMap;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
-import de.unipotsdam.nexplorer.client.android.js.Geolocation;
 import de.unipotsdam.nexplorer.client.android.js.Intervals;
 import de.unipotsdam.nexplorer.client.android.js.Map;
 import de.unipotsdam.nexplorer.client.android.js.MapRelatedTasks;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
+import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
@@ -30,6 +30,7 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
 public class MapActivity extends FragmentActivity implements ShakeDetector.ShakeListener {
 
 	private static final String HOST_ADRESS = "http://routeme.dnsdynamic.com:8080";
+	private static final boolean IS_DEBUG = true;
 
 	private FunctionsMobile js;
 	private boolean firstStart;
@@ -73,7 +74,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
 		UI ui = Window.createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new Map(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG)), new MapRelatedTasks(new Map(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 
 	/**

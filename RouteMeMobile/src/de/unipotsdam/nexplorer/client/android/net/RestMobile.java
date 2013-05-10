@@ -4,8 +4,8 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import android.location.Location;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
-import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Options;
@@ -54,7 +54,7 @@ public class RestMobile {
 			protected void setData() {
 				this.type = "POST";
 				this.url = "/rest/mobile/update_player_position";
-				this.data = "latitude=" + currentLocation.getLatitude() + "&longitude=" + currentLocation.getLongitude() + "&accuracy=" + currentLocation.getAccuracy() + "&playerId=" + playerId + "&speed=" + currentLocation.getSpeed() + "&heading=" + currentLocation.getHeading();
+				this.data = "latitude=" + currentLocation.getLatitude() + "&longitude=" + currentLocation.getLongitude() + "&accuracy=" + currentLocation.getAccuracy() + "&playerId=" + playerId + "&speed=" + currentLocation.getSpeed() + "&heading=" + currentLocation.getBearing();
 				this.timeout = 5000;
 			}
 

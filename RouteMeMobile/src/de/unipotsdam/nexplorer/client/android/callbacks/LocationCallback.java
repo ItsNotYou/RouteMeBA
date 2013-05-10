@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.callbacks;
 
-import de.unipotsdam.nexplorer.client.android.commons.Location;
+import android.location.Location;
 
 public interface LocationCallback {
 

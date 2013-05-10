@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.location.Location;
 
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 import de.unipotsdam.nexplorer.client.android.R.drawable;
-import de.unipotsdam.nexplorer.client.android.commons.Location;
 import de.unipotsdam.nexplorer.client.android.maps.LevelOneNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.LevelTwoNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.NeighbourDrawer;
