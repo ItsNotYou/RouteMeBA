@@ -14,8 +14,8 @@ import de.unipotsdam.nexplorer.client.android.support.MapInitializer;
 
 public class RotatingMapFragment extends Fragment {
 
-	private GoogleMap googleMap;
-	private MapRotator map;
+	protected GoogleMap googleMap;
+	protected MapRotator map;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

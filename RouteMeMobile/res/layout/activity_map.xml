@@ -6,70 +6,11 @@
     android:orientation="vertical"
     tools:context=".MapActivity" >
 
-    <LinearLayout
+    <fragment
+        android:id="@+id/statusHeader"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/gradient"
-        android:padding="12dp" >
-
-        <TextView
-            android:id="@+id/points"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:drawableLeft="@drawable/point"
-            android:gravity="center"
-            android:text="@string/default_points"
-            android:textColor="#FFFFFFFF" />
-
-        <Space
-            android:id="@+id/space1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/neighbours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:drawableLeft="@drawable/neighborhood"
-            android:gravity="center"
-            android:text="@string/default_neighbours"
-            android:textColor="#FFFFFFFF" />
-
-        <Space
-            android:id="@+id/space2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:drawableLeft="@drawable/clock"
-            android:gravity="center"
-            android:text="@string/default_time"
-            android:textColor="#FFFFFFFF" />
-
-        <Space
-            android:id="@+id/space3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:drawableLeft="@drawable/battery_full"
-            android:gravity="center"
-            android:text="@string/default_battery"
-            android:textColor="#FFFFFFFF" />
-    </LinearLayout>
+        class="de.unipotsdam.nexplorer.client.android.StatusHeaderFragment" />
 
     <fragment
         android:id="@+id/map"
@@ -83,7 +24,7 @@
         android:layout_height="wrap_content"
         android:background="#C9DAEF"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone" >
 
         <TextView
             android:id="@+id/nextItemDistance"

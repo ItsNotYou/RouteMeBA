@@ -5,6 +5,7 @@ import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UICallback;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
+import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
 
@@ -18,8 +19,9 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 	private Overlay loginOverlay;
 	private Overlay noPositionOverlay;
 	private Overlay waitingForGameOverlay;
+	private UIHeader header;
 
-	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, UICallback mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay) {
+	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, UICallback mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay, UIHeader header) {
 		super(host);
 		this.collectItemButton = collectItemButton;
 		this.loginButton = loginButton;
@@ -29,6 +31,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.loginOverlay = loginOverlay;
 		this.noPositionOverlay = noPositionOverlay;
 		this.waitingForGameOverlay = waitingForGameOverlay;
+		this.header = header;
 	}
 
 	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
@@ -36,7 +39,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
 			@Override
 			public void run() {
-				mainPanelToolbar.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
+				header.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
 				mainPanelToolbar.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 			}
 		});

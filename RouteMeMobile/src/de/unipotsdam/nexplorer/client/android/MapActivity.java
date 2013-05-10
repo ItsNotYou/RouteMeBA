@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.Geolocation;
@@ -42,6 +43,8 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		GoogleMap googleMap = mapFragment.getGoogleMap();
 		MapRotator map = mapFragment.getMapRotator();
 
+		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
+
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(this);
 
@@ -62,10 +65,6 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		TextView nextItemDistanceText = (TextView) findViewById(R.id.nextItemDistance);
 
 		TextView beginText = (TextView) loginDialog.findViewById(R.id.login_text);
-		TextView score = (TextView) findViewById(R.id.points);
-		TextView neighbourCount = (TextView) findViewById(R.id.neighbours);
-		TextView remainingPlayingTime = (TextView) findViewById(R.id.time);
-		TextView battery = (TextView) findViewById(R.id.battery);
 
 		Dialog waitingForGameDialog = new WaitingDialog(this);
 		TextView waitingTextText = (TextView) waitingForGameDialog.findViewById(R.id.waiting_text);
@@ -75,7 +74,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
-		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, score, neighbourCount, remainingPlayingTime, battery, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map);
+		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header);
 		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 

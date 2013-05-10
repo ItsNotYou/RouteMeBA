@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:orientation="horizontal"
+    android:padding="12dp" >
+
+    <TextView
+        android:id="@+id/points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:drawableLeft="@drawable/point"
+        android:gravity="center"
+        android:text="@string/default_points"
+        android:textColor="#FFFFFFFF" />
+
+    <Space
+        android:id="@+id/space1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/neighbours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:drawableLeft="@drawable/neighborhood"
+        android:gravity="center"
+        android:text="@string/default_neighbours"
+        android:textColor="#FFFFFFFF" />
+
+    <Space
+        android:id="@+id/space2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:drawableLeft="@drawable/clock"
+        android:gravity="center"
+        android:text="@string/default_time"
+        android:textColor="#FFFFFFFF" />
+
+    <Space
+        android:id="@+id/space3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:drawableLeft="@drawable/battery_full"
+        android:gravity="center"
+        android:text="@string/default_battery"
+        android:textColor="#FFFFFFFF" />
+
+</LinearLayout>
