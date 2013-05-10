@@ -3,7 +3,7 @@ package de.unipotsdam.nexplorer.client.android.ui;
 import android.app.Activity;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
-import de.unipotsdam.nexplorer.client.android.callbacks.UICallback;
+import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
@@ -11,23 +11,21 @@ import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
 
 public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
-	private final Button collectItemButton;
 	private final Button loginButton;
 	private final Text waitingText;
 	private Text beginDialog;
-	private UICallback mainPanelToolbar;
+	private UIFooter footer;
 	private Overlay loginOverlay;
 	private Overlay noPositionOverlay;
 	private Overlay waitingForGameOverlay;
 	private UIHeader header;
 
-	public UI(Activity host, Button collectItemButton, Button loginButton, Text activeItems, Text hint, Text nextItemDistance, Text waitingText, Text beginDialog, UICallback mainPanelToolbar, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay, UIHeader header) {
+	public UI(Activity host, Button loginButton, Text waitingText, Text beginDialog, UIFooter footer, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay, UIHeader header) {
 		super(host);
-		this.collectItemButton = collectItemButton;
 		this.loginButton = loginButton;
 		this.waitingText = waitingText;
 		this.beginDialog = beginDialog;
-		this.mainPanelToolbar = mainPanelToolbar;
+		this.footer = footer;
 		this.loginOverlay = loginOverlay;
 		this.noPositionOverlay = noPositionOverlay;
 		this.waitingForGameOverlay = waitingForGameOverlay;
@@ -40,25 +38,29 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 			@Override
 			public void run() {
 				header.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
-				mainPanelToolbar.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+				footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 			}
 		});
 	}
 
 	public void disableButtonForItemCollection() {
-		mainPanelToolbar.setIsCollectingItem(true);
 		runOnUIThread(new Runnable() {
 
 			@Override
 			public void run() {
-				UI.this.collectItemButton.disable();
-				UI.this.collectItemButton.html("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
+				footer.setIsCollectingItem(true);
 			}
 		});
 	}
 
 	public void enableButtonForItemCollection() {
-		mainPanelToolbar.setIsCollectingItem(false);
+		runOnUIThread(new Runnable() {
+
+			@Override
+			public void run() {
+				footer.setIsCollectingItem(false);
+			}
+		});
 	}
 
 	private void hideLoginOverlay() {

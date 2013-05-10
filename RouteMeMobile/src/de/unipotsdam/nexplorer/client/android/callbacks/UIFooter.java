@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.callbacks;
 
-public interface UICallback {
+public interface UIFooter {
 
 	public void updateFooter(final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint);
 

@@ -3,6 +3,8 @@ package de.unipotsdam.nexplorer.client.android;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +46,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		MapRotator map = mapFragment.getMapRotator();
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
+		ItemFooterFragment footer = addItemFooter();
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(this);
@@ -58,12 +61,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		});
 		firstStart = true;
 
-		Button collectItem = (Button) findViewById(R.id.collectItem);
 		Button login = (Button) loginDialog.findViewById(R.id.login_button);
-		TextView activeItemsText = (TextView) findViewById(R.id.activeItems);
-		TextView hintText = (TextView) findViewById(R.id.hint);
-		TextView nextItemDistanceText = (TextView) findViewById(R.id.nextItemDistance);
-
 		TextView beginText = (TextView) loginDialog.findViewById(R.id.login_text);
 
 		Dialog waitingForGameDialog = new WaitingDialog(this);
@@ -74,8 +72,23 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
-		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header);
+		UI ui = Window.createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
 		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new Map(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+	}
+
+	/**
+	 * Based on <a href="http://stackoverflow.com/questions/7431516/how-to-change-fragments-class-dynamically">stackoverflow</a>
+	 * 
+	 * @return
+	 */
+	private ItemFooterFragment addItemFooter() {
+		FragmentManager manager = getSupportFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+
+		ItemFooterFragment footer = new ItemFooterFragment();
+		transaction.replace(R.id.itemFooter, footer);
+		transaction.commit();
+		return footer;
 	}
 
 	public void collectItem(View view) {

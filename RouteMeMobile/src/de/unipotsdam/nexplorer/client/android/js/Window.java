@@ -8,10 +8,10 @@ import android.graphics.Color;
 import com.google.android.gms.maps.GoogleMap;
 
 import de.unipotsdam.nexplorer.client.android.R;
+import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.ui.Button;
-import de.unipotsdam.nexplorer.client.android.ui.MainPanelToolbar;
 import de.unipotsdam.nexplorer.client.android.ui.Overlay;
 import de.unipotsdam.nexplorer.client.android.ui.Text;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
@@ -24,15 +24,10 @@ public class Window {
 
 	public static Activity ui = null;
 
-	public static UI createInstance(android.widget.Button collectItem, android.widget.Button login, android.widget.TextView activeItemsText, android.widget.TextView hintText, android.widget.TextView nextItemDistanceText, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header) {
-		Button collectItemButton = new Button(collectItem, host);
+	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer) {
 		Button loginButton = new Button(login, host);
 
-		Text activeItems = new Text(activeItemsText, host);
-		Text hint = new Text(hintText, host);
-		Text nextItemDistance = new Text(nextItemDistanceText, host);
 		Text waitingText = new Text(waitingTextText, host);
-
 		Text beginDialog = new Text(beginText, host);
 
 		Overlay loginOverlay = new Overlay(loginDialog, host);
@@ -40,8 +35,7 @@ public class Window {
 		Overlay waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		Overlay noPositionOverlay = new Overlay(noPositionDialog, host);
 
-		MainPanelToolbar mainPanelToolbar = new MainPanelToolbar(host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText, beginDialog, loginOverlay, waitingForGameOverlay, noPositionOverlay);
-		UI result = new UI(host, collectItemButton, loginButton, activeItems, hint, nextItemDistance, waitingText, beginDialog, mainPanelToolbar, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
+		UI result = new UI(host, loginButton, waitingText, beginDialog, footer, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
 
 		playerMarker = new Marker(host) {
 
