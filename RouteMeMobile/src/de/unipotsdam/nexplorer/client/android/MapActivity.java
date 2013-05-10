@@ -15,9 +15,9 @@ import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.Geolocation;
 import de.unipotsdam.nexplorer.client.android.js.Intervals;
+import de.unipotsdam.nexplorer.client.android.js.Map;
 import de.unipotsdam.nexplorer.client.android.js.MapRelatedTasks;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
-import de.unipotsdam.nexplorer.client.android.js.SenchaMap;
 import de.unipotsdam.nexplorer.client.android.js.Window;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
@@ -75,7 +75,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
 		UI ui = Window.createInstance(collectItem, login, activeItemsText, hintText, nextItemDistanceText, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header);
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new SenchaMap(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new Geolocation(this)), new MapRelatedTasks(new Map(googleMap, this, map), this), new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 
 	public void collectItem(View view) {

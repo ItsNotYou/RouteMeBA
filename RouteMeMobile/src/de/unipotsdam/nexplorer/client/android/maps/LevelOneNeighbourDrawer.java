@@ -6,20 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
-
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.js.LatLng;
 import de.unipotsdam.nexplorer.client.android.js.Marker;
 import de.unipotsdam.nexplorer.client.android.js.MarkerImage;
-import de.unipotsdam.nexplorer.client.android.js.SenchaMap;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
 public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 
 	private java.util.Map<Integer, Marker> neighbourMarkersArray = new HashMap<Integer, Marker>();
-	private SenchaMap senchaMap;
+	private de.unipotsdam.nexplorer.client.android.js.Map senchaMap;
 
-	public LevelOneNeighbourDrawer(SenchaMap senchaMap, Activity host) {
+	public LevelOneNeighbourDrawer(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host) {
 		this.senchaMap = senchaMap;
 	}
 
@@ -39,7 +37,7 @@ public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 
 				protected void setData() {
 					position = latlng;
-					map = senchaMap.map;
+					map = senchaMap;
 					title = "(" + playerId + ") ";
 					icon = image;
 					zIndex = 1;
@@ -51,7 +49,7 @@ public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 			neighbourMarkersArray.get(playerId).setPosition(latlng);
 			neighbourMarkersArray.get(playerId).setTitle("(" + playerId + ") " /* + name */);
 			if (neighbourMarkersArray.get(playerId).map == null) {
-				neighbourMarkersArray.get(playerId).setMap(senchaMap.map);
+				neighbourMarkersArray.get(playerId).setMap(senchaMap);
 			}
 		}
 	}

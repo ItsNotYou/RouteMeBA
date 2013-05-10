@@ -23,7 +23,7 @@ import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
 public class MapRelatedTasks {
 
-	private final SenchaMap senchaMap;
+	private final de.unipotsdam.nexplorer.client.android.js.Map senchaMap;
 	private final Activity host;
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private NeighbourDrawer neighbourDrawer;
@@ -32,7 +32,7 @@ public class MapRelatedTasks {
 	private Integer oldPlayerRange;
 	private Integer oldItemRange;
 
-	public MapRelatedTasks(SenchaMap senchaMap, Activity host) {
+	public MapRelatedTasks(de.unipotsdam.nexplorer.client.android.js.Map senchaMap, Activity host) {
 		this.senchaMap = senchaMap;
 		this.host = host;
 
@@ -97,7 +97,7 @@ public class MapRelatedTasks {
 
 				protected void setData() {
 					position = latlng;
-					map = senchaMap.map;
+					map = senchaMap;
 					icon = image;
 					zIndex = 1;
 				}
@@ -107,7 +107,7 @@ public class MapRelatedTasks {
 		} else {
 			nearbyItemMarkersArray.get(itemId).setPosition(latlng);
 			if (nearbyItemMarkersArray.get(itemId).map == null) {
-				nearbyItemMarkersArray.get(itemId).setMap(senchaMap.map);
+				nearbyItemMarkersArray.get(itemId).setMap(senchaMap);
 			}
 		}
 	}
@@ -141,22 +141,22 @@ public class MapRelatedTasks {
 			public void run() {
 				if (currentLocation != null) {
 					// Karte zentrieren
-					senchaMap.map.setCenter(new LatLng(currentLocation));
+					senchaMap.setCenter(new LatLng(currentLocation));
 					// Spieler Marker zentrieren
 					playerMarker.setPosition(new LatLng(currentLocation));
 					if (playerMarker.map == null) {
-						playerMarker.setMap(senchaMap.map);
+						playerMarker.setMap(senchaMap);
 					}
 					// Senderadius zentrieren
 					playerRadius.setCenter(new LatLng(currentLocation));
 					if (playerRadius.map == null) {
-						playerRadius.setMap(senchaMap.map);
+						playerRadius.setMap(senchaMap);
 					}
 					playerRadius.setRadius(playerRange);
 					// Sammelradius zentrieren
 					collectionRadius.setCenter(new LatLng(currentLocation));
 					if (collectionRadius.map == null) {
-						collectionRadius.setMap(senchaMap.map);
+						collectionRadius.setMap(senchaMap);
 					}
 					collectionRadius.setRadius(itemCollectionRange);
 				}
@@ -165,8 +165,8 @@ public class MapRelatedTasks {
 	}
 
 	public void setOnMapClickListener(final OnMapClickListener listener) {
-		this.senchaMap.map.getMap().setOnMapClickListener(listener);
-		this.senchaMap.map.getMap().setOnMarkerClickListener(new OnMarkerClickListener() {
+		this.senchaMap.getMap().setOnMapClickListener(listener);
+		this.senchaMap.getMap().setOnMarkerClickListener(new OnMarkerClickListener() {
 
 			@Override
 			public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
