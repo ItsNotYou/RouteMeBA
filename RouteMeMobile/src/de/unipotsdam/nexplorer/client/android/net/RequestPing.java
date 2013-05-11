@@ -11,7 +11,7 @@ public class RequestPing implements Pingable, Locatable, Loginable {
 
 	private final RestMobile rest;
 	private Location location;
-	private Integer playerId;
+	private Long playerId;
 
 	public RequestPing(RestMobile rest) {
 		this.rest = rest;
@@ -25,7 +25,7 @@ public class RequestPing implements Pingable, Locatable, Loginable {
 	}
 
 	@Override
-	public void loggedIn(int playerId) {
+	public void loggedIn(long playerId) {
 		this.playerId = playerId;
 	}
 

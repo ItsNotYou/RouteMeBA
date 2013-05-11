@@ -2,15 +2,15 @@ package de.unipotsdam.nexplorer.client.android.rest;
 
 public class PingRequest {
 
-	private int nodeId;
+	private long nodeId;
 	private double latitude;
 	private double longitude;
 
-	public int getNodeId() {
+	public long getNodeId() {
 		return nodeId;
 	}
 
-	public void setNodeId(int nodeId) {
+	public void setNodeId(long nodeId) {
 		this.nodeId = nodeId;
 	}
 

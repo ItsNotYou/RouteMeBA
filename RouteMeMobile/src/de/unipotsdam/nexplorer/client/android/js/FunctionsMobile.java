@@ -7,11 +7,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import de.unipotsdam.nexplorer.client.android.NexplorerMap;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
-import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
+import de.unipotsdam.nexplorer.client.android.js.tasks.LoginTask;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RequestPing;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
@@ -49,7 +49,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 
 	private boolean gameStatusRequestExecutes = false;
 
-	private Integer playerId = null;
+	private Long playerId = null;
 	private double battery = 100;
 	private java.util.Map<Integer, Neighbour> neighbours;
 	private int neighbourCount = 0;
@@ -125,24 +125,10 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	 * Dise Funktion wird zunächst aufgerufen sie loggt den spier ein und zeigt bei existierenden Spiel eine Karte
 	 * 
 	 * @param name
-	 * @param isMobile
 	 */
-	public void loginPlayer(final String name, final boolean isMobile) {
+	public void loginPlayer(final String name) {
 		if (name != "") {
-			uiLogin.loginStarted(name);
-
-			rest.login(name, isMobile, new AjaxResult<LoginAnswer>() {
-
-				@Override
-				public void success(LoginAnswer data) {
-					loginSuccess(data);
-				}
-
-				@Override
-				public void error() {
-					uiLogin.loginFailed(LoginError.CAUSE_UNKNOWN);
-				}
-			});
+			new LoginTask(uiLogin, rest, this).executeOnExecutor(LoginTask.THREAD_POOL_EXECUTOR, name);
 		}
 	}
 
@@ -260,10 +246,16 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	 * updates the display with the new position and the positions of the neighbours
 	 */
 	void updateDisplay() {
-		mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
-		mapTasks.drawMarkers(neighbours, nearbyItems, gameDifficulty);
+		ui.runOnUIThread(new Runnable() {
 
-		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+			@Override
+			public void run() {
+				mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
+				mapTasks.drawMarkers(neighbours, nearbyItems, gameDifficulty);
+
+				ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+			}
+		});
 	}
 
 	/**
@@ -273,18 +265,12 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 		this.collectObserver.fire(itemCollectionRange);
 	}
 
-	private void loginSuccess(LoginAnswer data) {
-		if (!isNaN(parseInt(data.id))) {
-			playerId = parseInt(data.id);
-			uiLogin.loginSucceeded(playerId);
-			updateGameStatus(false);
-			intervals.startGameStatusInterval(this);
-			// $("#mainContent").html("");
+	public void loginSuccess(LoginAnswer data) {
+		playerId = data.id;
 
-			this.loginObserver.fire(playerId);
-		} else {
-			uiLogin.loginFailed(LoginError.NO_ID);
-		}
+		updateGameStatus(false);
+		intervals.startGameStatusInterval(this);
+		loginObserver.fire(playerId);
 	}
 
 	public static boolean isNaN(Integer result) {

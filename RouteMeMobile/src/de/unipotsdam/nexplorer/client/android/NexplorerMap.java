@@ -171,33 +171,27 @@ public class NexplorerMap extends RotatingMapFragment {
 		this.oldPlayerRange = playerRange;
 		this.oldItemRange = itemCollectionRange;
 
-		getActivity().runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				if (currentLocation != null) {
-					// Karte zentrieren
-					setCenter(new LatLng(currentLocation));
-					// Spieler Marker zentrieren
-					playerMarker.setPosition(new LatLng(currentLocation));
-					if (playerMarker.map == null) {
-						playerMarker.setMap(googleMap);
-					}
-					// Senderadius zentrieren
-					playerRadius.setCenter(new LatLng(currentLocation));
-					if (playerRadius.map == null) {
-						playerRadius.setMap(googleMap);
-					}
-					playerRadius.setRadius(playerRange);
-					// Sammelradius zentrieren
-					collectionRadius.setCenter(new LatLng(currentLocation));
-					if (collectionRadius.map == null) {
-						collectionRadius.setMap(googleMap);
-					}
-					collectionRadius.setRadius(itemCollectionRange);
-				}
+		if (currentLocation != null) {
+			// Karte zentrieren
+			setCenter(new LatLng(currentLocation));
+			// Spieler Marker zentrieren
+			playerMarker.setPosition(new LatLng(currentLocation));
+			if (playerMarker.map == null) {
+				playerMarker.setMap(googleMap);
 			}
-		});
+			// Senderadius zentrieren
+			playerRadius.setCenter(new LatLng(currentLocation));
+			if (playerRadius.map == null) {
+				playerRadius.setMap(googleMap);
+			}
+			playerRadius.setRadius(playerRange);
+			// Sammelradius zentrieren
+			collectionRadius.setCenter(new LatLng(currentLocation));
+			if (collectionRadius.map == null) {
+				collectionRadius.setMap(googleMap);
+			}
+			collectionRadius.setRadius(itemCollectionRange);
+		}
 	}
 
 	public void setOnMapClickListener(final OnMapClickListener listener) {

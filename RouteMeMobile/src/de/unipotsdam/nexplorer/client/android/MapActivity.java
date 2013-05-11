@@ -58,7 +58,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 			@Override
 			public void onLogin(String name) {
-				js.loginPlayer(name, true);
+				js.loginPlayer(name);
 			}
 		});
 		firstStart = true;

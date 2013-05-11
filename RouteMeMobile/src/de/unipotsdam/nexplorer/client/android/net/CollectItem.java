@@ -9,7 +9,7 @@ public class CollectItem implements Collectable, Loginable {
 
 	private final RestMobile rest;
 	private final UI ui;
-	private Integer playerId;
+	private Long playerId;
 	private boolean isCollectingItem;
 
 	public CollectItem(RestMobile rest, UI ui) {
@@ -21,7 +21,7 @@ public class CollectItem implements Collectable, Loginable {
 	}
 
 	@Override
-	public void loggedIn(int playerId) {
+	public void loggedIn(long playerId) {
 		this.playerId = playerId;
 	}
 

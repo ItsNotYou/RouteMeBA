@@ -10,7 +10,7 @@ public class UIElement {
 		this.host = host;
 	}
 
-	protected void runOnUIThread(Runnable run) {
+	public void runOnUIThread(Runnable run) {
 		host.runOnUiThread(run);
 	}
 }

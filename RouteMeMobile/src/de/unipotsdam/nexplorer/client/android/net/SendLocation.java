@@ -13,7 +13,7 @@ import de.unipotsdam.nexplorer.client.android.callbacks.Loginable;
 public class SendLocation implements Locatable, Loginable {
 
 	private final RestMobile rest;
-	private Integer playerId;
+	private Long playerId;
 	private boolean positionRequestExecutes;
 
 	public SendLocation(RestMobile rest) {
@@ -44,7 +44,7 @@ public class SendLocation implements Locatable, Loginable {
 	}
 
 	@Override
-	public void loggedIn(int playerId) {
+	public void loggedIn(long playerId) {
 		this.playerId = playerId;
 	}
 }

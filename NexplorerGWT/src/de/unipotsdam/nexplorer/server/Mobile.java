@@ -171,7 +171,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 	public PingResponse addPing(PingRequest request) {
 		Unit unit = new Unit();
 		try {
-			int nodeId = request.getNodeId();
+			long nodeId = request.getNodeId();
 
 			DatabaseImpl dbAccesss = unit.resolve(DatabaseImpl.class);
 			Player player = dbAccesss.getPlayerById(nodeId);

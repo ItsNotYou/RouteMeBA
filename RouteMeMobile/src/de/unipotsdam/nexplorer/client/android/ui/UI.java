@@ -33,14 +33,8 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 	}
 
 	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
-		runOnUIThread(new Runnable() {
-
-			@Override
-			public void run() {
-				header.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
-				footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
-			}
-		});
+		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
+		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
 
 	public void disableButtonForItemCollection() {
@@ -169,12 +163,12 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 	}
 
 	@Override
-	public void loginStarted(String name) {
+	public void loginStarted() {
 		labelButtonForLogin();
 	}
 
 	@Override
-	public void loginSucceeded(int playerId) {
+	public void loginSucceeded(long playerId) {
 		hideLoginOverlay();
 	}
 

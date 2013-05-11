@@ -26,7 +26,7 @@ public class RestMobile {
 		template.getMessageConverters().add(new GsonHttpMessageConverter());
 	}
 
-	public void getGameStatus(final int playerId, final boolean isAsync, final AjaxResult<GameStatus> result) {
+	public void getGameStatus(final long playerId, final boolean isAsync, final AjaxResult<GameStatus> result) {
 		ajax(new Options<GameStatus>(GameStatus.class) {
 
 			protected void setData() {
@@ -47,7 +47,7 @@ public class RestMobile {
 		});
 	}
 
-	public void updatePlayerPosition(final int playerId, final Location currentLocation, final AjaxResult<Object> ajaxResult) {
+	public void updatePlayerPosition(final long playerId, final Location currentLocation, final AjaxResult<Object> ajaxResult) {
 		ajax(new Options<Object>(Object.class) {
 
 			@Override
@@ -64,7 +64,7 @@ public class RestMobile {
 		});
 	}
 
-	public void collectItem(final int playerId, final AjaxResult<Object> ajaxResult) {
+	public void collectItem(final long playerId, final AjaxResult<Object> ajaxResult) {
 		ajax(new Options<Object>(Object.class) {
 
 			protected void setData() {
@@ -79,27 +79,26 @@ public class RestMobile {
 		});
 	}
 
-	public void login(final String name, final boolean isMobile, final AjaxResult<LoginAnswer> ajaxResult) {
-		ajax(new Options<LoginAnswer>(LoginAnswer.class) {
+	public void login(final String name, final AjaxResult<LoginAnswer> ajaxResult) {
+		String url = host + "/rest/loginManager/login_player_mobile";
+		String request = "name=" + name + "&isMobile=" + true;
 
-			@Override
-			protected void setData() {
-				this.type = "POST";
-				this.url = "/rest/loginManager/login_player_mobile";
-				this.data = "name=" + name + "&isMobile=" + isMobile;
-			}
-
-			public void success(LoginAnswer data) {
-				ajaxResult.success(data);
-			}
-
-			public void error() {
-				ajaxResult.error();
-			}
-		});
+		try {
+			LoginAnswer result = template.postForObject(url, request, LoginAnswer.class);
+			ajaxResult.success(result);
+		} catch (Exception e) {
+			ajaxResult.error(e);
+		}
 	}
 
-	public void requestPing(final int playerId, final Location currentLocation, final AjaxResult<PingResponse> ajaxResult) {
+	public LoginAnswer login(final String name) {
+		String url = host + "/rest/loginManager/login_player_mobile";
+		String request = "name=" + name + "&isMobile=" + true;
+
+		return template.postForObject(url, request, LoginAnswer.class);
+	}
+
+	public void requestPing(final long playerId, final Location currentLocation, final AjaxResult<PingResponse> ajaxResult) {
 		new Thread(new Runnable() {
 
 			@Override
