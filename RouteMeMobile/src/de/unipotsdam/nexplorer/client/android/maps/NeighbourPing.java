@@ -6,7 +6,6 @@ import java.util.TimerTask;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
@@ -40,7 +39,6 @@ public class NeighbourPing extends TimerTask {
 		this.playerId = playerId;
 
 		this.start = new Date().getTime();
-		Log.e("ping", "Scheduled " + repetitions + " repetitions");
 		new Timer().schedule(this, 0, frequency);
 	}
 
@@ -58,7 +56,6 @@ public class NeighbourPing extends TimerTask {
 		callback.finishedPing(playerId);
 
 		long end = new Date().getTime();
-		Log.e("ping", "Took " + (end - start) + "ms");
 	}
 
 	public void update(double latitude, double longitude) {
