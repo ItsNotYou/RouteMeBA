@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.client.android;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -76,7 +77,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
 
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG)), mapFragment, new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG), new Handler()), mapFragment, new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
 	}
 
 	/**

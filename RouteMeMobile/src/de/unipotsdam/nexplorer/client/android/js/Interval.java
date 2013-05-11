@@ -1,25 +1,35 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import android.os.Handler;
 
-public class Interval {
+public abstract class Interval implements Runnable {
 
-	private Timer timer = null;
+	private Handler handler;
+	private long milliseconds;
+	private boolean isCancelled;
 
-	public void clear() {
-		if (timer != null) {
-			timer.cancel();
-			timer = null;
+	public Interval(Handler handler, long milliseconds) {
+		this.handler = handler;
+		this.milliseconds = milliseconds;
+		this.isCancelled = false;
+
+		run();
+	}
+
+	@Override
+	public void run() {
+		if (!isCancelled) {
+			try {
+				handler.postDelayed(this, milliseconds);
+				call();
+			} catch (Throwable t) {
+			}
 		}
 	}
 
-	public Interval set(TimerTask task, long millisecond) {
-		clear();
-
-		timer = new Timer();
-		timer.schedule(task, millisecond, millisecond);
-
-		return this;
+	public void cancel() {
+		this.isCancelled = true;
 	}
+
+	public abstract void call();
 }

@@ -1,15 +1,13 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.TimerTask;
-
+import android.os.Handler;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.Geolocator;
 
 public class Intervals {
 
 	Geolocator positionWatch = null;
+	private Handler handler;
 
 	Interval displayMarkerInterval;
 	Interval gameStatusInterval;
@@ -19,26 +17,20 @@ public class Intervals {
 
 	private final GpsReceiver geolocation;
 
-	public Intervals(GpsReceiver geolocation) {
+	public Intervals(GpsReceiver geolocation, Handler handler) {
 		this.geolocation = geolocation;
+		this.handler = handler;
 	}
 
 	private void startDisplayInterval(final FunctionsMobile functionsMobile) {
 		if (displayMarkerInterval == null || displayMarkerInterval == null) {
-			displayMarkerInterval = new Interval().set(new TimerTask() {
+			displayMarkerInterval = new Interval(handler, 500) {
 
 				@Override
-				public void run() {
-					try {
-						functionsMobile.updateDisplay();
-					} catch (Throwable e) {
-						StringWriter w = new StringWriter();
-						e.printStackTrace(new PrintWriter(w));
-						String message = w.toString();
-						e.toString();
-					}
+				public void call() {
+					functionsMobile.updateDisplay();
 				}
-			}, 500);
+			};
 		}
 	}
 
@@ -50,19 +42,15 @@ public class Intervals {
 		startIntervals(functionsMobile);
 	}
 
-	void startGameStatusInterval(final FunctionsMobile functionsMobile) {
+	public void startGameStatusInterval(final FunctionsMobile functionsMobile) {
 		if (gameStatusInterval == null || gameStatusInterval == null) {
-			gameStatusInterval = new Interval().set(new TimerTask() {
+			gameStatusInterval = new Interval(handler, updateDisplayIntervalTime) {
 
 				@Override
-				public void run() {
-					try {
-						functionsMobile.updateGameStatus(true);
-					} catch (Throwable e) {
-						e.toString();
-					}
+				public void call() {
+					functionsMobile.updateGameStatus(true);
 				}
-			}, updateDisplayIntervalTime);
+			};
 		}
 	}
 
