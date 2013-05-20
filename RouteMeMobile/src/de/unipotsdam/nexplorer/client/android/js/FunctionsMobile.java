@@ -21,6 +21,7 @@ import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
+import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector.ShakeListener;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
 import de.unipotsdam.nexplorer.client.android.support.CollectObserver;
 import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
@@ -29,12 +30,7 @@ import de.unipotsdam.nexplorer.client.android.support.PingObserver;
 import de.unipotsdam.nexplorer.client.android.support.RangeObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
-/**
- * mainly legacy code from Tobias Moebert has been adapted to work with a java backend and gwt client wrapper
- * 
- * @author Julian Dehne
- */
-public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
+public class FunctionsMobile implements PositionWatcher, OnMapClickListener, ShakeListener {
 
 	private final NexplorerMap mapTasks;
 	private final Intervals intervals;
@@ -144,7 +140,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 		uiSensors.positionReceived();
 
 		this.currentLocation = location;
-		updateDisplay();
+		mapTasks.centerAt(currentLocation);
 
 		this.locationObserver.fire(location);
 	}
@@ -216,6 +212,10 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 
 		mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
 
+		adjustGameLifecycle();
+	}
+
+	private void adjustGameLifecycle() {
 		// Spiel entsprechend der erhaltenen Informationen
 		// anpassen
 		if (gameDidEnd) {
@@ -246,16 +246,8 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 	 * updates the display with the new position and the positions of the neighbours
 	 */
 	void updateDisplay() {
-		ui.runOnUIThread(new Runnable() {
-
-			@Override
-			public void run() {
-				mapTasks.centerAtCurrentLocation(currentLocation, playerRange, itemCollectionRange);
-				mapTasks.drawMarkers(neighbours, nearbyItems, gameDifficulty);
-
-				ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
-			}
-		});
+		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
+		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
 
 	/**
@@ -291,7 +283,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener {
 		return Integer.parseInt(value);
 	}
 
-	public void shakeDetected() {
+	public void shakeDetected(float accel) {
 		collectItem();
 	}
 

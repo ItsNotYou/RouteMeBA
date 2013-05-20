@@ -25,14 +25,12 @@ import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
+import de.unipotsdam.nexplorer.client.android.support.Settings;
 import de.unipotsdam.nexplorer.client.android.ui.Overlay;
 import de.unipotsdam.nexplorer.client.android.ui.Text;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
-public class MapActivity extends FragmentActivity implements ShakeDetector.ShakeListener {
-
-	private static final String HOST_ADRESS = "http://routeme.dnsdynamic.com:8080";
-	private static final boolean IS_DEBUG = true;
+public class MapActivity extends FragmentActivity {
 
 	private FunctionsMobile js;
 	private boolean firstStart;
@@ -50,9 +48,6 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
 		ItemFooterFragment footer = addItemFooter();
-
-		shaker = new ShakeDetector(this, 1, 750);
-		shaker.addShakeListener(this);
 
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
@@ -75,9 +70,12 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
-		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, HOST_ADRESS, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
+		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
 
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, IS_DEBUG), new Handler()), mapFragment, new RestMobile(HOST_ADRESS), blinker, new TouchVibrator(this));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, new Settings().isDebugModeOn()), new Handler()), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this));
+
+		shaker = new ShakeDetector(this, 1, 750);
+		shaker.addShakeListener(js);
 	}
 
 	/**
@@ -127,12 +125,7 @@ public class MapActivity extends FragmentActivity implements ShakeDetector.Shake
 		return true;
 	}
 
-	@Override
-	public void shakeDetected(float accel) {
-		js.shakeDetected();
-	}
-
-	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, String hostAdress, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer) {
+	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer) {
 		de.unipotsdam.nexplorer.client.android.ui.Button loginButton = new de.unipotsdam.nexplorer.client.android.ui.Button(login, host);
 
 		Text waitingText = new Text(waitingTextText, host);

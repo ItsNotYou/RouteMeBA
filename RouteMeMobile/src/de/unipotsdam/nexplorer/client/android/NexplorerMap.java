@@ -162,15 +162,24 @@ public class NexplorerMap extends RotatingMapFragment {
 		});
 	}
 
-	public void centerAtCurrentLocation(final Location currentLocation, final Integer playerRange, final Integer itemCollectionRange) {
-		if (currentLocation == oldLocation && playerRange.equals(oldPlayerRange) && itemCollectionRange.equals(oldItemRange)) {
+	public void updateMarkerSizes(final Integer playerRange, final Integer itemCollectionRange) {
+		if (playerRange.equals(oldPlayerRange) && itemCollectionRange.equals(oldItemRange)) {
+			return;
+		}
+
+		this.oldPlayerRange = playerRange;
+		this.oldItemRange = itemCollectionRange;
+
+		playerRadius.setRadius(playerRange);
+		collectionRadius.setRadius(itemCollectionRange);
+	}
+
+	public void centerAt(final Location currentLocation) {
+		if (currentLocation == oldLocation) {
 			return;
 		}
 
 		this.oldLocation = currentLocation;
-		this.oldPlayerRange = playerRange;
-		this.oldItemRange = itemCollectionRange;
-
 		if (currentLocation != null) {
 			// Karte zentrieren
 			setCenter(new LatLng(currentLocation));
@@ -184,13 +193,11 @@ public class NexplorerMap extends RotatingMapFragment {
 			if (playerRadius.map == null) {
 				playerRadius.setMap(googleMap);
 			}
-			playerRadius.setRadius(playerRange);
 			// Sammelradius zentrieren
 			collectionRadius.setCenter(new LatLng(currentLocation));
 			if (collectionRadius.map == null) {
 				collectionRadius.setMap(googleMap);
 			}
-			collectionRadius.setRadius(itemCollectionRange);
 		}
 	}
 
@@ -204,5 +211,10 @@ public class NexplorerMap extends RotatingMapFragment {
 				return true;
 			}
 		});
+	}
+
+	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String gameDifficulty) {
+		updateMarkerSizes(playerRange, itemCollectionRange);
+		drawMarkers(neighbours, nearbyItems, gameDifficulty);
 	}
 }
