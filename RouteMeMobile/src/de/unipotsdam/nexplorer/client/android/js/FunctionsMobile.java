@@ -1,12 +1,12 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import android.location.Location;
+import android.os.AsyncTask;
 
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import de.unipotsdam.nexplorer.client.android.NexplorerMap;
-import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
@@ -158,23 +158,37 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	 * @param isAsync
 	 */
 	void updateGameStatus(final boolean isAsync) {
-		// console.log("updateGameStatus async: "+isAsync);
-		if (gameStatusRequestExecutes == false) {
-			// console.log("gameStatusRequestExecutes == false");
+		if (!gameStatusRequestExecutes) {
+			new UpdateGameStatus().executeOnExecutor(UpdateGameStatus.THREAD_POOL_EXECUTOR);
+		}
+	}
+
+	private class UpdateGameStatus extends AsyncTask<Void, Void, GameStatus> {
+
+		@Override
+		protected void onPreExecute() {
 			gameStatusRequestExecutes = true;
+		}
 
-			rest.getGameStatus(playerId, isAsync, new AjaxResult<GameStatus>() {
+		@Override
+		protected GameStatus doInBackground(Void... params) {
+			try {
+				return rest.getGameStatus(playerId);
+			} catch (Exception e) {
+				cancel(false);
+				return null;
+			}
+		}
 
-				@Override
-				public void success(GameStatus result) {
-					updateGameStatusCallback(result);
-				}
+		@Override
+		protected void onCancelled(GameStatus result) {
+			gameStatusRequestExecutes = false;
+		}
 
-				@Override
-				public void error(Exception e) {
-					gameStatusRequestExecutes = false;
-				}
-			});
+		@Override
+		protected void onPostExecute(GameStatus result) {
+			gameStatusRequestExecutes = false;
+			updateGameStatusCallback(result);
 		}
 	}
 

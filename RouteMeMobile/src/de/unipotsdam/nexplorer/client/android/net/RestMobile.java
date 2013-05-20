@@ -26,6 +26,11 @@ public class RestMobile {
 		template.getMessageConverters().add(new GsonHttpMessageConverter());
 	}
 
+	public GameStatus getGameStatus(Long playerId) {
+		String url = host + "/rest/mobile/get_game_status?playerId=" + playerId;
+		return template.getForObject(url, GameStatus.class);
+	}
+
 	public void getGameStatus(final long playerId, final boolean isAsync, final AjaxResult<GameStatus> result) {
 		ajax(new Options<GameStatus>(GameStatus.class) {
 
