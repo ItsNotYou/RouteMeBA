@@ -186,47 +186,44 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		}
 
 		@Override
-		protected void onPostExecute(GameStatus result) {
+		protected void onPostExecute(GameStatus data) {
 			gameStatusRequestExecutes = false;
-			updateGameStatusCallback(result);
+
+			int oldRange = playerRange;
+
+			// Spielstatus und Spielinformationen
+			gameDifficulty = data.stats.getGameDifficulty();
+			gameIsRunning = data.stats.settings.isRunningBoolean();
+			remainingPlayingTime = data.stats.getRemainingPlayingTime();
+			gameExists = data.stats.isGameExistingBoolean();
+			gameDidExist = gameExists;
+			itemCollectionRange = data.stats.settings.getItemCollectionRange();
+			gameDidEnd = data.stats.hasEndedBoolean();
+			Integer updateDisplayIntervalTime = data.stats.settings.getUpdateDisplayIntervalTime();
+			intervals.setUpdateDisplayIntervalTime(updateDisplayIntervalTime);
+
+			// Spielerinformationen
+			battery = data.node.getBatterieLevel();
+			neighbourCount = data.node.getNeighbourCount();
+			score = data.node.getScore();
+			playerRange = data.node.getRange();
+			neighbours = data.node.getNeighbours();
+			nearbyItems = data.node.getNearbyItems().getItems();
+			nextItemDistance = data.node.getNextItemDistance();
+			itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
+			hasRangeBooster = data.node.hasRangeBoosterBoolean();
+			hint = data.getHint();
+
+			if (oldRange != playerRange) {
+				rangeObserver.fire((double) playerRange);
+			}
+
+			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
+
+			adjustGameLifecycle();
+
+			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 		}
-	}
-
-	private void updateGameStatusCallback(GameStatus data) {
-		gameStatusRequestExecutes = false;
-
-		int oldRange = playerRange;
-
-		// Spielstatus und Spielinformationen
-		gameDifficulty = data.stats.getGameDifficulty();
-		gameIsRunning = data.stats.settings.isRunningBoolean();
-		remainingPlayingTime = data.stats.getRemainingPlayingTime();
-		gameExists = data.stats.isGameExistingBoolean();
-		gameDidExist = gameExists;
-		itemCollectionRange = data.stats.settings.getItemCollectionRange();
-		gameDidEnd = data.stats.hasEndedBoolean();
-		Integer updateDisplayIntervalTime = data.stats.settings.getUpdateDisplayIntervalTime();
-		intervals.setUpdateDisplayIntervalTime(updateDisplayIntervalTime);
-
-		// Spielerinformationen
-		battery = data.node.getBatterieLevel();
-		neighbourCount = data.node.getNeighbourCount();
-		score = data.node.getScore();
-		playerRange = data.node.getRange();
-		neighbours = data.node.getNeighbours();
-		nearbyItems = data.node.getNearbyItems().getItems();
-		nextItemDistance = data.node.getNextItemDistance();
-		itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
-		hasRangeBooster = data.node.hasRangeBoosterBoolean();
-		hint = data.getHint();
-
-		if (oldRange != playerRange) {
-			this.rangeObserver.fire((double) playerRange);
-		}
-
-		mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
-
-		adjustGameLifecycle();
 	}
 
 	private void adjustGameLifecycle() {
@@ -260,6 +257,10 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	 * updates the display with the new position and the positions of the neighbours
 	 */
 	void updateDisplay() {
+		// updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+	}
+
+	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint) {
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
