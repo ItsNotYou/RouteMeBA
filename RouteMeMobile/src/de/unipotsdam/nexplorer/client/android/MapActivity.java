@@ -18,7 +18,6 @@ import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
-import de.unipotsdam.nexplorer.client.android.js.Intervals;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
@@ -72,7 +71,7 @@ public class MapActivity extends FragmentActivity {
 
 		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
 
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Intervals(new GpsReceiver(this, new Settings().isDebugModeOn()), new Handler()), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this));
+		js = new FunctionsMobile(ui, new AppWrapper(this), new Handler(), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this), new GpsReceiver(this, new Settings().isDebugModeOn()));
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(js);

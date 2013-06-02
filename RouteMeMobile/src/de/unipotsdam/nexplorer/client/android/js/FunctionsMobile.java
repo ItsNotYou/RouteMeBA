@@ -2,6 +2,7 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Handler;
 
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
@@ -20,6 +21,7 @@ import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
+import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector.ShakeListener;
 import de.unipotsdam.nexplorer.client.android.sensors.TouchVibrator;
@@ -33,7 +35,7 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
 public class FunctionsMobile implements PositionWatcher, OnMapClickListener, ShakeListener {
 
 	private final NexplorerMap mapTasks;
-	private final Intervals intervals;
+	private final Interval intervals;
 	private final UI ui;
 	private final UILogin uiLogin;
 	private final UISensors uiSensors;
@@ -41,31 +43,13 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	private final AppWrapper app;
 
 	// TODO: Parameter flexibilisieren
-	private double minAccuracy = 11;
+	private final double minAccuracy = 11;
 
 	private boolean gameStatusRequestExecutes = false;
 
 	private Long playerId = null;
-	private double battery = 100;
-	private java.util.Map<Integer, Neighbour> neighbours;
-	private int neighbourCount = 0;
-	private int score;
 	private int playerRange;
-	private java.util.Map<Integer, Item> nearbyItems;
-	private Integer nextItemDistance;
-	private boolean itemInCollectionRange;
-	private boolean hasRangeBooster;
-	private String hint = "Achte auf die Hinweise!";
-	private String gameDifficulty;
-
-	private boolean gameIsRunning;
-	private boolean gameExists;
-	private boolean gameDidExist = true; // die semantik davon, dass es mal ein Spiel gegeben
-	// hat, ist mir unklar ... es hat hat schon immer ein
-	// Spiel gegeben!
-	private long remainingPlayingTime;
 	private int itemCollectionRange;
-	private boolean gameDidEnd = false;
 
 	private Location currentLocation;
 	private RestMobile rest;
@@ -76,9 +60,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	private final CollectObserver collectObserver;
 	private final RangeObserver rangeObserver;
 
-	public FunctionsMobile(UI ui, AppWrapper app, Intervals intervals, NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator) {
+	public FunctionsMobile(UI ui, AppWrapper app, Handler handler, NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator, GpsReceiver gpsReceiver) {
 		this.mapTasks = mapTasks;
-		this.intervals = intervals;
+		this.intervals = new UpdateGameStatusInterval(handler, this);
 		this.app = app;
 		this.ui = ui;
 		this.uiLogin = ui;
@@ -113,7 +97,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		this.rangeObserver = new RangeObserver();
 		this.rangeObserver.add(radiusBlinker);
 
-		intervals.ensurePositionWatch(this);
+		gpsReceiver.watchPosition(this);
 		mapTasks.setOnMapClickListener(this);
 	}
 
@@ -192,27 +176,25 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			int oldRange = playerRange;
 
 			// Spielstatus und Spielinformationen
-			gameDifficulty = data.stats.getGameDifficulty();
-			gameIsRunning = data.stats.settings.isRunningBoolean();
-			remainingPlayingTime = data.stats.getRemainingPlayingTime();
-			gameExists = data.stats.isGameExistingBoolean();
-			gameDidExist = gameExists;
-			itemCollectionRange = data.stats.settings.getItemCollectionRange();
-			gameDidEnd = data.stats.hasEndedBoolean();
-			Integer updateDisplayIntervalTime = data.stats.settings.getUpdateDisplayIntervalTime();
-			intervals.setUpdateDisplayIntervalTime(updateDisplayIntervalTime);
+			String gameDifficulty = data.stats.getGameDifficulty();
+			boolean gameIsRunning = data.stats.settings.isRunningBoolean();
+			long remainingPlayingTime = data.stats.getRemainingPlayingTime();
+			boolean gameExists = data.stats.isGameExistingBoolean();
+			boolean gameDidExist = gameExists;
+			int itemCollectionRange = data.stats.settings.getItemCollectionRange();
+			boolean gameDidEnd = data.stats.hasEndedBoolean();
 
 			// Spielerinformationen
-			battery = data.node.getBatterieLevel();
-			neighbourCount = data.node.getNeighbourCount();
-			score = data.node.getScore();
-			playerRange = data.node.getRange();
-			neighbours = data.node.getNeighbours();
-			nearbyItems = data.node.getNearbyItems().getItems();
-			nextItemDistance = data.node.getNextItemDistance();
-			itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
-			hasRangeBooster = data.node.hasRangeBoosterBoolean();
-			hint = data.getHint();
+			double battery = data.node.getBatterieLevel();
+			int neighbourCount = data.node.getNeighbourCount();
+			int score = data.node.getScore();
+			int playerRange = data.node.getRange();
+			java.util.Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
+			java.util.Map<Integer, Item> nearbyItems = data.node.getNearbyItems().getItems();
+			Integer nextItemDistance = data.node.getNextItemDistance();
+			boolean itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
+			boolean hasRangeBooster = data.node.hasRangeBoosterBoolean();
+			String hint = data.getHint();
 
 			if (oldRange != playerRange) {
 				rangeObserver.fire((double) playerRange);
@@ -220,34 +202,32 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
 
-			adjustGameLifecycle();
+			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd, gameIsRunning, battery);
 
 			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 		}
 	}
 
-	private void adjustGameLifecycle() {
+	private void adjustGameLifecycle(boolean gameExists, boolean gameDidExist, boolean gameDidEnd, boolean gameIsRunning, double battery) {
 		// Spiel entsprechend der erhaltenen Informationen
 		// anpassen
 		if (gameDidEnd) {
-			intervals.stopIntervals();
 			uiGameEvents.gameEnded();
 		} else {
 			if (battery > 0) {
 				if (!gameExists && gameDidExist) {
 					app.reload();
 				} else if (!gameExists && !gameDidExist) {
-					intervals.restartIntervals(this);
+					intervals.start();
 					ui.showWaitingForGameStart();
 				} else if (gameExists && gameDidExist && !gameIsRunning) {
-					intervals.restartIntervals(this);
+					intervals.start();
 					uiGameEvents.gamePaused();
 				} else {
-					intervals.startIntervals(this);
+					intervals.start();
 					uiGameEvents.gameResumed();
 				}
 			} else {
-				intervals.stopIntervals();
 				uiGameEvents.playerRemoved(RemovalReason.NO_BATTERY);
 			}
 		}
@@ -276,7 +256,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		playerId = data.id;
 
 		updateGameStatus(false);
-		intervals.startGameStatusInterval(this);
+		intervals.start();
 		loginObserver.fire(playerId);
 	}
 

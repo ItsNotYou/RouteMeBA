@@ -11,9 +11,14 @@ public abstract class Interval implements Runnable {
 	public Interval(Handler handler, long milliseconds) {
 		this.handler = handler;
 		this.milliseconds = milliseconds;
-		this.isCancelled = false;
+		this.isCancelled = true;
+	}
 
-		run();
+	public void start() {
+		if (isCancelled) {
+			isCancelled = false;
+			run();
+		}
 	}
 
 	@Override
