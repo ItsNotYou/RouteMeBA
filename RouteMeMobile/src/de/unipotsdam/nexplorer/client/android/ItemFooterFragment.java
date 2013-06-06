@@ -88,7 +88,7 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 		}
 	}
 
-	void setText(TextView text, final String string) {
+	private void setText(TextView text, final String string) {
 		setText(text, string, null);
 	}
 }

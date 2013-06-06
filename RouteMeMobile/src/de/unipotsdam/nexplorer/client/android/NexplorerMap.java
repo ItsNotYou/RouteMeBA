@@ -13,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 import de.unipotsdam.nexplorer.client.android.R.drawable;
+import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
 import de.unipotsdam.nexplorer.client.android.js.LatLng;
 import de.unipotsdam.nexplorer.client.android.js.Marker;
 import de.unipotsdam.nexplorer.client.android.js.MarkerImage;
@@ -23,7 +24,7 @@ import de.unipotsdam.nexplorer.client.android.maps.NeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
-public class NexplorerMap extends RotatingMapFragment {
+public class NexplorerMap extends RotatingMapFragment implements Locatable {
 
 	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private NeighbourDrawer neighbourDrawer;
@@ -63,7 +64,7 @@ public class NexplorerMap extends RotatingMapFragment {
 		collectionRadius = new PlayerRadius(getActivity(), strokeColor, strokeWeight, fillColor);
 	}
 
-	public void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty) {
+	private void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty) {
 		ensureNeighbourDrawer(difficulty);
 
 		if (neighbours != null && neighbourDrawer != null) {
@@ -101,7 +102,7 @@ public class NexplorerMap extends RotatingMapFragment {
 	 * @param latitude
 	 * @param longitude
 	 */
-	void drawNearbyItemMarkerAtLatitudeLongitude(int itemId, String type, double latitude, double longitude) {
+	private void drawNearbyItemMarkerAtLatitudeLongitude(int itemId, String type, double latitude, double longitude) {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
 		int imagePath = 0;
@@ -162,7 +163,7 @@ public class NexplorerMap extends RotatingMapFragment {
 		});
 	}
 
-	public void updateMarkerSizes(final Integer playerRange, final Integer itemCollectionRange) {
+	private void updateMarkerSizes(final Integer playerRange, final Integer itemCollectionRange) {
 		if (playerRange.equals(oldPlayerRange) && itemCollectionRange.equals(oldItemRange)) {
 			return;
 		}
@@ -216,5 +217,10 @@ public class NexplorerMap extends RotatingMapFragment {
 	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String gameDifficulty) {
 		updateMarkerSizes(playerRange, itemCollectionRange);
 		drawMarkers(neighbours, nearbyItems, gameDifficulty);
+	}
+
+	@Override
+	public void locationChanged(Location location) {
+		centerAt(location);
 	}
 }

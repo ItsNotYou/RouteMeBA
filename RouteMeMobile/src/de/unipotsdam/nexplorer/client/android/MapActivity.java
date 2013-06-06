@@ -16,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
-import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
@@ -70,8 +69,7 @@ public class MapActivity extends FragmentActivity {
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
 		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
-
-		js = new FunctionsMobile(ui, new AppWrapper(this), new Handler(), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this), new GpsReceiver(this, new Settings().isDebugModeOn()));
+		js = new FunctionsMobile(ui, new Handler(), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this), new GpsReceiver(this, new Settings().isDebugModeOn()));
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(js);

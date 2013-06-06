@@ -1,6 +1,8 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
 import android.app.Activity;
+import android.location.Location;
+import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
@@ -9,7 +11,7 @@ import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
 
-public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
+public class UI extends UIElement implements UILogin, UISensors, UIGameEvents, Locatable {
 
 	private final Button loginButton;
 	private final Text waitingText;
@@ -218,5 +220,10 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		default:
 			showBatteryEmpty();
 		}
+	}
+
+	@Override
+	public void locationChanged(Location location) {
+		positionReceived();
 	}
 }
