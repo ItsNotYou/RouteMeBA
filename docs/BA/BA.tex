@@ -3,8 +3,31 @@
 \usepackage[latin1]{inputenc}
 \usepackage[OT1, T1]{fontenc}
 \usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{url}
 \usepackage[printonlyused]{acronym}
-\bibliographystyle{plain}
+\usepackage[multiple]{footmisc}
+\usepackage{lmodern}
+\usepackage[numbib]{tocbibind}
+\usepackage{ltablex}
+\usepackage{tabularx}
+\usepackage{supertabular}
+\usepackage{multirow}
+\usepackage{listings} 
+\usepackage[a4paper,left=2.5cm, right=2.5cm]{geometry}
+\usepackage{lscape}
+\usepackage{pdfpages}
+\usepackage{float}
+\bibliographystyle{lnig}
+
+% Commands
+\newlength{\imgwidth}
+\newcommand\scalegraphics[1]{%   
+    \settowidth{\imgwidth}{\includegraphics{#1}}%
+    \setlength{\imgwidth}{\minof{\imgwidth}{\textwidth}}%
+    \centering%
+    \includegraphics[width=\imgwidth]{#1}%
+}
 
 \title{Bachelorarbeit}
 \author{Hendrik Geßner, 751352}
@@ -17,11 +40,19 @@
 \tableofcontents
 \pagebreak
 
-\section{Grundlagen}
+\section{Einleitung}
+
+\section{Das bestehende Spiel}
 
 \subsection{Spielidee}
 
+\subsection{Pervasive Games}
+
 \subsection{Existierendes Spiel}
+
+\begin{itemize}
+	\item Spielbereich in Vorgängerarbeit~\cite{Dehne.26.April2013} festgelegt. Basis für Entscheidung war Kompromiss aus Geolocation-Genauigkeit und WLAN-Verfügbarkeit.
+\end{itemize}
 
 \begin{itemize}
 	\item hält sich nicht ganz an AODV
@@ -59,29 +90,60 @@ Zusammenfassend ist festzuhalten, dass die Einrichtung von acht Smartphones etwa
 	\item Spielfeld rechteckig entlang längen- und breitengrade, aber nicht drehbar oder in Form änderbar
 \end{itemize}
 
-\subsection{AODV}
+\section{Android-App}
 
-\ac{AODV} ist Routing-Algorithmus, der für \ac{MANETs} ausgelegt ist. Jeder Knoten ist gleichberechtigt. Durch das Versenden und Weiterleiten von Nachrichten an Nachbarn entsteht ein Netzwerk. Dieses Netzwerk ist ständigen Veränderungen unterworfen, da sich Nachbarschaftsverhältnisse ändern und Knoten ausfallen können. Diese Veränderungen erfordern eine permanente Anpassung der Routen.
+\subsection{GPS}
 
-\ac{AODV} gehört zu den reaktiven Routing-Algorithmen. Routen werden erst bei Bedarf ermittelt. Alle an der Route beteiligten Knoten überwachen die Aktualität und senden Fehlernachrichten, falls eine Route ausfällt.
+\begin{figure}
+	\centering
+	\scalegraphics{pics/gps_sources.png}
+	\caption{Mögliche Geolocation-Quellen~\cite{Gardner.2012}}
+	\label{fig:gps_sources}
+\end{figure}
 
-Es wird an einem Nachfolger namens AODVv2 gearbeitet.
+Geolocation-Daten können aus unterschiedlichen Quellen stammen. Eine Übersicht von Quellen stellt Abbildung~\ref{fig:gps_sources} dar. Die häufigsten Geolocation-Quellen auf den getesteten Smartphones waren WLAN- und GPS-Daten, wobei WLAN eine Genauigkeit von 20 bis 50m und GPS eine Genauigkeit von 5 bis 15m im vorgesehenen Spielbereich hatte.
 
-\subsubsection{RREQ und RREP}
+\begin{itemize}
+	\item Anzahl GPS-Satelliten
+	\item Verfahren für Genauigkeit
+	\item Hindernisse
+	\item Fixierung auf Hardware
+	\item Alternativen zu GPS
+	\item Erweiterungen von GPS (AGPS, DGPS)
+	\item Für DGPS -> Anbieter oder Brandeburg Viewer + Eigene Implementierung
+\end{itemize}
 
-Routen werden über eine Kombination von \ac{RREQ} und \ac{RREP} gefunden. Benötigt ein Quellknoten eine Route zu einem Zielknoten, so sendet er einen \ac{RREQ} an alle Nachbarknoten. Jeder Nachbarknoten überprüft, ob er bereits eine Route zum Zielknoten kennen. Falls eine Route bekannt zum Zielknoten bekannt ist oder falls der Knoten selbst der Zielknoten ist, so sendet er einen \ac{RREP} an den Quellknoten zurück. Ist keine Route bekannt, so leitet er den \ac{RREQ} an seine eigenen Nachbarknoten weiter. Nachbarknoten speichern eine Route zum Quellknoten des \ac{RREQ}.
+\subsection{Abstandsbestimmung auf der Erde}
 
-\subsubsection{Hello-Nachrichten}
+\begin{itemize}
+	\item Erde ist keine Kugel
+	\item Abstandsbestimmung zweier Punkte auf Oberfläche über direkten Weg gehen meist durch Oberfläche hindurch
+	\item Bei geringem Abstand und Fehlertoleranz kann Fehler vernachlässigt werden
+	\item Für unser Szenario ausreichen
+	\item GRAFIK FÜR ABSTANDSBERECHNUNG EINFÜGEN
+\end{itemize}
 
-Knoten können Hello-Nachrichten versenden, um ihren Nachbarn Ver\-bin\-dungs-In\-for\-matio\-nen zu Verfügung zu stellen. Dabei sollen Hello-Nachrichten nur verwendet werden, wenn der aussendende Knoten teil einer aktiven Route ist. Bleiben Hello-Nachrichten für einen bestimmten Zeitraum aus, so kann der empfangende Knoten davon ausgehen, dass die Route ausgefallen ist.
+\subsection{Entscheidung für eine Android-App}
 
-\subsubsection{RERR}
+\begin{itemize}
+	\item Browser bieten unzuverlässigen Zugriff auf Sensoren
+	\item Auswahl der in Browsern implementierten HTML5-Features noch sehr unterschiedlich\footnote{Es gibt Seiten, die die unterschiedlichen Features der auf dem Markt verfügbaren Browser testen und gegenüberstellen. Eine solche Seite ist \url{http://html5test.com/}, von der die folgende Übersicht stammt: \url{http://html5test.com/compare/browser/android23/android40/operamobile1400.html}, \url{http://html5test.com/compare/browser/chromemobile25/ffmobile19/ios70.html}}
+	\item Unterschiedliches Verhalten auf unterschiedlichen Browsern, nicht alle Browser auf allen Betriebssystemen verfügbar: Chrome nur ab Android 4 verfügbar
+	\item Darstellung in Browsern unterschiedlich: JS-UI-Framework ignoriert bewusst den Firefox-Browser
+	\item 
+\end{itemize}
 
-Fällt eine Route aus, so wird ein \ac{RERR} versendet. Empfangende Knoten können anhand des \ac{RERR} ihre Routen-Einträge korrigieren.
+Android bietet
+\begin{itemize}
+	\item 
+\end{itemize}
 
-\subsection{Pervasive Games}
+Eine Festlegung auf Android bringt die folgenden Limitierungen
+\begin{itemize}
+	\item Plattformunabhängigkeit geht verloren, Festlegung auf Android
+\end{itemize}
 
-\subsection{Android}
+\subsection{Android-Grundlagen}
 
 \subsubsection{Programmiermodell}
 
@@ -164,26 +226,57 @@ Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. E
 	\item Für kurze Audio-Schnippsel gibt es ein besonderes Flag, das Hintergrundgeräusche / Hintergrundmusik nicht stoppt, sondern nur herunterregelt
 \end{itemize}
 
-\subsection{GPS}
+\subsection{Portierung}
 
 \begin{itemize}
-	\item Anzahl GPS-Satelliten
-	\item Verfahren für Genauigkeit
-	\item Hindernisse
-	\item Fixierung auf Hardware
-	\item Alternativen zu GPS
-	\item Erweiterungen von GPS (AGPS, DGPS)
-	\item Für DGPS -> Anbieter oder Brandeburg Viewer + Eigene Implementierung
+	\item Portierung von JS nach Android-Java
+	\item Struktur des Codes übernehmen
+	\item bereits Erfahrung in der Portierung von PHP nach Java
+	\item kopieren / einfügen, anschließend an Java-Syntax anpassen
+	\item Wrapper für UI-Elemente und Browser-Funktionen
+	\item UI vollständig anders umsetzen
+	\item Einstieg an Android-Gegebenheiten anpassen
 \end{itemize}
 
-\subsection{Abstandsbestimmung auf der Erde}
+\begin{itemize}
+	\item Konzept des UI-Threads in JS unbekannt, UI-Elemente können beliebig verändert werden. Android hat einen UI-Thread und alle Manipulationen, die nicht innerhalb des UI-Thread durchgeführt werden.
+	\item Dieses Verhalten muss bei der Portierung beachtet werden. Deshalb in Wrapperklassen dieses Verhalten nachbilden
+\end{itemize}
+
+\subsection{Umsetzung von Pervasivität}
 
 \begin{itemize}
-	\item Erde ist keine Kugel
-	\item Abstandsbestimmung zweier Punkte auf Oberfläche über direkten Weg gehen meist durch Oberfläche hindurch
-	\item Bei geringem Abstand und Fehlertoleranz kann Fehler vernachlässigt werden
-	\item Für unser Szenario ausreichen
-	\item GRAFIK FÜR ABSTANDSBERECHNUNG EINFÜGEN
+	\item Schüttel-Gesten für Einsammeln
+	\item Audio-Feedback für Ping aussenden / empfangen
+	\item Vibrations-Feedback für Ping empfangen
+	\item Pervasive Karte
+	\item Items an Horizont
+\end{itemize}
+
+\subsection{Umsetzung von Pervasivität}
+
+\begin{itemize}
+	\item Shake-Modul entwickelt
+	\item Modul für selbstdrehende Karte entwickelt (Umsetzung über Lagesensor und Kompass)
+	\item WLAN-Verbindungs-Modul entwickelt
+\end{itemize}
+
+\subsection{Spielerleichterungen}
+
+\begin{itemize}
+	\item Nutze Möglichkeit, Android-Apps per URL zu starten
+	\item Parameterübergabe für WLAN-SSID und WLAN-Schlüssel über URL-Parameter
+	\item Nachteil: Kein Aufruf von URLs ohne Netzwerkverbindung. Nicht klar, warum dem so ist
+	\item Workarounds: QR-Reader aus App heraus starten. Nachteil: Abhängigkeit von bestimmter QR-App, die installiert sein muss
+	\item Alternative: Bild selbst untersuchen. Hoher Eigenaufwand
+	\item QR-Code wird bei Spielerstellung generiert. PDF mit QR-Code und kodierten Daten wird erstellt
+\end{itemize}
+
+\begin{itemize}
+	\item QR-Code-Starten gestestet
+	\item Start über beliebige externe App
+	\item Überraschenderweise benötigen QR-Reader eine Netzwerk-Verbindung, um eine URL zu öffnen, auch wenn die URL nur einen Start der App auf dem Smartphone bewirkt. 
+Auf den Test-Smartphones des Lehrstuhles ist keine SIM-Karte eingelegt, somit ist keine Verbindung über 2G / 3G / 4G möglich. Bei einem Smartphone, bei dem WLAN unkonfiguriert ist, ist außerdem keine Netzwerkverbindung vorhanden. Dieses Verhalten verhindert, dass die App gestartet werden kann. Eine Idee der App war, dass beim Start über einen QR-Code das Smartphone sich mit dem im QR-Code kodierte WLAN verbindet.
 \end{itemize}
 
 \subsection{QR-Codes}
@@ -204,48 +297,27 @@ Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. E
 	\item Smartphones nicht mit SIM-Karte ausgestattet -> kein Zugriff auf diese Netze
 \end{itemize}
 
-\subsection{GWT / JSNI}
+\section{Anpassung für Level 2}
 
-\subsection{Rest / RESTful}
+\subsection{AODV}
 
-\subsubsection{Ein- und Ausgabeformate}
+\ac{AODV} ist Routing-Algorithmus, der für \ac{MANETs} ausgelegt ist. Jeder Knoten ist gleichberechtigt. Durch das Versenden und Weiterleiten von Nachrichten an Nachbarn entsteht ein Netzwerk. Dieses Netzwerk ist ständigen Veränderungen unterworfen, da sich Nachbarschaftsverhältnisse ändern und Knoten ausfallen können. Diese Veränderungen erfordern eine permanente Anpassung der Routen.
 
-\begin{itemize}
-	\item Nicht festgelegt
-	\item XML und JSON am häufigsten
-\end{itemize}
+\ac{AODV} gehört zu den reaktiven Routing-Algorithmen. Routen werden erst bei Bedarf ermittelt. Alle an der Route beteiligten Knoten überwachen die Aktualität und senden Fehlernachrichten, falls eine Route ausfällt.
 
-\subsubsection{Hyperlinks}
+Es wird an einem Nachfolger namens AODVv2 gearbeitet.
 
-\begin{itemize}
-	\item XML hat XLink
-	\item JSON fehler Hyperlinks
-	\item Verschiedene Ansätze, JSON um Links zu erweitern, bisher kein Standard
-\end{itemize}
+\subsubsection{RREQ und RREP}
 
-\section{Konzept}
+Routen werden über eine Kombination von \ac{RREQ} und \ac{RREP} gefunden. Benötigt ein Quellknoten eine Route zu einem Zielknoten, so sendet er einen \ac{RREQ} an alle Nachbarknoten. Jeder Nachbarknoten überprüft, ob er bereits eine Route zum Zielknoten kennen. Falls eine Route bekannt zum Zielknoten bekannt ist oder falls der Knoten selbst der Zielknoten ist, so sendet er einen \ac{RREP} an den Quellknoten zurück. Ist keine Route bekannt, so leitet er den \ac{RREQ} an seine eigenen Nachbarknoten weiter. Nachbarknoten speichern eine Route zum Quellknoten des \ac{RREQ}.
 
-\subsection{Portierung}
+\subsubsection{Hello-Nachrichten}
 
-\begin{itemize}
-	\item Portierung von JS nach Android-Java
-	\item Struktur des Codes übernehmen
-	\item bereits Erfahrung in der Portierung von PHP nach Java
-	\item kopieren / einfügen, anschließend an Java-Syntax anpassen
-	\item Wrapper für UI-Elemente und Browser-Funktionen
-	\item UI vollständig anders umsetzen
-	\item Einstieg an Android-Gegebenheiten anpassen
-\end{itemize}
+Knoten können Hello-Nachrichten versenden, um ihren Nachbarn Ver\-bin\-dungs-In\-for\-matio\-nen zu Verfügung zu stellen. Dabei sollen Hello-Nachrichten nur verwendet werden, wenn der aussendende Knoten teil einer aktiven Route ist. Bleiben Hello-Nachrichten für einen bestimmten Zeitraum aus, so kann der empfangende Knoten davon ausgehen, dass die Route ausgefallen ist.
 
-\subsection{Umsetzung von Pervasivität}
+\subsubsection{RERR}
 
-\begin{itemize}
-	\item Schüttel-Gesten für Einsammeln
-	\item Audio-Feedback für Ping aussenden / empfangen
-	\item Vibrations-Feedback für Ping empfangen
-	\item Pervasive Karte
-	\item Items an Horizont
-\end{itemize}
+Fällt eine Route aus, so wird ein \ac{RERR} versendet. Empfangende Knoten können anhand des \ac{RERR} ihre Routen-Einträge korrigieren.
 
 \subsection{Hello-Nachrichten}
 
@@ -296,53 +368,6 @@ Welche Routen sollen zur Verfügung gestellt werden?
 	\item Beliebige Auswahl an Knoten. Bei 6 Knoten sind das 15 ($\frac{n*(n-1)}{2}$) mögliche Wege. Bei Bidirektionalität sogar 30.
 \end{itemize}
 
-\subsection{Spielerleichterungen}
-
-\begin{itemize}
-	\item Nutze Möglichkeit, Android-Apps per URL zu starten
-	\item Parameterübergabe für WLAN-SSID und WLAN-Schlüssel über URL-Parameter
-	\item Nachteil: Kein Aufruf von URLs ohne Netzwerkverbindung. Nicht klar, warum dem so ist
-	\item Workarounds: QR-Reader aus App heraus starten. Nachteil: Abhängigkeit von bestimmter QR-App, die installiert sein muss
-	\item Alternative: Bild selbst untersuchen. Hoher Eigenaufwand
-	\item QR-Code wird bei Spielerstellung generiert. PDF mit QR-Code und kodierten Daten wird erstellt
-	\item Dynamisches DNS verhindert IP-Umstellung auf Clients
-\end{itemize}
-
-\subsection{Skalierbarkeit}
-
-\begin{itemize}
-	\item Zwei Standpunkte: Beserer Server und stärkere Clients
-	\item Servlerlosigkeit mit PushFork
-	\item RESTful-Philosophie umsetzen über dokumentbasiertes Vorgehen
-\end{itemize}
-
-\section{Implementation}
-
-\subsection{Umsetzung von Pervasivität}
-
-\begin{itemize}
-	\item Shake-Modul entwickelt
-	\item Modul für selbstdrehende Karte entwickelt (Umsetzung über Lagesensor und Kompass)
-	\item WLAN-Verbindungs-Modul entwickelt
-\end{itemize}
-
-\subsection{Hello-Nachrichten}
-
-\begin{itemize}
-	\item Auf Serverseite: Verbindungen bekommen Last-Ping-Timestamp
-	\item Anzeigeideen hinter Ping-Feedback
-	\item Synchronisierter Timestamp
-	\item Mit Server synchronisierter Timestamp
-	\item Server verbirgt Timestamp, arbeitet intern mit Server-Timestamp
-	\item Knoten senden ping und ping-invalidate
-\end{itemize}
-
-\begin{itemize}
-	\item In Verbindungstabelle ist last-ping angegeben.
-	\item Statischer Malus für jeden Ping von fünf Batterie-Punkten
-	\item Punkte für Nachbar haben bleibt gleich
-\end{itemize}
-
 \subsection{Nachrichtenversand}
 
 \begin{itemize}
@@ -361,28 +386,112 @@ Welche Routen sollen zur Verfügung gestellt werden?
 
 \paragraph{JS-Testing} Verwendung von Karma (vormals Testacular) als Testrunner, Jasmine als Framework.
 
+\subsection{Hello-Nachrichten}
+
 \begin{itemize}
-	\item 
+	\item Auf Serverseite: Verbindungen bekommen Last-Ping-Timestamp
+	\item Anzeigeideen hinter Ping-Feedback
+	\item Synchronisierter Timestamp
+	\item Mit Server synchronisierter Timestamp
+	\item Server verbirgt Timestamp, arbeitet intern mit Server-Timestamp
+	\item Knoten senden ping und ping-invalidate
 \end{itemize}
 
-\subsection{Spielerleichterungen}
-
 \begin{itemize}
-	\item QR-Code-Starten gestestet
-	\item Start über beliebige externe App
+	\item In Verbindungstabelle ist last-ping angegeben.
+	\item Statischer Malus für jeden Ping von fünf Batterie-Punkten
+	\item Punkte für Nachbar haben bleibt gleich
 \end{itemize}
 
-\subsection{Codestruktur}
+\subsection{Visualisierung von Nachbarn}
+
+\subsection{GWT / JSNI}
+
+\section{Optimierungspotential}
 
 \begin{itemize}
-	\item Einsatz von ReSharper 101
-	\item ReSharper-Metrik "`Fat"' und "`Tangled"'
+	\item Dynamisches DNS verhindert IP-Umstellung auf Clients
+\end{itemize}
+
+\subsection{Skalierbarkeit}
+
+\begin{itemize}
+	\item Zwei Standpunkte: Beserer Server oder stärkere Clients
+	\item Serverlosigkeit mit PushFork
+	\item RESTful-Philosophie umsetzen über dokumentbasiertes Vorgehen
+\end{itemize}
+
+\subsection{Überlegungen zur Kommunikation zwischen Client und Server}
+
+\subsubsection{Rest / RESTful}
+
+\begin{itemize}
+	\item Begriff REST von Roy Fielding eingeführt~\cite{Fielding.2000}
+	\item Basiert auf grundlegenden Internet-Technologien wie URI, HTTP
+	\item Verwendet HTTP-Verben PUT, POST, GET und DELETE, um dokumentbasierte Kommunikation zwischen Client und Server zu ermöglichen
+	\item Roy Fielding plädiert auf intensive Nutzung des HTTP-Standards, um bestehende WWW-Infrastruktur optimal auszunutzen
+	\item Er betont ausgiebig die bestehenden Client-Server-Architekturen unter Einbeziehung von Caches, Firewalls und Proxies
+	\item Roy Fieldings Arbeit bleibt sehr abstrakt, weshalb sich viele Interpretationen des REST-Konzeptes herausgebildet haben~\cite{Richardson.2007}
+	\item Nach Fielding soll Kommunikation soweit wie möglich mit HTTP durchgeführt werden, ohne HTTP nur als Transportprotokoll für erweiterte Formate einzusetzen. Für die Umsetzung von speziellen Anforderungen empfiehlt er die Verwendung von (eigenen) HTTP-Erweiterungen
+\end{itemize}
+
+\begin{itemize}
+	\item Gegenüberstellung Dokumentbasiert vs. RPC vs. Hybrid~\cite{Richardson.2007}
+	\item XML-RPC zeichnet sich dadurch aus, als HTTP-Verb POST verwendet wird, HTTP nur das Trägermedium bildet und alle relevanten Informationen für den Aufruf (Kontext, Operation, Daten) im transportierten XML stehen. Die URL bleibt für alle Aufrufe die gleiche
+	\item Dokumentbasiert verwendet die HTTP-Verben, um die Operation auszudrücken, eine URL, um den Kontext auszudrücken und HTTP-Content, um die Daten zu übertragen
+\end{itemize}
+
+\begin{itemize}
+	\item GWT setzt auf XML-RPC
+	\item GWT kann auch REST-Kommunikation abbilden\footnote{\url{http://restygwt.fusesource.org/}}\footnote{\url{https://code.google.com/p/gwt-rest-client/}}\footnote{\url{https://code.google.com/p/gwt-rest/}}
+	\item GWT wird auf Admin- und auf Indoor-Seite eingesetzt
+	\item REST wird auf Indoor- und auf Mobile-Seite eingesetzt
+	\item Vereinheitlichung sinnvoll:
+	\item Weniger Wartungsaufwand: Verschiedene Schnittstellen erfordern verschiedene Frameworks. Wenn nur eine Schnittstelle angeboten wird, dann muss auf Änderungen in der Kommunikation nur innerhalb einer Architektur-Philosophie und nur unter Nutzung eines Technologie-Stacks reagiert werden
+	\item Wiederverwendbarkeit gleicher Schnittstellen zwischen unterschiedlichen Interfaces
+	\item Wiederverwendbarkeit gleicher Schnittstellen zwischen unterschiedlichen Implementationen
+\end{itemize}
+
+\subsubsection{Ein- und Ausgabeformate}
+
+\begin{itemize}
+	\item Nicht festgelegt
+	\item XML und JSON am häufigsten
+\end{itemize}
+
+\subsubsection{Hyperlinks}
+
+\begin{itemize}
+	\item XML hat XLink
+	\item JSON fehler Hyperlinks
+	\item Verschiedene Ansätze, JSON um Links zu erweitern, bisher kein Standard
+\end{itemize}
+
+\subsubsection{Ausführungsort von Code}
+
+\begin{itemize}
+	\item Wo wird was ausgeführt (Schichten-Grafik)
+	\item Wo sollen die rechenintensiven Aufgaben durchgeführt werden?
+	\item Option 1: Alles auf Clients, Server nur für Kommunikation innerhalb der Clients benötigt, z.B. mittles PushFork\footnote{\url{http://pushfork.com/}}
+	\item Option 2: Alles auf Server, Clients nur als Anzeige benötigt
+	\item Option 3: Statische Aufteilung der Aufgaben von Server und Client
+	\item Option 4: Dynamische Aufteilung der Aufgaben von Server und Client über Code-on-demand~\cite{Fielding.2000}
+\end{itemize}
+
+\subsection{Überlegungen zur Datenbankstruktur}
+
+\subsubsection{Datenbank Event-basiert umbauen}
+
+\subsubsection{Gemeinsames Repräsentationsformat für Routing-Pakete}
+
+\begin{itemize}
+	\item Jedes Routing-Protokoll hat 
 \end{itemize}
 
 \section{Evaluierung}
 
 \begin{itemize}
-	\item Evaluation in großem Stil -> Julians Arbeit
+	\item Evaluation in großem Stil -> Julians Arbeit~\cite{JulianDehne.201204.03.2013E}
 	\item Aus Zeitgründen war eine Evaluation des Lernerfolges nicht möglich
 	\item Deshalb: Funktionale Evaluation
 \end{itemize}
@@ -400,7 +509,20 @@ Szenario: Gegenstand einsammeln
 
 Szenario: 
 
+\subsection{Codestruktur}
+
+\begin{itemize}
+	\item Einsatz von ReSharper 101
+	\item ReSharper-Metrik "`Fat"' und "`Tangled"'
+\end{itemize}
+
 \section{Zusammenfassung / Ausblick}
+
+\begin{itemize}
+	\item QR-Code-Lesen aus App heraus, z.B. über ZXing\footnote{\url{https://code.google.com/p/zxing/}}
+	\item Portierung der bisherigen Kommunikation nach REST
+	\item Portierung der Datenbank und Datenbankabfragen auf Event-getriebene Struktur
+\end{itemize}
 
 \begin{itemize}
 	\item Spielerische Aspekte stärken
