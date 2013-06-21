@@ -17,6 +17,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.unipotsdam.nexplorer.client.AdminService;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingAlgorithm;
+import de.unipotsdam.nexplorer.server.data.GameState;
 import de.unipotsdam.nexplorer.server.data.ItemPlacer;
 import de.unipotsdam.nexplorer.server.data.NodeMapper;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
@@ -57,8 +58,6 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 
 		Unit unit = new Unit();
 		try {
-			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
-
 			// Set values that are independent of parameter
 			Settings gameSettings = new Settings();
 			gameSettings.setGameState(GameStatus.ISPAUSED);
@@ -87,7 +86,8 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			gameSettings.setUpdatePositionIntervalTime(request.getUpdatePositionIntervalTime());
 			gameSettings.setPingDuration(request.getPingDuration());
 
-			dbAccess.persist(gameSettings);
+			GameState state = unit.resolve(GameState.class);
+			state.createFrom(gameSettings);
 		} finally {
 			unit.close();
 		}
