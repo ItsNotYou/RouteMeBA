@@ -60,6 +60,26 @@
 	\item Automatisches Neighbour Find in einfachstem Schwierigkeitsgrad stellt Verknüpfungen zu Nachbarn her (RERR bei verlust des Nachbarn) -> nicht standardkonform
 \end{itemize}
 
+\subsection{Verfügbare Hardware}
+
+\begin{itemize}
+	\item Lehrstuhl-Smartphones
+	\item Lehrstuhl-Tablets
+	\item Entwickler-PC
+	\item Entwickler-Laptop
+	\item WLAN-Router
+\end{itemize}
+
+\subsection{Bestehende Software}
+
+\begin{itemize}
+	\item Web-Applikation
+	\item Backend auf Java-Basis
+	\item Frontend auf HTML/CSS/JS-Basis
+	\item GWT-Framework
+	\item Relationale InMemory-Datenbank H2
+\end{itemize}
+
 \subsection{Schwierigkeiten beim Spielen}
 
 In verschiedenen Testläufen mit dem existierenden Spiel sind wiederholt Schwierigkeiten aufgefallen, die das Spielerlebnis beeinträchtigt haben oder die Vorbereitungsphase sehr langwierig machten.
@@ -101,7 +121,11 @@ Zusammenfassend ist festzuhalten, dass die Einrichtung von acht Smartphones etwa
 	\label{fig:gps_sources}
 \end{figure}
 
-Geolocation-Daten können aus unterschiedlichen Quellen stammen. Eine Übersicht von Quellen stellt Abbildung~\ref{fig:gps_sources} dar. Die häufigsten Geolocation-Quellen auf den getesteten Smartphones waren WLAN- und GPS-Daten, wobei WLAN eine Genauigkeit von 20 bis 50m und GPS eine Genauigkeit von 5 bis 15m im vorgesehenen Spielbereich hatte.
+Geolocation-Daten können aus unterschiedlichen Quellen stammen. Eine Übersicht von Quellen stellt Abbildung~\ref{fig:gps_sources} dar. Die häufigsten Geolocation-Quellen auf den getesteten Smartphones waren WLAN und GPS, wobei WLAN eine Genauigkeit von 20m bis 50m und GPS eine Genauigkeit von 5m bis 15m im vorgesehenen Spielbereich hatte.
+
+Die Design-Philosophie für die Geolocation-Bestimmung isr bei W3C-kompatiblen Browsern und Android-Apps sehr ähnlich. Anstatt die zu verwendende Geolocation-Hardware anzugeben, werden stattdessen die erforderliche Genauigkeit sowie ein Aktualisierungs-Intervall angegeben. Der ausführende Container (also der Browser oder das Android-OS) wählt eine geeignete Datenquelle. Dabei kann der Container eigene Kriterien bei der Auswahl der Geolocation-Quelle einfließen lassen. So präferiert der Safari-Browser des iOS4 aus Energiegründen WLAN gegenüber GPS, obwohl letzteres eine höhere Genauigkeit liefern würde.\footnote{\url{http://stackoverflow.com/questions/6790368/why-is-geolocation-in-mobile-safari-way-less-accurate-than-the-location-in-a-nat}}
+
+Auf den verfügbaren Lehrstuhl-Smartphones benötigt der GPS-Sensor in den meisten Fällen zwischen 30 Sekunden und fünf Minuten, um eine initiale Geolocation zu erhalten. Anschließend wird die Geolocation einmal pro Sekunde aktualisiert. Bei der Nutzung von WLAN-Geolocations war keine initiale Verzögerung zu bemerken. Auch in diesem Fall erfolgt die Aktualisierung einmal pro Sekunde.
 
 \begin{itemize}
 	\item Anzahl GPS-Satelliten
@@ -405,7 +429,18 @@ Welche Routen sollen zur Verfügung gestellt werden?
 
 \subsection{Visualisierung von Nachbarn}
 
+\begin{itemize}
+	\item Knoten-Screenshot von Raphael
+	\item Gegenüberstellung altes vs. neues System
+	\item Verdeutlichung von Netzwerken
+	\item Aufgefallen bei Spieleinführung: Zur Verdeutlichung von Netzwerken wurden Folien mit Verbindungslinien verwendet, diese Linien waren aber im Spiel nicht zu sehen
+\end{itemize}
+
 \subsection{GWT / JSNI}
+
+\begin{itemize}
+	\item GWT ermöglichte Integration von bestehendem JS-Code mit im Rahmen des Refactoring erzeugtem Java-Code.
+\end{itemize}
 
 \section{Optimierungspotential}
 
@@ -428,11 +463,25 @@ Welche Routen sollen zur Verfügung gestellt werden?
 \begin{itemize}
 	\item Begriff REST von Roy Fielding eingeführt~\cite{Fielding.2000}
 	\item Basiert auf grundlegenden Internet-Technologien wie URI, HTTP
-	\item Verwendet HTTP-Verben PUT, POST, GET und DELETE, um dokumentbasierte Kommunikation zwischen Client und Server zu ermöglichen
+	\item Verwendet HTTP-Verben wie GET, POST, PUT um dokumentbasierte Kommunikation zwischen Client und Server zu ermöglichen
 	\item Roy Fielding plädiert auf intensive Nutzung des HTTP-Standards, um bestehende WWW-Infrastruktur optimal auszunutzen
 	\item Er betont ausgiebig die bestehenden Client-Server-Architekturen unter Einbeziehung von Caches, Firewalls und Proxies
 	\item Roy Fieldings Arbeit bleibt sehr abstrakt, weshalb sich viele Interpretationen des REST-Konzeptes herausgebildet haben~\cite{Richardson.2007}
+	\item Viele Probleme und Missverständnisse in der Umsetzung\footnote{\url{http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven}}\footnote{\url{https://weblogs.java.net/blog/mkarg/archive/2010/02/14/what-hateoas-actually-means}}
 	\item Nach Fielding soll Kommunikation soweit wie möglich mit HTTP durchgeführt werden, ohne HTTP nur als Transportprotokoll für erweiterte Formate einzusetzen. Für die Umsetzung von speziellen Anforderungen empfiehlt er die Verwendung von (eigenen) HTTP-Erweiterungen
+	\item Media type ist Schlüsselbestandteil in REST (siehe Zitat am Ende der Tabelle)
+	\item Beschreibung der media types im Gegensatz Beschreibung von URL-Bau-Schemata. Alle Informationen, die zum Bau von URLs als Zustandsübergänge nötig sind, sollen in den übertragenen Informationen stecken
+	\item Starker Fokus auf Zustandslosigkeit: Alle Informationen, die ein Client benötigt, sollen in den übertragenen Informationen enthalten sein. Informationen für Zustandübergänge sollen in diesen Informationen enthalten sein. Es gibt nur einen URL-Einstiegspunkt in die Applikation, alle anderen URLs werden von dort aus ermittelt
+\end{itemize}
+
+\begin{quotation}
+A REST API should spend almost all of its descriptive effort in defining the media type(s) used for representing resources and driving application state, or in defining extended relation names and/or hypertext-enabled mark-up for existing standard media types. Any effort spent describing what methods to use on what URIs of interest should be entirely defined within the scope of the processing rules for a media type (and, in most cases, already defined by existing media types).\footnote{\url{http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven}}
+\end{quotation}
+
+\begin{itemize}
+	\item Was bedeutet das für RouteMe?
+	\item Media types müssen definiert werden, anstatt application/json zu verwenden
+	\item URLs müssen generiert werden, z.B. zum Einsammeln von Items
 \end{itemize}
 
 \begin{itemize}
@@ -462,8 +511,8 @@ Welche Routen sollen zur Verfügung gestellt werden?
 \subsubsection{Hyperlinks}
 
 \begin{itemize}
-	\item XML hat XLink
-	\item JSON fehler Hyperlinks
+	\item XML hat XLink~\cite{W3C.06.05.2010}
+	\item JSON fehler Hyperlinks, allerdings verschiedene Projekte, um Erweiterung zu realisieren\footnote{\url{http://www.mnot.net/blog/2011/11/25/linking_in_json}}
 	\item Verschiedene Ansätze, JSON um Links zu erweitern, bisher kein Standard
 \end{itemize}
 
@@ -485,7 +534,17 @@ Welche Routen sollen zur Verfügung gestellt werden?
 \subsubsection{Gemeinsames Repräsentationsformat für Routing-Pakete}
 
 \begin{itemize}
-	\item Jedes Routing-Protokoll hat 
+	\item Jedes Routing-Protokoll hat eine eigene Repräsentation von Datenpaketen. MANET Working Group versucht, Datenformat für künftige MANET-Routing-Algorithmen zu vereinheitlichen~\cite{InternetEngineeringTaskForce.02.2009}. AODVv2 und OLSRv2 sind auf dieses vereinheitlichte Format ausgerichtet~\cite{InternetEngineeringTaskForce.23.03.2013, InternetEngineeringTaskForce.12.03.2013}, für ältere Algorithmen wie AODV, OLSR und DSR sind noch eigene Formate definiert~\cite{InternetEngineeringTaskForce.July2003, InternetEngineeringTaskForce.10.2003, InternetEngineeringTaskForce.02.2007}.
+	\item Um Entkopplung innerhalb von Datenbank und Spiellogik zu erreichen, ist gemeinsame Basis empfehlenswert. Schichtenmodell als Möglichkeit.
+	\item Repräsentation auf View-Seite flexibel, da derzeit nur angezeigt wird, wo abgeschicktes Paket gerade ist (Indoor) und wie viele Pakete gerade warten (Indoor, Mobile)
+	\item Repräsentation auf View-Seite wird detailierter, sobald AODV-Level 3 implementiert ist
+\end{itemize}
+
+\begin{itemize}
+	\item Weitere Möglichkeit der Aufteilung: Nutzung einer Dokument-orientierten Datenbank gegenüber einer relationalen Datenbank. Vorteil: Dokumentorientierung ist auf Ablegen und Durchsuchen von unstrukturierten Daten spezialisiert. Dokumentorientierte Datenbanken verwenden keine Tabellen-Schemata. Relationale Datenbanken unterstützen dieses Vorgehen durch simulierte Vererbung, sodass jeder Routing-Algorithmus eine eigene Tabelle pro verwendetem Paketformat hätte, wobei alle Tabellen auf eine Obertabelle verweisen.
+	\item Vorteil Dokumentorientierung: Keine Schema, dadurch gesicherte Abwärtskompatibilität im laufenden Betrieb.
+	\item Brauchen wir diesen Vorteil? Nein, da Datenbanken nur von Spiel zu Spiel benötigt werden, Spiele auf Laufzeiten im Minuten- oder Stundenbereich angelegt sind und keine Daten zwischen Spielen gehalten werden
+	\item Hibernate ist auf relationale Datenbanken ausgerichtet\footnote{\url{http://www.hibernate.org/about/orm.html}}
 \end{itemize}
 
 \section{Evaluierung}
@@ -507,7 +566,7 @@ Szenario: Ping empfangen
 
 Szenario: Gegenstand einsammeln
 
-Szenario: 
+Szenario: Nachricht versenden
 
 \subsection{Codestruktur}
 
