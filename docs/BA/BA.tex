@@ -46,12 +46,16 @@
 
 \subsection{Spielidee}
 
+Das Spiel wurde bereits in einer Veröffentlichung vorgestellt.~\cite{Zender.2012}
+
 \subsection{Pervasive Games}
 
 \subsection{Existierendes Spiel}
 
 \begin{itemize}
 	\item Spielbereich in Vorgängerarbeit~\cite{Dehne.26.April2013} festgelegt. Basis für Entscheidung war Kompromiss aus Geolocation-Genauigkeit und WLAN-Verfügbarkeit.
+	\item Spiel im Rahmen einer Diplomarbeit erstellt~\cite{Moebert.2011A}
+	\item Später technisch Weiterentwickelt~\cite{Dehne.26.April2013}
 \end{itemize}
 
 \begin{itemize}
@@ -60,7 +64,11 @@
 	\item Automatisches Neighbour Find in einfachstem Schwierigkeitsgrad stellt Verknüpfungen zu Nachbarn her (RERR bei verlust des Nachbarn) -> nicht standardkonform
 \end{itemize}
 
-\subsection{Verfügbare Hardware}
+\subsection{Verfügbare Hard- und Software}
+
+Zur Entwicklungszeit stand ein \textit{Galaxy Nexus I9250XXLH1} Smartphone mit Android 4.2.1 zur Verfügung. Der Lehrstuhl \textit{Komplexe Multimediale Anwendungsarchitekturen}\footnote{\url{http://apache.cs.uni-potsdam.de/de/profs/ifi/mm}} der Universität Potsdam besitzt mehrere dieser Smartphones, die zum Spielen an die Spiel-Teilnehmer verliehen werden. Zudem steht ein \textit{Motorola Xoom 2} Tablet\footnote{TODO: Android-Version herausfinden} zur Verfügung, um auch Tablet-spezifische Eigenschaften testen zu können.
+
+Zur Weiterentwicklung der Software standen ein Laptop\footnote{TODO: Specs ermitteln} und ein Desktop-PC\footnote{TODO: Specs ermitteln} zur Verfügung.
 
 \begin{itemize}
 	\item Lehrstuhl-Smartphones
@@ -69,8 +77,6 @@
 	\item Entwickler-Laptop
 	\item WLAN-Router
 \end{itemize}
-
-\subsection{Bestehende Software}
 
 \begin{itemize}
 	\item Web-Applikation
@@ -251,6 +257,31 @@ Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. E
 \end{itemize}
 
 \subsection{Portierung}
+
+Der erste Schritt besteht daraus, die im Knoten-Interface eingesetzten Methoden und Bibliotheken auf Android-Ersatz zu prüfen. Soweit möglich werden verwendete Funktionalitäten mit Android-Mitteln abgedeckt. Falls nötig werden Android-kompatible Bibliotheken gesucht.
+
+Das Interface für Knoten-Spieler besteht aus
+
+\begin{itemize}
+	\item einer HTML-Seite (MobileGWT.html)
+	\item zwei Spiel-Skripten (functions\_mobile.js, consts.js)
+	\item zwei jQuery-Skripten (jquery-1.6.min.js, jquery-ui-1.8.10.custom.min.js)
+	\item einem Maps-Skript (\url{http://maps.google.com/maps/api/js?sensor=true})
+	\item einem GWT-Skript (de.unipotsdam.nexplorer.MobileGWT.nocache.js)
+	\item zwei Sencha-Touch-Skripten (sencha-touch.js, GmapTracker.js)
+\end{itemize}
+
+Das jQuery- und das Maps-Skript sind Drittanbieter-Bibliotheken.
+
+Google Maps wird zur Darstellung von Karte und Karten-Symbolen verwendet. Maps ist als Bibliothek auf Android verfügbar, die API ist hier sehr ähnlich der Javascript-Version.
+
+jQuery wird vom Spiel-Skript für unterschiedliche Aspekte genutzt. Einerseits wird die Bibliothek genutzt, um UI-Elemente zu manipulieren. Android hat hier eine andere Vorgehensweise, weshalb für UI-Manipulationen Android-Äquivalenzen genutzt werden.
+
+Andererseits werden über jQuery AJAX-Anfragen abgesetzt. Hierfür bietet Android keinen gleichwertigen Ersatz, weshalb die Bibliothek \textit{Spring for Android}\footnote{\url{http://www.springsource.org/spring-android}} verwendet wird. Die Kommunikation zwischen Client und Server erfolgt im JSON-Format. Da JSON eine Javascript-Objektnotation ist, kann es direkt aus Javascript heraus verwendet werden. Auf Android-Seite muss zwischen JSON-Objekten und Java-Objekten eine Umwandlung erfolgen. Hierfür wird \textit{Google Gson}\footnote{\url{https://code.google.com/p/google-gson/}} verwendet.
+
+Außerdem bietet jQuery verschiedene Helfer-Funktionen an, von denen die Funktion \textit{each} im Spiel-Skript verwendet. Diese Funktion lässt sich leicht mit Java-Mitteln nachbilden.
+
+Das Spiel-Skript baut mit Hilfe von Sencha Touch die UI auf. Diese Funktionalität wird vollständig von Android-Bordmitteln bereitgestellt.
 
 \begin{itemize}
 	\item Portierung von JS nach Android-Java
@@ -624,5 +655,20 @@ Szenario: Nachricht versenden
 \end{acronym}
 
 \bibliography{literatur}
+
+\pagebreak
+\section{Erklärung der Redlichkeit}
+
+Hiermit versichere ich, dass ich die Hausarbeit selbstständig verfasst  und keine anderen als 
+die angegebenen Quellen und Hilfsmittel benutzt habe, alle Ausführungen, die anderen 
+Schriften wörtlich oder sinngemäß entnommen wurden, kenntlich gemacht sind und die 
+Arbeit in gleicher oder ähnlicher Fassung  noch nicht Bestandteil einer Studien- oder 
+Prüfungsleistung war. 
+
+\bigskip
+
+\bigskip
+
+Unterschrift der Verfasserin / des Verfassers 
 
 \end{document}
