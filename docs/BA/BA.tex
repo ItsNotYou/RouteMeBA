@@ -1,24 +1,56 @@
-\documentclass[german,12pt,a4paper]{article}
+\documentclass[a4paper,notitlepage]{article}
+%Anfang der Settings
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage[ngerman]{babel}
 \usepackage[latin1]{inputenc}
-\usepackage[OT1, T1]{fontenc}
-\usepackage{setspace}
+%\usepackage[utf8]{inputenc} 
+%\usepackage[titleformat=commasep, commabeforerest = true,ibidem=name&title&auto,human, authorformat=smallcaps, authorformat = citationreversed,pages = test,see]{jurabib}
+\usepackage [numbib]{tocbibind}
 \usepackage{graphicx}
-\usepackage{url}
-\usepackage[printonlyused]{acronym}
-\usepackage[multiple]{footmisc}
-\usepackage{lmodern}
-\usepackage[numbib]{tocbibind}
+\usepackage{setspace}
 \usepackage{ltablex}
 \usepackage{tabularx}
 \usepackage{supertabular}
-\usepackage{multirow}
 \usepackage{listings} 
+\usepackage{url}
+%\renewcommand*{\biburlprefix}{(Website verfügbar auf: }
+%\renewcommand*{\biburlsuffix}{)}
 \usepackage[a4paper,left=2.5cm, right=2.5cm]{geometry}
 \usepackage{lscape}
 \usepackage{pdfpages}
 \usepackage{float}
+\usepackage[printonlyused]{acronym}
+\usepackage[multiple]{footmisc}
+\usepackage{multirow}
 \bibliographystyle{lnig}
+
+%Glossar konfigurieren
+\usepackage{glossaries-babel}
+\usepackage[nonumberlist,numberedsection=autolabel, translate=false,toc,style=long,]{glossaries}
+%\numberline{}
+%\usepackage{ams,amsmath,amscd,amsthm,amssymb, bbm}
+%\renewcommand*{\glossaryname}{Stichwortverzeichnis}
+%\usepackage{translator}
+\makeglossaries
+
+%Abbildungsverzeichnis soll auch eine Nummer haben
+\renewcommand{\listoffigures}{\begingroup
+\tocsection
+\tocfile{\listfigurename}{lof}
+\endgroup} 
+
+%Literaturverzeichnis umbenennen
+\settocbibname{Literaturverzeichnis}
+%\usepackage[nottoc]{tocbibind}
+
+%Schriftgröße festlegen
+\onehalfspacing
+\fontsize{12}{15}\selectfont
+
+%Einstellungen für Paragraphen
+\widowpenalties 1 10000
+\raggedbottom
 
 % Commands
 \newlength{\imgwidth}
@@ -29,20 +61,65 @@
     \includegraphics[width=\imgwidth]{#1}%
 }
 
-\title{Bachelorarbeit}
-\author{Hendrik Geßner, 751352}
-\date{}
 
+%Titelseite konfigureren
+\author{Hendrik Geßner}
+\title{Erweiterte Konzeption und Implementierung eines Lernspiels über Routing-Protokolle für den Informatik-Unterricht}
+
+%Beginn des eigentlichen Dokumentes
 \begin{document}
-
 \maketitle
+%Die Titelseite mit persönlichen Autoren des Autors anreichern
+\vfill
 
-\tableofcontents
+\begin{quote}
+
+\textbf{}\newline\bigskip
+
+% Hier die persönlichen Daten
+Student:\newline
+Hendrik Geßner, Matrikelnummer: 751352 \newline
+Fachsemester: 08 \newline
+Hochschulsemester: 08\newline \bigskip
+
+Adresse:\newline 
+Stahnsdorfer Straße 148a\newline
+14482 Potsdam\newline
+HENGE01@gmail.com\newline
+\bigskip
+
+Institution: \newline
+Universität Potsdam\newline
+Institut für Informatik\newline
+
+\end{quote}
+
+\thispagestyle{empty}
+
+\thispagestyle{empty}
 \pagebreak
+
+%Inhaltsverzeichnis
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+
+\section{Abkürzungsverzeichnis}
+
+\begin{acronym}[YTM]
+\setlength{\itemsep}{-\parsep}
+\acro{AODV}{Ad hoc On-Demand Distance Vector}
+\acro{GPS}{Global Positioning System}
+\acro{MANETs}{Mobile Ad-hoc-Netzwerke}
+\acro{RREQ}{Route Request}
+\acro{RREP}{Route Reply}
+\acro{RERR}{Route Error}
+\acro{WPS}{Wi-Fi Protected Setup}
+\end{acronym}
 
 \section{Einleitung}\label{einleitung}
 
-Die Idee des Lernspieles als Unterrichtsmethode ist schon seit langem bekannt, Beispiele reichen von Vorschulspielen bis zu Planspielen für Manager. Hier wird gerne von \textit{Edutainment} gesprochen, der Verknüpfung von Education und Entertainment. Pervasive Computing ist ebenfalls ein bekanntes Feld, nachdem Marc Weiser im Jahr 1991 seine Vision des \textit{ubiquitous computing} vorgestellt hat.
+Die Idee des Lernspieles als Unterrichtsmethode ist schon seit langem bekannt, Beispiele reichen von Vorschulspielen bis zu Planspielen für Manager. Hier wird gerne von \textit{Edutainment} gesprochen, der Verknüpfung von Education und Entertainment. Pervasive Computing ist ebenfalls ein bekanntes Feld, nachdem Mark Weiser im Jahr 1991 seine Vision des \textit{ubiquitous computing} vorgestellt hat.~\cite{Weiser.1991}
 
 Die Verknüpfung von pervasiven Elementen mit dem didaktischen ausgerichteten Lernspiel ermöglicht reales Erleben von virtuellen Konzepten. Das pervasive Lernspiel RouteMe setzt im Bereich der Mobilen Ad-hoc-Netzwerke an, um Studenten die Funktionsweise von Routing-Algorithmen näher zu bringen. Das Kernkonzept beleuchtet verschiedene Algorithmen in unterschiedlichen Schwierigkeitsgraden. Erste Ergebnisse deuten auf deutliche Vorteile gegenüber der klassischen Lehre hin.~\cite{Zender.2012}
 
@@ -222,7 +299,7 @@ Für die maschinenlesbare Kodierung der Startparameter gibt es verschiedene Mögli
 
 Die Installation des Browsers wird durch die Installation der RouteMe-App ersetzt. Hier lassen sich praktisch keine Verbesserungen erzielen. Es ist denkbar, dass die Installations-URL als QR-Code veröffentlicht wird, sodass zumindest das manuelle Suchen in Google Play\footnote{\url{https://play.google.com/store}} verkürzt wird.
 
-Durch Nutzung von dynamischem DNS können IP-basierte Lesezeichen auf Domain-basierte Lesezeichen umgestellt werden. Dabei wird im Vorfeld eine URL bei einem Dynamic-DNS-Anbieter reserviert. Die zu dieser URL gehörige IP wird auf eine vom Anbieter definierte Art gesetzt. Sollten Änderungen an der IP notwendig sein, so kann die IP neu gesetzt werden. Die Änderung wird innerhalb weniger Sekunden wirksam.
+Durch Nutzung von dynamischem DNS können IP-basierte Lesezeichen auf Domain-basierte Lesezeichen umgestellt werden. Dabei wird im Vorfeld eine URL bei einem Dynamic-DNS-Anbieter reserviert. Die zu dieser URL gehörige IP wird auf eine vom Anbieter definierte Art gesetzt. Sollten Änderungen an der IP notwendig sein, so kann die IP neu gesetzt werden. Die Änderung wird innerhalb weniger Sekunden wirksam. Da das Spiel innerhalb der Universität gehostet wird, sind die gesetzten IPs nur aus dem internen Netzwerk der Universität Potsdam gültig. Somit ist das Risiko eines Angriffes auf den hostenden Server gering, obwohl die IP global bekanntgemacht wird.
 
 \subsubsection{Interaktive Karte}
 
@@ -236,7 +313,9 @@ Für ein gutes Spielerlebnis zählt nicht nur die Pervasivität. Wenn die Spieler e
 
 \subsubsection{Ausführungsumgebung}\label{browserabhaengigkeit}
 
-Das bisherige Spiel ist auf die Ausführung im Browser ausgelegt. Das heißt, dass sowohl Indoor- als auch Knoten-Spieler das Spiel in einem Browser laufen lassen. Dabei hat sich gezeigt, dass die Smartphone-Sicht besonders fehler- und problemanfällig ist. Sowohl die Sensor-Zugriffe als auch die Seiten-Darstellung sind sehr Browser-spezifisch. Im Folgenden werden die zwei größten Problembereiche vorgestellt. Zum einen wird auf die Sensoren mit Fokus auf GPS eingegangen. Zum anderen wird die Darstellung der Knoten-Sicht genauer beleuchtet.
+Das bisherige Spiel ist auf die Ausführung im Browser ausgelegt. Das heißt, dass sowohl Indoor- als auch Knoten-Spieler das Spiel in einem Browser laufen lassen. Dabei hat sich gezeigt, dass die Smartphone-Sicht besonders fehler- und problemanfällig ist. Sowohl die Sensor-Zugriffe als auch die Seiten-Darstellung sind sehr Browser-spezifisch. Die Auswahl der in den gängigen Browsern implementierten HTML5-Features ist noch sehr unterschiedlich\footnote{Es gibt Seiten, die die unterschiedlichen Features der auf dem Markt verfügbaren Browser testen und gegenüberstellen. Eine solche Seite ist \url{http://html5test.com/}, von der die folgende Übersicht stammt: \url{http://html5test.com/compare/browser/android23/android40/operamobile1400.html}, \url{http://html5test.com/compare/browser/chromemobile25/ffmobile19/ios70.html}}. Hinzu kommt, dass nicht alle Browser auf allen Betriebssystemen verfügbar. So ist Chrome nur ab Android 4 verfügbar.
+
+Im Folgenden werden die zwei größten Problembereiche vorgestellt. Zum einen wird auf die Sensoren mit Fokus auf GPS eingegangen. Zum anderen wird die Darstellung der Knoten-Sicht genauer beleuchtet.
 
 \paragraph{GPS}\label{konzept-gps}
 
@@ -255,26 +334,21 @@ Die Design-Philosophie für die Geolocation-Bestimmung ist bei W3C-kompatiblen Br
 
 Auf den verfügbaren Lehrstuhl-Smartphones benötigt der GPS-Sensor in den meisten Fällen zwischen 30 Sekunden und fünf Minuten, um eine initiale Geolocation zu erhalten. Anschließend wird die Geolocation einmal pro Sekunde aktualisiert. Bei der Nutzung von WLAN-Geolocations war keine initiale Verzögerung zu bemerken. Auch in diesem Fall erfolgt die Aktualisierung einmal pro Sekunde.
 
-Wie die Android-App bereits zeigt, ist eine native App den getesteten Browser bei den Zugriffen auf Smartphone-Sensoren überlegen. Für das Spiel wird eine Genauigkeit benötigt, die das Browser-basierte Spiel von selbst nicht liefern kann.
+Wie die Android-App bereits zeigt, ist eine native App den getesteten Browser bei den Zugriffen auf Smartphone-Sensoren überlegen. Für das Spiel wird eine Genauigkeit benötigt, die Browser-basiert und ohne native Unterstützung nicht geliefert werden kann.
 
 \paragraph{Darstellung}
 
-\begin{itemize}
-	\item Browser bieten unzuverlässigen Zugriff auf Sensoren
-	\item Auswahl der in Browsern implementierten HTML5-Features noch sehr unterschiedlich\footnote{Es gibt Seiten, die die unterschiedlichen Features der auf dem Markt verfügbaren Browser testen und gegenüberstellen. Eine solche Seite ist \url{http://html5test.com/}, von der die folgende Übersicht stammt: \url{http://html5test.com/compare/browser/android23/android40/operamobile1400.html}, \url{http://html5test.com/compare/browser/chromemobile25/ffmobile19/ios70.html}}
-	\item Unterschiedliches Verhalten auf unterschiedlichen Browsern, nicht alle Browser auf allen Betriebssystemen verfügbar: Chrome nur ab Android 4 verfügbar
-	\item Darstellung in Browsern unterschiedlich: JS-UI-Framework ignoriert bewusst den Firefox-Browser
-\end{itemize}
+Die Darstellung der Knoten-Sicht erfolgt auf Basis des Frameworks Sencha Touch 1.1.0\footnote{\url{http://www.sencha.com/products/touch}}. Sencha Touch arbeitet auf HTML5-Basis und ist für WebKit-Browser entwickelt. Entgegen den Erwartungen ist die Darstellung der Oberfläche in verschiedenen Browsern sehr unterschiedlich.
 
-Android bietet
-\begin{itemize}
-	\item 
-\end{itemize}
+Die Vorgängerarbeit hat sich bereits mit dem Testen des Spieles auf unterschiedlichen Browsern und Systemen beschäftigt.~\cite{Dehne.26.April2013} Am intensivsten wurden Browser auf Android-4-Basis getestet. Durch die Beschränkung auf WebKit-Browser ist Firefox für Android nicht unterstützt\footnote{\url{http://www.sencha.com/forum/showthread.php?120949-Sencha-Touch-WebKit-and-Firefox}}. Die Darstellung mit Firefox ist so fehlerhaft, dass die Nutzung nicht einmal eingeschränkt möglich ist. Der native Android-Browser hat Probleme mit der Kartendarstellung, da er Elemente doppelt und mit leichtem Versatz zeichnet. Chrome hat die besten Ergebnisse geliefert. Allerdings ist Chrome nur für Android 4 verfügbar.
 
-Eine Festlegung auf Android bringt die folgenden Limitierungen
-\begin{itemize}
-	\item Plattformunabhängigkeit geht verloren, Festlegung auf Android
-\end{itemize}
+\paragraph{}
+
+Es lässt sich also zusammenfassen, dass aktuelle Browser als Ausführungsumgebung für RouteMe nicht geeignet sind. Der unzureichende Zugriff auf Sensoren sowie die unzuverlässige Darstellung legen den Schluss nahe, dass ein Wechsel der Ausführungsumgebung notwendig ist, um bessere Ergebnisse zu erzielen.
+
+Aus dem Vorgängerprojekt gesammelte Erfahrungen mit Android zeigen, dass der Sensor-Zugriff auf Android-Basis zuverlässig und genau ist.~\cite{Dehne.26.April2013} Neben der GPS-Genauigkeit bietet Android weitere Vorteile, die es also Ziel-Plattform für eine Portierung attraktiv machen. Zum einen bietet hat Android einen sehr großen Marktanteil bei Smartphones und Tablets. Zum anderen bietet Android mit Java eine Programmiersprache, die im universitären Bereich gelehrt wird und stark verbreitet ist, womit die Langzeit-Unterstützung und -Weiterentwicklung gesichert ist. Verbunden damit bietet eine Android eine breite und starke Community.
+
+Eine Festlegung auf Android bringt aber auch verschiedene Einschränkungen mit sich. So geht beispielsweise die Plattformunabhängigkeit verloren, die mit der Browser-App vorgesehen war. Dies ist aber kein großer Verlust, da nicht einmal eine Browserunabhängigkeit erreicht wurde.
 
 \subsubsection{Skalierbarkeit}
 
@@ -375,6 +449,8 @@ A REST API should spend almost all of its descriptive effort in defining the med
 
 \section{Umsetzung}\label{umsetzung}
 
+Nachdem die Konzeption abschlossen ist, folgt nun eine Beschreibung der Konzeptumsetzung. Der Inhalt folgt dabei chronologisch nach Zeitpunkt der Umsetzung. Die Android-Portierung war die Basis aller Erweiterungen, um einen entstehenden Mehraufwand in der Implementierung von Erweiterungen zu verhindern.
+
 \subsection{Android-Portierung}
 
 Der erste Schritt besteht daraus, die im Knoten-Interface eingesetzten Methoden und Bibliotheken auf Android-Ersatz zu prüfen. Soweit möglich werden verwendete Funktionalitäten mit Android-Mitteln abgedeckt. Falls nötig werden Android-kompatible Bibliotheken gesucht.
@@ -436,6 +512,8 @@ Anschließend konnten die vom Java-Compiler bemängelt Stellen Stück für Stück kor
 
 Nachdem das Haupt-Skript vollständig syntaktisch portiert wurden, konnten die während des Portierungsprozesses erstellten Wrapper und Stubs implementiert werden. Hier wurden Adapter für die ausgetauschten Bibliotheken erstellt.
 
+Um zu verhindern, dass bei der Portierung syntaktische Fehler in den bei der Kommunikation mit dem Server übertragenen Daten entstehen, wurden alle für die Android-App relevanten Server-Daten in einer Testschnittstelle mit vordefinierten Daten präpariert und deren Empfang auf Android durch Tests überprüft.
+
 \subsubsection{UI-Portierung}
 
 Die UI wird auf Android XML-basiert definiert, während hier auf Javascript-Seite Javascript-Code und das Sencha-Touch-Framework verwendet sind. Das aus dem Javascript-Code generierte HTML wurde mit Google Chrome untersucht und anschließend konzeptionell verwendet, um die UI mit Android nachzubilden. Das Ergebnis der Portierung ist in den Abbildung~\ref{fig:browser-login} und~\ref{fig:android-login} dargestellt.
@@ -457,48 +535,71 @@ Die UI wird auf Android XML-basiert definiert, während hier auf Javascript-Seite
 
 Eine Schwierigkeit in der Portierung ergab sich aus den unterschiedlichen UI-Architekturen der Plattformen. In Javascript ist das Konzept des UI-Thread unbekannt, UI-Elemente können somit beliebig verändert werden. Android hat einen UI-Thread, auf dem alle Manipulationen von UI-Elementen durchgeführt werden müssen.
 
-Deshalb stellt Android verschiedene Funktionen zur Verfügung, um die Ausführung von Code auf dem UI-Thread zu erzwingen. Es ist allerdings nicht möglich, den gesamten Code auf dem UI-Thread auszuführen, da langanhaltende Operationen die Reaktionsfähigkeit der Oberfläche verhindern könnten\footnote{\url{http://developer.android.com/guide/components/processes-and-threads.html}}\footnote{\url{http://developer.android.com/training/articles/perf-anr.html}}. So ist es nicht erlaubt, einen Netzwerkzugriff auf dem UI-Thread durchzuführen. Um die Manipulation der UI-Elemente zu ermöglichen, wurden die UI-Wrapper-Klassen angepasst. Sie ermöglichten damit transparenten Zugriff auf die UI-Elemente udn abstrahierten das UI-Thread-Konzept, sodass der portierte Code keiner weiteren Anpassung bedurfte.
-
-\begin{itemize}
-	\item Einstieg an Android-Gegebenheiten anpassen
-\end{itemize}
+Deshalb stellt Android verschiedene Funktionen zur Verfügung, um die Ausführung von Code auf dem UI-Thread zu erzwingen. Es ist allerdings nicht möglich, den gesamten Code auf dem UI-Thread auszuführen, da langanhaltende Operationen die Reaktionsfähigkeit der Oberfläche verhindern könnten\footnote{\url{http://developer.android.com/guide/components/processes-and-threads.html}}\footnote{\url{http://developer.android.com/training/articles/perf-anr.html}}. So ist es nicht erlaubt, einen Netzwerkzugriff auf dem UI-Thread durchzuführen. Um die Manipulation der UI-Elemente zu ermöglichen, wurden die UI-Wrapper-Klassen angepasst. Sie ermöglichten damit transparenten Zugriff auf die UI-Elemente und abstrahierten das UI-Thread-Konzept, sodass der portierte Code keiner weiteren Anpassung bedurfte.
 
 \subsection{Selbstkonfiguration}
 
 \subsubsection{DNS}
 
+Für die Umsetzung von Dynamic DNS wurde basierend auf zwei obligatorischen und einem optionalen Kriterium ein Anbieter gesucht. Zum einen musste die Nutzung des Dienstes kostenlos sein. Zum anderen sollte die Oberfläche zum Einstellen der IP dynamisch sein. Optional war, dass der generierte Domain-Name gut lesbar ist.
+
+Ein Anbieter, der alle drei Kriterien erfüllt, ist DNSdynamic.org\footnote{\url{https://www.dnsdynamic.org/}}. Die reservierte URL lautet \texttt{routeme.dnsdynamic.com}.
+
 \subsubsection{WiFi-Modul}
+
+Android-Apps können WLAN-Verbindungen suchen und aufbauen. Dazu benötigen sie die Rechte \texttt{CHANGE\_WIFI\_STATE} und \texttt{ACCESS\_WIFI\_STATE}. Im Rahmen dieser Arbeit entstand ein Modul, das zu einem Tupel aus SSID und Passwort eine Verbindung aufbaut. Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde dabei auf eine hohe Entkopplung geachtet.
 
 \subsubsection{QR-Code}
 
-\begin{itemize}
-	\item QR-Code-Starten gestestet
-	\item Start über beliebige externe App
-	\item Überraschenderweise benötigen QR-Reader eine Netzwerk-Verbindung, um eine URL zu öffnen, auch wenn die URL nur einen Start der App auf dem Smartphone bewirkt. 
-Auf den Test-Smartphones des Lehrstuhles ist keine SIM-Karte eingelegt, somit ist keine Verbindung über 2G / 3G / 4G möglich. Bei einem Smartphone, bei dem WLAN unkonfiguriert ist, ist außerdem keine Netzwerkverbindung vorhanden. Dieses Verhalten verhindert, dass die App gestartet werden kann. Eine Idee der App war, dass beim Start über einen QR-Code das Smartphone sich mit dem im QR-Code kodierte WLAN verbindet.
-\end{itemize}
+Da für QR-Codes bereits viele Lese-Apps existieren, wurde auf die Entwicklung einer eigenen Lese-Komponente verzichtet. Stattdessen wurde die Android-App so aufgebaut, dass sie durch den Aufruf einer URL gestartet wird. Nach der Installation ist die App auf die URL \texttt{routeme://android?ssid=WLANSSID\&password=WLANPASSWORD} registriert. \texttt{WLANSSID} muss hierbei durch die SSID des WLAN ersetzt werden, \texttt{WLANPASSWORD} durch das WLAN-Passwort. Der der URL zugehörige QR-Code ist in Abbildung~\ref{fig:qr-code} dargestellt.
+
+\begin{figure}
+	\centering
+	\scalegraphics{pics/qr-code.jpg}
+	\caption{QR-Code zu \texttt{routeme://android?ssid=WLANSSID\&password=WLANPASSWORD}}
+	\label{fig:qr-code}
+\end{figure}
+
+Die Erstellung kompatibler QR-Codes ist nicht in das Spiel integriert. Stattdessen wird an dieser Stelle auf geeignete Dienste wie QRCode-Generator.de\footnote{\url{http://www.qrcode-generator.de/}} verwiesen, mit dem auch der abgebildete QR-Code erstellt wurde.
 
 \subsubsection{Pervasive Gesten}
 
 Es existiert bereits eine Bachelorarbeit, in der ein Framework für eine allgemeine Gestenerkennung auf Smartphones implementiert und evaluiert wurde. Allerdings bietet das Ergebnis nur eine unbefriedigende Erkennungsrate von etwa 60\% und viele \textit{false positives}.~\cite{Pfeiffer.30.08.2011}
 
-\subsection{Pervasive Gesten}
+Deshalb wurde ein Modul entwickelt, das Schüttel-Bewegungen erkennt. Das Modul bedient sich dazu des Beschleunigungs-Sensors, das die Beschleunigung in $\frac{m}{s^2}$ angibt. Um fälschlich erkannte Schüttelbewegungen zu verhindern, wird das Modul mit der Basisbeschleunigung der Erde ($9.80665\frac{m}{s^2}$) initialisiert. Da die Beschleunigungsbewegung auch bei bereits erkannter Schüttelbewegung nicht plötzlich abreißt, ist ein Timeout eingerichtet, der verhindert, dass innerhalb einer bestimmten Zeitspanne mehr als eine Schüttelbewegung erkannt wird.
+
+Die im Spiel verwendeten Werte sind
 
 \begin{itemize}
-	\item Shake-Modul entwickelt
-	\item Modul für selbstdrehende Karte entwickelt (Umsetzung über Lagesensor und Kompass)
-	\item WLAN-Verbindungs-Modul entwickelt
+	\item Beschleunigung: $1\frac{m}{s^2}$
+	\item Timeout: 750ms
 \end{itemize}
 
-\subsection{Augmented Reality}
+Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde bei der Entwicklung des Modules auf eine hohe Entkopplung geachtet.
 
-\subsubsection{Kompass}
+\subsection{Interaktive Karte}
 
-\subsubsection{Lagesensor}
+Das in der Android-App eingesetzt Karten-Fragment hat Methoden, um die Geo-Position, einen Dreh- und einen Neigungswinkel einzustellen. Der Drehwinkel liegt hierbei zwischen 0° und 360°, wobei 0° eine Ausrichtung nach Norden bedeutet und der Winkel im Uhrzeigersinn vergrößert wird. Der Neigungswinkel liegt zwischen 0° und 67.5°, wobei 0° für Vogelperspektive steht.
 
-\subsubsection{Drehende Karte}
+Android abstrahiert die für diese Werte notwendigen Sensoren. Das Ergebnis ist eine gesammelte Übersicht von Sensordaten, die unter anderem den Dreh- und Neigungswinkel des Smartphones angeben und ohne erweiterte Umformung für die Manipulation des Karten-Fragmentes geeignet sind.
+
+Auf Basis dieser Sensoren wurde ein Modul entwickelt, das die Karten-Darstellung mit der Ausrichtung und der Position des Smartphones synchronisiert. Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde bei der Entwicklung des Modules auf eine hohe Entkopplung geachtet.
 
 \subsection{Netzwerk-Visualisierung}
+
+Die Javascript-Google-Maps-API bietet Pfeile als Kartenelemente an. In den vom Server übertragenen Daten waren die Nachbarbeziehungen bereits enthalten. Somit musste nur die Anzeige um Nachbarverbindungen erweitert werden.
+
+\paragraph{Wahl der Programmiersprache} Die Indoor-Sicht bestand aus einer Mischung von Java-Code und Javascript-Code. In der Vorgängerarbeit wurde empfohlen, neuen Code in Java zu schreiben, um so immer weiter auf eine reine Java-Codebasis zuzusteuern.~\cite{Dehne.26.April2013} Allerdings kann die Maps-API nur aus Javascript heraus angesprochen werden. Zudem geschieht der Empfang der Nachbarsverbindungen im in Javascript geschriebenen Teil des Codes. Bei einer auf Java basierenden Lösung wäre es also notwendig, die empfangenen Daten aus ihrer Javascript-Repräsentation nach Java zu transformieren, zu analysieren und anschließend über Java-nach-Javascript-Wrapper die Analyseergebnisse zur Kartenmanipulation zu nutzen.
+
+Dieses Vorgehen würde sich lohnen, wenn die Analyse der Daten ausreichend komplex wäre, um eine doppelte Konversion zu rechtfertigen. Da die Analyse aber lediglich in einem Vergleich von bereits bekannten und unbekannten Nachbarverbindungen besteht, erscheint der Weg über Java unnötig komplex. Daher field die Entscheidung für eine Javascript-basierte Erweiterung.
+
+\paragraph{Sicherung der Qualität}
+
+
+
+
+
+
 
 \begin{itemize}
 	\item GWT ermöglichte Integration von bestehendem JS-Code mit im Rahmen des Refactoring erzeugtem Java-Code.
@@ -550,6 +651,13 @@ Es existiert bereits eine Bachelorarbeit, in der ein Framework für eine allgemei
 	\item Workarounds: QR-Reader aus App heraus starten. Nachteil: Abhängigkeit von bestimmter QR-App, die installiert sein muss
 	\item Alternative: Bild selbst untersuchen. Hoher Eigenaufwand
 	\item QR-Code wird bei Spielerstellung generiert. PDF mit QR-Code und kodierten Daten wird erstellt
+\end{itemize}
+
+\begin{itemize}
+	\item QR-Code-Starten gestestet
+	\item Start über beliebige externe App
+	\item Überraschenderweise benötigen QR-Reader eine Netzwerk-Verbindung, um eine URL zu öffnen, auch wenn die URL nur einen Start der App auf dem Smartphone bewirkt. 
+Auf den Test-Smartphones des Lehrstuhles ist keine SIM-Karte eingelegt, somit ist keine Verbindung über 2G / 3G / 4G möglich. Bei einem Smartphone, bei dem WLAN unkonfiguriert ist, ist außerdem keine Netzwerkverbindung vorhanden. Dieses Verhalten verhindert, dass die App gestartet werden kann. Eine Idee der App war, dass beim Start über einen QR-Code das Smartphone sich mit dem im QR-Code kodierte WLAN verbindet.
 \end{itemize}
 
 \begin{itemize}
@@ -755,19 +863,6 @@ Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. E
 	\item Audio muss beantragt werden
 	\item Für kurze Audio-Schnippsel gibt es ein besonderes Flag, das Hintergrundgeräusche / Hintergrundmusik nicht stoppt, sondern nur herunterregelt
 \end{itemize}
-
-\section{Abkürzungsverzeichnis}
-
-\begin{acronym}[YTM]
-\setlength{\itemsep}{-\parsep}
-\acro{AODV}{Ad hoc On-Demand Distance Vector}
-\acro{GPS}{Global Positioning System}
-\acro{MANETs}{Mobile Ad-hoc-Netzwerke}
-\acro{RREQ}{Route Request}
-\acro{RREP}{Route Reply}
-\acro{RERR}{Route Error}
-\acro{WPS}{Wi-Fi Protected Setup}
-\end{acronym}
 
 \bibliography{literatur}
 
