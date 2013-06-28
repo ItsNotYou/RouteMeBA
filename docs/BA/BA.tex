@@ -104,44 +104,45 @@ Institut für Informatik\newline
 \thispagestyle{empty}
 \pagebreak
 
-\section{Abkürzungsverzeichnis}
-
-\begin{acronym}[YTM]
-\setlength{\itemsep}{-\parsep}
-\acro{AODV}{Ad hoc On-Demand Distance Vector}
-\acro{GPS}{Global Positioning System}
-\acro{MANETs}{Mobile Ad-hoc-Netzwerke}
-\acro{RREQ}{Route Request}
-\acro{RREP}{Route Reply}
-\acro{RERR}{Route Error}
-\acro{WPS}{Wi-Fi Protected Setup}
-\end{acronym}
-
 \section{Einleitung}\label{einleitung}
 
-Die Idee des Lernspieles als Unterrichtsmethode ist schon seit langem bekannt, Beispiele reichen von Vorschulspielen bis zu Planspielen für Manager. Hier wird gerne von \textit{Edutainment} gesprochen, der Verknüpfung von Education und Entertainment. Pervasive Computing ist ebenfalls ein bekanntes Feld, nachdem Mark Weiser im Jahr 1991 seine Vision des \textit{ubiquitous computing} vorgestellt hat.~\cite{Weiser.1991}
+Die Idee des Lernspieles als Unterrichtsmethode ist schon seit langem bekannt, Beispiele reichen von Vorschulspielen bis zu Planspielen für Manager. Hier wird gerne von \textit{Edutainment} gesprochen, der Verknüpfung von \textit{Education} und \textit{Entertainment}. \textit{Pervasive Computing} ist ebenfalls ein bekanntes Feld, nachdem Mark Weiser im Jahr 1991 seine Vision des \textit{ubiquitous computing} vorgestellt hat.~\cite{Weiser.1991}
 
-Die Verknüpfung von pervasiven Elementen mit dem didaktischen ausgerichteten Lernspiel ermöglicht reales Erleben von virtuellen Konzepten. Das pervasive Lernspiel RouteMe setzt im Bereich der Mobilen Ad-hoc-Netzwerke an, um Studenten die Funktionsweise von Routing-Algorithmen näher zu bringen. Das Kernkonzept beleuchtet verschiedene Algorithmen in unterschiedlichen Schwierigkeitsgraden. Erste Ergebnisse deuten auf deutliche Vorteile gegenüber der klassischen Lehre hin.~\cite{Zender.2012}
+Die Verknüpfung von pervasiven Elementen mit einem Lernspiel ermöglicht reales Erleben von virtuellen Konzepten. Das pervasive Lernspiel \textit{RouteMe} setzt im Bereich der \ac{MANETs} an, um Studenten die Funktionsweise von Routing-Algorithmen näher zu bringen. Das Kernkonzept beleuchtet verschiedene Algorithmen in unterschiedlichen Schwierigkeitsgraden. Erste Ergebnisse deuten auf deutliche Vorteile gegenüber der klassischen Lehre hin.~\cite{Zender.2012}
 
 Die erste Version des Spieles entstand im Rahmen einer Diplomarbeit von Tobias Moebert.~\cite{Moebert.2011A} Nach verschiedenen intra-universitären Tests wurde eine von Julian Dehne und Hendrik Geßner überarbeitete Version veröffentlicht.~\cite{Dehne.26.April2013} Auf Grund der Komplexität des Konzeptes ergaben sich weitere Anknüpfungspunkte, die eine erweiterte Bearbeitung des Spieles interessant machten.
 
-Auf der einen Seite existiert eine Arbeit zur Evaluation pervasiver Lernspiele, die verschiedene Mängel im bisherigen Umfang beleuchtet. So fehlen unter anderem unterschiedliche Level.~\cite{JulianDehne.201204.03.2013E} Andererseits sind in den Evaluationsrunden verschiedene technische Aspekte aufgefallen, die eine erweiterte Bearbeitung des Spieles erforderlich machen. Beispielhaft sei hier die unzuverlässige GPS-Ortung genannt.
+Einerseits existiert eine Arbeit zur Evaluation pervasiver Lernspiele, die verschiedene Mängel im bisherigen Umfang beleuchtet: So fehlen unter anderem unterschiedliche Level.~\cite{JulianDehne.201204.03.2013E} Andererseits sind in den Evaluationsrunden verschiedene technische Aspekte aufgefallen, die eine erweiterte Bearbeitung des Spieles erforderlich machen. Beispielhaft sei hier die unzuverlässige GPS-Ortung genannt.
 
 Das Ziel dieser Bachelorarbeit ist also eine Verbesserung des existierenden Spieles auf verschiedenen Ebenen: Zum einen sollen die Lerninhalte und Spielelemente weiter ausgebaut und Defizite abgebaut werden, um das Lernziel besser erreichbar zu machen. Zum anderen sollen die Zuverlässigkeit und Pervasivität des Spieles erhöht werden, um dem Lerner eine Konzentration auf das Spiel zu vereinfachen. Außerdem soll eine Grundlage für eine Erweiterung der Inhalte des Spieles geschaffen werden, um zu einem späteren Zeitpunkt einen reduzierten Entwicklungsaufwand zu haben.
 
-Im Folgenden wird der Aufbau der Arbeit beschrieben. In Abschnitt~\ref{bestehendesspiel} wird das bestehende Spiel vorgestellt. Anschließend wird auf die Konzepte für eine Weiterentwicklung eingegangen, bevor in Abschnitt~\ref{umsetzung} die Umsetzung dieser vorgestellt wird. Anschließend folgt eine Evaluation der Ergebnisse. Die Arbeit ended mit einem Fazit und einem Ausblick auf offene Fragestellungen.
+Im Folgenden wird der Aufbau der Arbeit beschrieben. In Abschnitt~\ref{bestehendesspiel} wird das bestehende Spiel vorgestellt. Anschließend wird auf die Konzepte für eine Weiterentwicklung eingegangen, bevor in Abschnitt~\ref{umsetzung} die Umsetzung dieser vorgestellt wird. Anschließend folgt eine Evaluation der Ergebnisse. Die Arbeit endet mit einem Fazit und einem Ausblick auf offene Fragestellungen.
 
+\pagebreak
 \section{Ausgangszustand des Spieles}\label{bestehendesspiel}
 
-\subsection{Spielidee}
+\begin{figure}
+	\centering
+	\parbox{7.5cm}{
+		\includegraphics[width=7.5cm]{pics/screenshots/routeme-admin.png}%
+		\caption{Admin-Sicht}%
+		\label{fig:admin-basic}%
+	}%
+	\qquad
+	\begin{minipage}{7.5cm}%	
+		\includegraphics[width=7.5cm]{pics/screenshots/routeme-indoor.png}%
+		\caption{Indoor-Sicht}%
+		\label{fig:indoor-basic}%	
+	\end{minipage}%
+\end{figure}
 
-Wie bereits erwähnt besteht das Ziel des Spieles RouteMe im Erlernen von Routing-Algorithmen in \ac{MANETs}. Eine ausführliche Einleitung ist bereits veröffentlicht.~\cite{Zender.2012} Vorgesehen ist eine Auswahl verschiedener Routing-Algorithmen mit jeweils drei Schwierigkeitsgraden. Derzeit ist eine angepasste Version von AODV~\cite{InternetEngineeringTaskForce.July2003} mit nur einem Schwierigkeitsgrad implementiert.
+Wie bereits erwähnt besteht das Ziel des Spieles \textit{RouteMe} im Erlernen von Routing-Algorithmen in \ac{MANETs}. Eine ausführliche Einleitung ist bereits veröffentlicht.~\cite{Zender.2012} Vorgesehen ist eine Auswahl verschiedener Routing-Algorithmen mit jeweils drei Schwierigkeitsgraden. Derzeit ist eine angepasste Version von AODV~\cite{InternetEngineeringTaskForce.July2003} mit nur einem Schwierigkeitsgrad implementiert.
 
 Die Spieler werden in zwei Gruppen aufgeteilt, die gleichzeitig spielen und unterschiedliche Sichten auf das Spielgeschehen haben. Eine Gruppe von Spielern sitzt an klassischen Desktop-Rechnern, die andere Gruppe läuft mit Smartphones in einem festgelegten Gebiet herum. Während die Desktop-Spieler, im weiteren \textit{Indoor-Spieler} genannt, Nachrichten zwischen Teilnehmern eines \ac{MANETs} versenden, repräsentieren die Smartphone-Spieler, im weiteren \textit{Knoten-Spieler}, die Teilnehmer dieses \ac{MANETs}.
 
 Die Aufgabe der Indoor-Spieler ist es also, in dem Netzwerk durch geeignete Auswahl von Start- und Zielknoten Nachrichten zu versenden und so Punkte zu sammeln. Diese Aufgabe wird dadurch erschwert, dass sich die Knoten im Netzwerk permanent bewegen, ausfallen und neu hinzukommen, sodass permanent Verbindungen entstehen und abbrechen. Indoor-Spieler haben eine Gesamtübersicht über das Spiel, wie in Abbildung~\ref{fig:indoor-basic} dargestellt ist.
 
-Die Aufgabe der Knoten-Spieler ist es, zu überleben. Je länger Spieler überleben, je mehr Nachbarn sie haben und je mehr Nachrichten über sie gesendet werden, desto mehr Punkte sammeln sie. Jede dieser Möglichkeiten, Punkte zu sammeln, verbraucht aber Energie, wovon die Knoten nur einen begrenzten Vorrat haben. Energie und Sendereichweite können durch das Sammeln von virtuellen Gegenständen erhöht werden, die über das Spielfeld verteilt sind. Knoten-Spieler haben eine auf ihre eigene Sendereichweite beschränkte Sicht, wie in Abbildung~\ref{fig:mobile-basic} dargestellt ist.
+Die Aufgabe der Knoten-Spieler ist es, zu überleben. Je länger Spieler überleben, je mehr Nachbarn sie haben und je mehr Nachrichten über sie gesendet werden, desto mehr Punkte sammeln sie. Jede dieser Möglichkeiten, Punkte zu sammeln, verbraucht aber Energie, wovon die Knoten nur einen begrenzten Vorrat haben. Energie und Sendereichweite können durch das Sammeln von virtuellen Gegenständen erhöht werden, die über das Spielfeld verteilt sind. Knoten-Spieler haben eine auf ihre eigene Sendereichweite beschränkte Sicht.
 
 Als dritte Sicht auf das Spiel existiert das Admin-Interface. Es dient zum Erstellen, Manipulieren und Beenden eines Spieles. In der Admin-Übersicht werden erweiterte Details dargestellt, die für die Spieler nicht einsehbar sind. Ein Beispiel ist in Abbildung~\ref{fig:admin-basic} dargestellt.
 
@@ -149,61 +150,43 @@ Als dritte Sicht auf das Spiel existiert das Admin-Interface. Es dient zum Erste
 
 Im Folgenden werden die konzeptionalisierten Veränderungsvorschläge vorgestellt. Die Umsetzung dieser Vorschläge findet sich in Abschnitt~\ref{umsetzung}.
 
-\subsection{Lerninhalte}
+\subsection{Lerninhalte}\label{level2}
 
-Bei den hier beschriebenen Lerninhalten handelt es sich um Aspekte des Routing-Protokolls AODV~\cite{InternetEngineeringTaskForce.July2003}, die während des Spieles gelernt werden sollen.
-
-Die Konzeption für das Spiel enthält drei Level mit ansteigendem Schwierigkeitsgrad, die aufeinander aufbauen:
-
-\begin{itemize}
-	\item Level 1: Spieler werden stark geführt. Knoten-Spieler müssen lediglich Gegenstände einsammeln und möglichst lange aktiv bleiben. Indoor-Spieler können Nachrichten versenden und dabei frei aus Start- und Zielknoten wählen. Die Details des Routing-Protokolls bleiben verborgen.
-	\item Level 2: Spielerführung ist reduziert. Knoten-Spieler müssen eine Nachbarsuche durchführen, um andere Knoten zu finden. Indoor-Spieler haben keine freie Start- und Zielwahl mehr, sondern müssen aus gegebenen Start- und Ziel-Paaren wählen. Soweit vom Routing-Protokoll unterstützt sind Paketpriorisierungen zu beachten.
-	\item Level 3: Spielerführung ist auf ein Minimum reduziert. Knoten-Spieler müssen komplexe Routing-Entscheidungen treffen. Indoor-Spieler sind mit einer Vielzahl von Prioritäten und Einschränkungen konfrontiert.
-\end{itemize}
-
-Ein Ziel dieser Arbeit ist die Schaffung des zweiten Schwierigkeitsgrades im Kontext des bereits implementierten Routing-Protokolles AODV. Es folgt eine kurze Einführung in die Grundkonzepte von AODV. Diese Einführung ist sehr kanpp gehalten. Eine ausführliche Einführung gibt der RFC.~\cite{InternetEngineeringTaskForce.July2003}
-
-\subsubsection{AODV Level 2}\label{level2}
+Bei den hier beschriebenen Lerninhalten handelt es sich um Aspekte des Routing-Protokolls AODV~\cite{InternetEngineeringTaskForce.July2003}, die während des Spieles gelernt werden sollen. Es folgt eine kurze Einführung in die Grundkonzepte von AODV. Eine ausführliche Einführung gibt der RFC.~\cite{InternetEngineeringTaskForce.July2003}
 
 \ac{AODV} ist ein Routing-Algorithmus, der für \ac{MANETs} ausgelegt ist. Jeder Knoten ist gleichberechtigt. Durch das Versenden und Weiterleiten von Nachrichten an Nachbarn entsteht ein Netzwerk. Dieses Netzwerk ist ständigen Veränderungen unterworfen, da sich Nachbarschaftsverhältnisse ändern und Knoten ausfallen können. Diese Veränderungen erfordern eine permanente Anpassung der Routen.
 
-\ac{AODV} gehört zu den reaktiven Routing-Algorithmen. Routen werden erst bei Bedarf ermittelt. Alle an der Route beteiligten Knoten überwachen die Aktualität und senden Fehlernachrichten, falls eine Route ausfällt.
+\ac{AODV} gehört zu den reaktiven Routing-Algorithmen. Routen werden erst bei Bedarf ermittelt. Alle an der Route beteiligten Knoten überwachen die Aktualität und senden Fehlernachrichten, falls eine Route ausfällt. Es wird an einem Nachfolger namens AODVv2 gearbeitet.~\cite{InternetEngineeringTaskForce.12.03.2013}
 
-Es wird an einem Nachfolger namens AODVv2 gearbeitet.~\cite{InternetEngineeringTaskForce.12.03.2013}
+\paragraph{} Die Konzeption für das Spiel enthält drei Level, die aufeinander aufbauen. Ein Ziel dieser Arbeit ist die Schaffung des zweiten Schwierigkeitsgrades im Kontext des bereits implementierten Routing-Protokolles AODV. Im Folgenden sind die Level beschrieben:
 
-\paragraph{RREQ und RREP}
+\paragraph{Level 1} Spieler werden stark geführt. Knoten-Spieler müssen lediglich Gegenstände einsammeln und möglichst lange aktiv bleiben. Indoor-Spieler können Nachrichten versenden und dabei frei aus Start- und Zielknoten wählen. Die Details des Routing-Protokolls bleiben verborgen.
 
-Routen werden über eine Kombination von \ac{RREQ} und \ac{RREP} gefunden. Benötigt ein Quellknoten eine Route zu einem Zielknoten, so sendet er einen \ac{RREQ} an alle Nachbarknoten. Jeder Nachbarknoten überprüft, ob er bereits eine Route zum Zielknoten kennen. Falls eine Route bekannt zum Zielknoten bekannt ist oder falls der Knoten selbst der Zielknoten ist, so sendet er einen \ac{RREP} an den Quellknoten zurück. Ist keine Route bekannt, so leitet er den \ac{RREQ} an seine eigenen Nachbarknoten weiter. Nachbarknoten speichern eine Route zum Quellknoten des \ac{RREQ}.
+\paragraph{Level 2} Spielerführung ist reduziert. Knoten-Spieler müssen eine Nachbarsuche durchführen, um andere Knoten zu finden. Indoor-Spieler haben keine freie Start- und Zielwahl mehr, sondern müssen aus gegebenen Start- und Ziel-Paaren wählen. Soweit vom Routing-Protokoll unterstützt sind Paketpriorisierungen zu beachten.
 
-\paragraph{Hello-Nachrichten}
+\paragraph{Level 3} Spielerführung ist auf ein Minimum reduziert. Knoten-Spieler müssen komplexe Routing-Entscheidungen treffen. Indoor-Spieler sind mit einer Vielzahl von Prioritäten und Einschränkungen konfrontiert.
 
-Knoten können Hello-Nachrichten versenden, um ihren Nachbarn Ver\-bin\-dungs-In\-for\-matio\-nen zu Verfügung zu stellen. Dabei sollen Hello-Nachrichten nur verwendet werden, wenn der aussendende Knoten teil einer aktiven Route ist. Bleiben Hello-Nachrichten für einen bestimmten Zeitraum aus, so kann der empfangende Knoten davon ausgehen, dass die Route ausgefallen ist.
-
-\paragraph{RERR}
-
-Fällt eine Route aus, so wird ein \ac{RERR} versendet. Empfangende Knoten können anhand des \ac{RERR} ihre Routen-Einträge korrigieren.
-
-Level zwei ist eine Erweiterung von Level eins. Zu den aus Level eins bekannten Herausforderungen kommen die aktive Nachbar-Suche und der Versand von Nachrichten aus einem vorgegebenen Pool hinzu.
+\paragraph{} Level zwei ist eine Erweiterung von Level eins. Zu den aus Level eins bekannten Herausforderungen kommen die aktive Nachbarsuche und der Versand von Nachrichten aus einem vorgegebenen Pool hinzu. Als nächstes folgt eine Erklärung der Funktionsweise der aktiven Nachbarsuche im \ac{AODV}-Protokoll. Anschließend wird beschrieben, wie für das Spiel eine Abbildung vom Protokoll-Verhalten auf das Spielgeschehen geschaffen wurde.
 
 \paragraph{Aktive Nachbarsuche}
 
-Die Nachbarsuche findet im AODV-Protokoll durch \ac{RREP}-Nachrichten statt. Eine \ac{RREP}-Nachricht, die eine Reichweite von nur einem Knoten hat und dem Erhalt bestehender Routen dient, heißt HELLO-Nachricht. AODV definiert HELLO-Nachrichten als optional. Knoten senden regelmäßig HELLO-Nachrichten aus. Wenn die HELLO-Nachrichten eines Nachbarknoten zu lange ausbleiben wird ein Abbruch der Verbindung angenommen, die eigene Routing-Tabelle aktualisiert und ein \ac{RERR} gesendet. HELLO-Nachrichten sollen nur gesendet werden, wenn der sendende Knoten Teil einer aktiven Route ist. Außerdem tragen HELLO-Nachrichten eine Sequenz-Nummer und eine Lebensdauer in sich, die zur Bestimmung der Aktualität von Routen verwendet werden.
+Die Nachbarsuche findet im AODV-Protokoll durch \ac{RREP}-Nachrichten statt. Eine \ac{RREP}-Nachricht, die eine Reichweite von nur einem Knoten hat und dem Erhalt bestehender Routen dient, heißt HELLO-Nachricht. AODV definiert HELLO-Nachrichten als optional. Knoten senden regelmäßig HELLO-Nachrichten aus. Wenn die HELLO-Nachrichten eines Nachbarknotens zu lange ausbleiben, wird ein Abbruch der Verbindung angenommen, die eigene Routing-Tabelle aktualisiert und ein \ac{RERR} gesendet. HELLO-Nachrichten sollen nur gesendet werden, wenn der sendende Knoten Teil einer aktiven Route ist. Außerdem tragen HELLO-Nachrichten eine Sequenz-Nummer und eine Lebensdauer in sich, die zur Bestimmung der Aktualität von Routen verwendet wird.
 
-\paragraph{Idee des Spielelementes}
+\paragraph{Abbildung auf das Spielelement}
 
 Level zwei besagt, dass sich Benutzer untereinander nur noch durch aktive Suche finden. Im Folgenden geht es um die Frage, wie dieser Prozess im Spiel ausgestaltet werden soll.
 
-Die Verbindung zwischen HELLO-Nachrichten und Nachbarschaftsverhältnissen ist mit dem Sonar von U-Booten zu vergleichen: U-Boote besitzen ein passives und ein aktives Sonar. Bei Aktivsonaren wird ein Ping ausgesendet, der an Zielen reflektiert und vom aussenden U-Boot empfangen wird. Passivsonare hingegen lauschen auf Geräusche und ermitteln so aussendende Ziele. Die Nachbarschaftssuche in AODV entspricht der Funktionsweise von Passivsonaren.
+Die Verbindung zwischen HELLO-Nachrichten und Nachbarschaftsverhältnissen ist mit dem Sonar von U-Booten vergleichbar: U-Boote besitzen ein passives und ein aktives Sonar. Bei Aktivsonaren wird ein Ping ausgesendet, der an Zielen reflektiert und vom aussendenden U-Boot empfangen wird. Passivsonare hingegen lauschen auf Geräusche und ermitteln so aussendende Ziele. Die Nachbarschaftssuche in AODV entspricht der Funktionsweise von Passivsonaren.
 
-AODV besagt, dass HELLO-Nachrichten nur gesendet werden sollen, wenn eine aktive Route besteht und innerhalb des letzten HELLO\_INTERVALL keine Broadcast-Nachricht gesendet wurde.~\cite{InternetEngineeringTaskForce.July2003} Um standardkonform zu handeln, müsste der Spieler also eine Übersicht über die aktiven Routen und über die Broadcasts innerhalb des letzten HELLO\_INTERVALLs haben.
+AODV besagt, dass HELLO-Nachrichten nur gesendet werden sollen, wenn eine aktive Route besteht und innerhalb des letzten HELLO\_INTERVALs keine Broadcast-Nachricht gesendet wurde.~\cite{InternetEngineeringTaskForce.July2003} Um standardkonform zu handeln, müsste der Spieler also eine Übersicht über die aktiven Routen und über die Broadcasts innerhalb des letzten HELLO\_INTERVALs haben.
 
-Alternativ besteht die Möglichkeit, diese Details zu abstrahieren und dem Spieler ein vereinfachtes Vorgehen anzubieten. Dabei könnten die AODV-Anforderungen bezüglich Intervall und Routen-Gebundenheit durch Spiel-Elemente nachgebildet werden. So lässt sich beispielsweise die Intervall-Limitierung über eine Limitierung der Häufigkeit von HELLO-Nachrichten darstellen.
+Alternativ besteht die Möglichkeit, diese Details zu abstrahieren und dem Spieler ein vereinfachtes Vorgehen anzubieten. Dabei könnten die AODV-Anforderungen bezüglich Intervall- und Routen-Gebundenheit durch Spielelemente nachgebildet werden. So lässt sich beispielsweise die In\-ter\-vall-Li\-mi\-tie\-rung über eine Limitierung der Häufigkeit von HELLO-Nachrichten darstellen.
 
 Spieler sollten nicht durchgehend ohne Nachteil HELLO-Nachrichten versenden können, da sonst der Effekt von manuellen HELLO-Nachrichten verloren geht. Hierfür gibt es verschiedene Möglichkeiten. Einerseits kann der Vorrat an verfügbaren HELLO-Nachrichten begrenzt sein und zeitlich oder durch das Einsammeln von Gegenständen wieder aufgefüllt werden. Dieses Modell wird bereits bei der Knotenenergie und der Sendereichweite angewendet. Andererseits kann zwischen dem Aussenden von zwei HELLO-Nachrichten ein erzwungener Cooldown liegen, wie es aus diversen Computerspielen für Spezialfähigkeiten üblich ist. Als dritte Option kann eine HELLO-Nachricht mit einem Malus-Effekt verbunden sein, indem das Aussenden sich auf Batterie oder Punktzahl auswirkt.
 
 Bei einem Blick auf das dargestellte Szenario, Routing in \ac{MANETs}, fällt auf, dass nahezu alle realen Entscheidungen im Protokoll auf eine Minimierung des Energieverbrauches zurückzuführen sind. Da die Knotenenergie das beherrschende Element des Protokolles ist, liegt es nahe, dieses Element auch beim Aussenden von HELLO-Nachrichten einzubinden. Somit bietet sich das Malus-Modell für eine Umsetzung an.
 
-Das Aufheben von Nachbarschaftsverhältnissen entspricht dem von AODV vorgeschriebenen Verhalten: Für HELLO-Nachrichten gilt ein HELLO\_INTERVAL und ein ALLOWED\_HELLO\_LOSS. Daraus ergibt sich, wann Routen als ungültig erkannt werden sollen. Es bietet sich an, den Spieler von dem Ablauf des HELLO\_INTERVAL*ALLOWED\_HELLO\_LOSS zu warnen, damit seine Routen und gültigen Nachbarn nicht verloren gehen. So lässt sich leichter ein Gefühl für HELLO\_INTERVAL entwickeln. Diese Warnung ist jedoch optional.
+Das Aufheben von Nachbarschaftsverhältnissen entspricht dem von AODV vorgeschriebenen Verhalten: Für HELLO-Nachrichten gilt ein HELLO\_INTERVAL und ein ALLOWED\_HELLO\_LOSS. Daraus ergibt sich, wann Routen als ungültig erkannt werden. Es bietet sich an, den Spieler vor dem Ablauf des HELLO\_INTERVAL*ALLOWED\_HELLO\_LOSS zu warnen, damit seine Routen und gültigen Nachbarn nicht verloren gehen. So lässt sich leichter ein Gefühl für das HELLO\_INTERVAL entwickeln. Diese Warnung ist jedoch optional.
 
 \paragraph{Routenauswahl durch den Spieler}
 
@@ -211,9 +194,9 @@ Auf Level zwei dürfen Indoor-Spieler Start- und Zielknoten nicht mehr selbst wäh
 
 AODV bietet keine Paket-Priorisierung. Es existieren Vorschläge, den Standard zu erweitern, die bisher aber nicht übernommen wurden.~\cite{Sharma.2012}
 
-Es stellt sich die Frage, wie dem Indoor-Spieler die verfügbaren Routen präsentiert werden, damit er eine davon auswählen kann. Es bietet sich an, eine einfache Liste mit Auswahlmöglichkeiten anzuzeigen. Um die einzelnen Listenelemente zu beschriften, sind verschiedene Möglichkeiten denkbar. So könnten die Listenelemente mit den Nicknamen der Knoten, zwischen denen geroutet werden soll, beschriftet sein. Spielernamen sind keine Beschränkungen auferlegt, außerdem geben Nicknamen keine Auskunft über Position oder Status der Knoten, die zu überbrückende Distanz oder die für die Route vergebenen Punkte. Aus Sicht der Indoor-Spieler wird das Verknüpfen von Knoten mit ihrer Position oder ihrem Verhalten derzeit nicht gefördert. Deshalb muss die Anzeige von Spielernamen kritisch betrachtet werden.
+Es stellt sich die Frage, wie dem Indoor-Spieler die verfügbaren Routen präsentiert werden, damit er eine davon auswählen kann. Es bietet sich an, eine einfache Liste mit Auswahlmöglichkeiten anzuzeigen. Um die einzelnen Listenelemente zu beschriften, sind verschiedene Möglichkeiten denkbar. So könnten die Listenelemente mit den Nicknamen der Knoten, zwischen denen geroutet werden soll, beschriftet werden. Es existieren keine Beschränkungen für Nicknamen, außerdem geben letztere keine Auskunft über Position oder Status der Knoten, die zu überbrückende Distanz oder die für die Route vergebenen Punkte. Aus Sicht der Indoor-Spieler wird das Verknüpfen von Knoten mit ihrer Position oder ihrem Verhalten derzeit nicht gefördert. Deshalb muss die Anzeige von Nicknamen kritisch betrachtet werden.
 
-Alternativ könnten die Listenelemente mit der zu überbrückenden Distanz, einem Schwierigkeitsgrad, den zu erwarteten Punkten oder den zu erwartenden Hops beschriftet werden. Es muss allerdings die Frage gestellt werden, ob diese Informationen überhaupt einen Wert haben. Denkbar ist eine Vernachlässigung der Beschriftung der Listenelemente bei gleichzeitiger visueller Hervorhebung der Start- und Zielknoten auf der Karte. Eine begründete Entscheidung für ein Modell kann hier nur auf Basis intensiver Nutzertests erfolgen.
+Alternativ könnten die Listenelemente mit der zu überbrückenden Distanz, einem Schwierigkeitsgrad, den zu erwartenden Punkten oder den zu erwartenden Hops beschriftet werden. Es muss allerdings die Frage gestellt werden, ob diese Informationen überhaupt einen Wert haben. Denkbar ist eine Vernachlässigung der Beschriftung der Listenelemente bei gleichzeitiger visueller Hervorhebung der Start- und Zielknoten auf der Karte. Eine begründete Entscheidung für ein Modell kann hier nur auf Basis intensiver Nutzertests erfolgen.
 
 Der für die Indoor-Spieler entscheidende Faktor sind die erhaltenen Punkte pro Route. Deshalb erscheint es sinnvoll, mit Bonuspunkten vergebene Routen visuell hervorzuheben.
 
@@ -221,65 +204,55 @@ Der für die Indoor-Spieler entscheidende Faktor sind die erhaltenen Punkte pro R
 
 Da die Indoor-Spieler nur aus vorgegebenen Routen wählen können, ist zu betrachten, wie die vorgegebenen Routen ausgewählt werden. Bei freier zufälliger Auswahl aus einer Menge von $n$ Knoten sind somit $\frac{n*(n-1)}{2}$ Verbindungen möglich\footnote{\url{http://dwb4.unl.edu/calculators/activities/middle/shake.html}}. Da auf Verbindungen der Nachrichtenversand bidirektional erfolgen kann, ergibt sich also eine Anzahl von $n*(n-1)$ möglichen Routen. Bei einer in den Testläufen üblichen Größe von 6 Knoten ergibt dies 30 mögliche Routen.
 
-Welche dieser Routen sollen also zur Verfügung gestellt werden? Um die Auswahl verschieden zu machen von der freien Wahl der Start- und Zielknoten darf nur eine eingeschränkten Untermenge der möglichen Routen verwendet werden. Zudem ist es möglich, lediglich Knoten zu verwenden, zwischen denen eine Verbindung besteht. Je nach Spielsituation könnte die Auswahl lange oder kurze, besonders anspruchsvolle oder stabile Routen präferieren. Die Auswahl von Routen ist eine gute Möglichkeit, das Spielgeschehen zu lenken.
+Welche dieser Routen sollen also zur Verfügung gestellt werden? Um die Auswahl von der freien Wahl der Start- und Zielknoten zu variieren, darf nur eine eingeschränkten Untermenge der möglichen Routen verwendet werden. Zudem ist es möglich, lediglich Knoten zu verwenden, zwischen denen eine Verbindung besteht. Je nach Spielsituation könnte die Auswahl lange oder kurze, besonders anspruchsvolle oder stabile Routen präferieren. Die Auswahl von Routen ist eine gute Möglichkeit, das Spielgeschehen zu lenken.
 
 \subsection{Spielelemente}
 
-Da es sich bei RouteMe um ein pervasives Lern\textit{spiel} handelt, verdient die Erweiterung von Spielelementen eine gesonderte Betrachtung. Es handelt sich hierbei nicht um eine detaillierte Aufstellung möglicher Spielmuster, die bereits aus einschlägigen Veröffentlichungen bekannt sind.~\cite{Davidsson.2004} Vielmehr geht es hier um die Erweiterung bestehender Spielelemente, um das Spielerlebnis zu stärken.
+Da es sich bei \textit{RouteMe} um ein pervasives Lern\textit{spiel} handelt, verdient die Erweiterung von Spielelementen eine gesonderte Betrachtung. Es handelt sich hierbei nicht um eine detaillierte Aufstellung möglicher Spielmuster, die bereits aus einschlägigen Veröffentlichungen bekannt sind.~\cite{Davidsson.2004} Vielmehr ist es das Ziel, das Spielerlebnis zu stärken.
 
-\subsubsection{Netzwerk-Visualisierung}
-
-Ein Sachverhalt, der bei den verschiedenen Testrunden auffiel, ist die Visualisierung des Netzwerkes. Die Einführungsfolien, die aus Vorlesungsfolien zusammengesetzt sind, zeigen Knoten, ihren jeweiligen Sendebereich und die logischen Kommunikationspfade, wie in Abbildung~\ref{fig:routeme-einfuehrung} dargestellt ist. Das Indoor-Interface zeigt ebenfalls Knoten und ihre jeweiligen Sendebereiche, bietet jedoch keine Darstellung der logischen Kommunikationspfade, wie in Abbildung~\ref{fig:routeme-spielknoten} zu sehen ist. Damit ist eine zusätzliche kognitive Hürde geschaffen, deren Wert für das Verständnis des unterliegenden Routing-Algorithmus kritisch zu sehen ist.
+Ein Problem, das bei den verschiedenen Testrunden auffiel, war die mangelnde Visualisierung des Netzwerkes. Die Einführungsfolien zum Spiel zeigen Knoten, ihren jeweiligen Sendebereich und die logischen Kommunikationspfade, wie in Abbildung~\ref{fig:routeme-einfuehrung} dargestellt ist. Das Indoor-Interface zeigt ebenfalls Knoten und ihre jeweiligen Sendebereiche, bietet jedoch keine Darstellung der logischen Kommunikationspfade, wie in Abbildung~\ref{fig:routeme-spielknoten} zu sehen ist. Damit ist eine zusätzliche kognitive Hürde geschaffen, deren Wert für das Verständnis des unterliegenden Routing-Algorithmus kritisch betrachtet werden muss.
 
 Es bietet sich an, die Verbindungslinien im Spiel nach dem Vorbild der Einführungsfolien anzuzeigen.
 
 \subsection{Pervasivität}
 
-Das Ziel von Pervasivität ist das Verweben von realen und virtuellen Eindrücken, sodass der Spieler an einem bestimmten Punkt keinen Unterschied mehr zwischen realen und virtuellen Elementen macht. Dies ermöglicht ein vertieftes Eintauchen in das  Spiel, da der Lerner nicht mehr mit einem Smartphone ein Spiel bedient, sondern wirklich eintaucht und ein Spiel spielt. Durch Handlungen, die an der Grenze zwischen virtueller und realer Welt verlaufen, soll der Spieler stärker in das Spiel gezogen werden. So können Beispielsweise Hebe-Gesten für das Einsammeln von Gegenständen oder Wurfgesten für die Übertragung von Datenpaketen verwendet werden.
+Das Ziel von Pervasivität ist das Verweben von realen und virtuellen Eindrücken, sodass der Spieler an einem bestimmten Punkt keinen Unterschied mehr zwischen realen und virtuellen Elementen macht. Durch Handlungen, die an der Grenze zwischen virtueller und realer Welt verlaufen, soll der Spieler stärker in das Spiel gezogen werden. So können beispielsweise Hebe-Gesten für das Einsammeln von Gegenständen oder Wurfgesten für die Übertragung von Datenpaketen verwendet werden.
 
-Ein erster Ansatzpunkt sind die Aktionen, die Knoten-Spieler auf den Smartphones durch Druck auf eine Schaltfläche auslösen. Aber auch haptisches Feedback und angepasste Anzeigen gehören dazu.
+Ein erster Ansatzpunkt sind die Ereignisse, die Knoten-Spieler auf den Smartphones durch Druck auf eine Schaltfläche auslösen. Aber auch haptisches Feedback und angepasste Anzeigen gehören dazu.
 
 \subsubsection{Pervasive Gesten}
 
-Derzeit gibt es nur eine Aktion, die Knoten-Spieler durchführen können: Das Einsammeln von Gegenständen. Mit der Arbeit an Level zwei (siehe Abschnitt~\ref{level2}) kommt die Aktion \textit{HELLO-Nachricht versenden} hinzu.
+Im Ausgangszustand des Spieles gibt es nur eine Aktion, die Knoten-Spieler durchführen können: Das Einsammeln von Gegenständen. Mit der Arbeit an Level zwei (siehe Abschnitt~\ref{level2}) kommt die Aktion \textit{HELLO-Nachricht versenden} hinzu.
 
-\paragraph{HELLO-Nachrichten versenden}
+\paragraph{Einsammeln von Gegenständen} Das Einsammeln von Gegenständen lässt sich durch Aufhebe- oder Schwenk-Gesten realisieren. Hierbei wird das Smartphone im Raum bewegt. Die einfachste Bewegung ist ein schnelles Schütteln des Smartphones. Komplexe, mehrstufige Bewegungs-Gesten würden den Rahmen dieser Arbeit überschreiten und werden deshalb nicht anvisiert.
 
-HELLO-Nachrichten breiten sich kreisförmig um einen Knoten herum aus. Dieses Verhalten entspricht einem Stein, der in einen Teich geworfen wird und dessen Wellen sich kreisförmig ausbreiten, bis sie auf ein Hinderniss treffen. Der Stein entspricht hierbei dem sendenden Knoten, der Teich ist das Überträgermedium, die Wellen stehen für die HELLO-Nachrichten und Hindernisse sind andere Knoten, die die Wellen absorbieren. Die Metapher ist dem Lagoon-Bildschirmschoner\footnote{\url{http://www.youtube.com/watch?v=aaDeWhqLalo}} des Microsoft PixelSense\footnote{\url{http://www.microsoft.com/en-us/pixelsense/default.aspx}}, einem MultiTouch-fähigen Tisch, entliehen.
+Um dem Spieler eine Rückmeldung zu geben, eignen sich auditive oder haptische Feedbacks. Schnelle Bewegungen erschweren die Verfolgung des Smartphones mit den Augen. Deshalb sind visuelle Feedbacks ungeeignet. Da eine Bewegungs-Geste dadurch ausgelöst wird, dass das Smartphone in der Hand gehalten und die Hand bewegt wird, erscheint haptisches Feedback besonders geeignet.
 
-Die Übertragung dieser Metapher auf die Anwendung erfolgt, indem die auf dem Smartphone dargestellte Karte, insbesondere der den Spieler repräsentierende Knoten im Mittelpunkt, auf Touch-Gesten reagiert. Ein Tipp auf die Karte löst den Versand einer HELLO-Nachricht aus, was dem Spieler durch eine sich um seinen Standort ausbreitende Welle dargestellt wird.
+Mit der Implementierung einer Geste ist die bisher eingesetzte Schaltfläche nicht mehr notwendig. Ein Nebeneffekt der Abkehr von der Einsammeln-Schaltfläche ist die Platzeinsparung: Da die Schaltfläche nicht mehr angezeigt werden muss, können andere Elemente wie die Karte entsprechend größer dargestellt werden.
 
-\paragraph{Einsammeln von Gegenständen}
+\paragraph{HELLO-Nachrichten versenden} HELLO-Nachrichten breiten sich kreisförmig um einen Knoten herum aus. Dieses Verhalten entspricht einem Stein, der in einen Teich geworfen wird und dessen Wellen sich ausbreiten, bis sie auf ein Hinderniss treffen. Der Stein entspricht hierbei dem sendenden Knoten, der Teich ist das Überträgermedium, die Wellen stehen für die HELLO-Nachrichten und Hindernisse sind andere Knoten, die von den Wellen erreicht werden. Die Metapher ist dem Lagoon-Bildschirmschoner\footnote{\url{http://www.youtube.com/watch?v=aaDeWhqLalo}} des Microsoft PixelSense\footnote{\url{http://www.microsoft.com/en-us/pixelsense/default.aspx}}, einem MultiTouch-fähigen Tisch, entliehen.
 
-Das Einsammeln von Gegenständen lässt sich durch Aufhebe- oder Schwenk-Gesten realisieren. Hierbei wird das Smartphone im Raum bewegt. Die einfachste Bewegung ist ein schnelles Schütteln des Smartphones. Komplexe, mehrstufige Bewegungs-Gesten würden den Rahmen dieser Arbeit überschreiten und werden deshalb nicht anvisiert.
-
-Um dem Spieler eine Rückmeldung zu geben, eignen sich auditive oder haptische Feedbacks. Visuelle Feedbacks sind ungeeignet, da eine schnelle Bewegung des Smartphones die Verfolgung dessen mit den Augen erschwert. Da eine Bewegungs-Geste dadurch ausgelöst wird, dass das Smartphone in der Hand gehalten und die Hand bewegt wird, erscheint haptisches Feedback besonders geeignet.
-
-Mit der Implementierung einer Geste ist die bisher eingesetzte Schaltfläche nicht mehr notwendig. Ein Nebeneffekt der Abkehr von der Einsammeln-Schaltfläche ist die Platzeinsparung: Dadurch, dass die Schaltfläche nicht mehr angezeigt werden muss, können andere Elemente wie die Karte entsprechend größer dargestellt werden.
+Die Übertragung dieser Metapher auf die Anwendung erfolgt, indem die auf dem Smartphone dargestellte Karte, insbesondere der den Spieler repräsentierende Knoten im Mittelpunkt, auf Touch-Gesten reagiert. Ein Tipp auf die Karte löst den Versand einer HELLO-Nachricht aus. Dies wird durch eine Welle dargestellt, die sich ausgehend vom Standort des Spielers ausbreitet.
 
 \subsubsection{Selbstkonfiguration}
 
-Die manuelle Konfiguration von Smartphones und Desktop-PCs ist zeitaufwendig und fehleranfällig. Je größer der Anteil automatisierbaren Konfigurationsaufgaben, desto leichter ist die Wartung und Inbetriebnahme des entsprechenden Systems. Außerdem ist festzuhalten, dass einmalig zentralisiert abgelegte Konfigurationen weniger aufwändig zu verteilen sind als dezentralisierte, auf jedes Systembestandteil einzeln zu übertragende Konfigurationen. Im Folgenden wird eine Kurzübersicht über Konfigurationsschwierigkeiten gegeben, die in den Testläufen aufgefallen sind. Anschließend wird gezeigt, wie diese Konfigurationsaufgaben automatisiert oder zentralisiert werden können.
+Die manuelle Konfiguration von Smartphones und Desktop-PCs ist zeitaufwendig und fehleranfällig. Je größer der Anteil an automatisierbaren Konfigurationsaufgaben ausfällt, desto leichter ist die Inbetriebnahme und Wartung des Systems. Außerdem ist festzuhalten, dass einmalig zentralisiert abgelegte Konfigurationen weniger aufwändig zu verteilen sind als dezentralisierte, auf jedes Systembestandteil einzeln zu übertragende Konfigurationen. Im Folgenden wird eine Kurzübersicht über Konfigurationsschwierigkeiten gegeben, die in den Testläufen aufgefallen sind. Anschließend wird gezeigt, wie diese Konfigurationsaufgaben automatisiert oder zentralisiert werden können.
 
-\paragraph{Schwierigkeiten in der Vorbereitung}
+\paragraph{Schwierigkeiten in der Vorbereitung} In verschiedenen Testläufen mit dem existierenden Spiel sind wiederholt Schwierigkeiten aufgefallen, die das Spielerlebnis beeinträchtigt oder die Vorbereitungsphase verlängert haben.
 
-In verschiedenen Testläufen mit dem existierenden Spiel sind wiederholt Schwierigkeiten aufgefallen, die das Spielerlebnis beeinträchtigt haben oder die Vorbereitungsphase sehr langwierig machten.
-
-Da für das Spiel immer wieder Smartphones verwendet wurden, die nicht für das RouteMe-System konfiguriert wurden, mussten vor jedem Spiel mit jedem Smartphone folgende Punkte überprüft werden:
+Da für das Spiel immer wieder Smartphones verwendet wurden, die nicht für das RouteMe-System konfiguriert waren, mussten vor jedem Spiel bei jedem Smartphone folgende Punkte überprüft werden:
 
 \begin{itemize}
 	\item Akku geladen: Jedes Smartphone musste vollständig geladen sein, um während des Spieles nicht auszugehen. Dabei ist zu beachten, dass die im Spiel genutzten Hardware-Ressourcen Display, GPS-Empfänger und WLAN-Modul besonders energieverbrauchend sind.
-	\item WLAN eingerichtet: Jedes Smartphone musste mit dem eingesetzten Router verbunden sein, um mit dem Server kommunizieren zu können. Hilf half der Einsatz von \ac{WPS}.
+	\item WLAN eingerichtet: Jedes Smartphone musste mit dem eingesetzten Router verbunden sein, um mit dem Server kommunizieren zu können. Hier half der Einsatz von \ac{WPS}.
 	\item Browser installiert: Durch die Browserabhängigkeit des Spieles (siehe Abschnitt~\ref{browserabhaengigkeit}) mussten die Smartphones auf korrekte Softwareausstattung überprüft werden.
-	\item AccuracyLogger installiert: Um Browser-Einschränkungen auszugleichen, muss während des Spieles eine native Android-App laufen. Mehr dazu in Abschnitt~\ref{konzept-gps}
-	\item URL-Lesezeichen eingerichtet: Die eingesetzte URL basierte auf einer IP-Adresse und case-sensitiven URL-Bestandteilen. Nicht alle Spieler hatten Vorerfahrung in der Benutzung von Android-Smartphones. Somit stellte sich bereits das Starten eines Browsers oder das Eingeben einer URL auf der Touch-Tastatur als Herausforderung dar. Um beim Spielen zu vermeiden, dass dass die Spieler bei einem Bedienungs-Fehler oder Software-Fehler die URL vollständig eingeben müssen, wurden Lesezeichen auf dem Startbildschirm der Smartphones eingerichtet.
+	\item AccuracyLogger installiert: Um Browser-Einschränkungen auszugleichen, musste während des Spieles eine native Android-App laufen. Mehr dazu in Abschnitt~\ref{konzept-gps}.
+	\item URL-Lesezeichen eingerichtet: Die eingesetzte URL basierte auf einer IP-Adresse und case-sensitiven URL-Bestandteilen. Einigen Spielern mangelte es an Erfahrung in der Bedienung von Smartphones. Somit stellte sich bereits das Starten eines Browsers oder das Eingeben einer URL auf der Touch-Tastatur als Herausforderung dar. Um beim Spielen zu vermeiden, dass die Spieler bei einem Bedienungs- oder Softwarefehler die URL vollständig eingeben müssen, wurden Lesezeichen auf jedem Startbildschirm eingerichtet.
 \end{itemize}
 
-Zusammenfassend ist festzuhalten, dass die Einrichtung von acht Smartphones etwa zwei Stunden benötigt hat. Zusammen mit der Einrichtung des Servers und des erforderlichen Netzwerkes wurden etwa vier Stunden benötigt.
+Zusammenfassend ist festzuhalten, dass die Einrichtung von acht Smartphones etwa zwei Stunden benötigte. Zusammen mit der Einrichtung des Servers und des erforderlichen Netzwerkes wurden etwa vier Stunden benötigt.
 
-\paragraph{Automatisierung und Zentralisierung}
-
-Die Einrichtung des WLAN lässt sich zentralisieren und automatisieren, indem die Verbindungsparameter maschinenlesbar kodiert und durch eine Applikation gelesen werden. Anschließend lässt sich eine WLAN-Verbindung durch eine Applikation aufbauen. Da die Parameterübergabe bei Android standardisiert ist, können Lesen und Verbinden durch unterschiedliche Applikationen erfolgen, falls dies erforderlich sein sollte. Android-Applikationen lassen sich über QR-Codes starten, auch Parameter können übergeben werden.
+\paragraph{Automatisierung und Zentralisierung} Die Einrichtung des WLAN lässt sich zentralisieren und automatisieren, indem die Verbindungsparameter maschinenlesbar kodiert und durch eine Applikation gelesen werden. Anschließend lässt sich eine WLAN-Verbindung durch eine Applikation aufbauen. Da die Parameterübergabe bei Android standardisiert ist, können das Lesen und das Verbinden durch unterschiedliche Applikationen erfolgen, falls dies erforderlich sein sollte. Android-Applikationen lassen sich über QR-Codes starten. Hierbei können auch Parameter übergeben werden.
 
 %\begin{itemize}
 %	\item Kommunikation mit Server
@@ -287,7 +260,7 @@ Die Einrichtung des WLAN lässt sich zentralisieren und automatisieren, indem die
 %	\item Smartphones nicht mit SIM-Karte ausgestattet -> kein Zugriff auf diese Netze
 %\end{itemize}
 
-Für die maschinenlesbare Kodierung der Startparameter gibt es verschiedene Möglichkeiten. Die Entscheidung fiel zu Gunsten von QR-Codes. QR-Codes sind fehlertolerant, weit verbreitet und können von vielen Applikationen gelesen werden.~\cite{Kan.2009,Ashford.2010} Mindestens ein QR-Code-Leser muss installiert sein.
+Für die maschinenlesbare Kodierung der Startparameter gibt es verschiedene Möglichkeiten. Die Entscheidung fiel zu Gunsten von QR-Codes aus. QR-Codes sind fehlertolerant, weit verbreitet und können von vielen Applikationen gelesen werden.~\cite{Kan.2009,Ashford.2010} Mindestens ein QR-Code-Leser muss installiert sein.
 
 %\begin{itemize}
 %	\item QR-Tags sind Schwarz-Weiß-Muster
@@ -297,163 +270,156 @@ Für die maschinenlesbare Kodierung der Startparameter gibt es verschiedene Mögli
 %	\item Einfach in Herstellung, günstig, viele Leser
 %\end{itemize}
 
-Die Installation des Browsers wird durch die Installation der RouteMe-App ersetzt. Hier lassen sich praktisch keine Verbesserungen erzielen. Es ist denkbar, dass die Installations-URL als QR-Code veröffentlicht wird, sodass zumindest das manuelle Suchen in Google Play\footnote{\url{https://play.google.com/store}} verkürzt wird.
+Die Installation des Browsers wird durch die Installation der RouteMe-App ersetzt. Hier lassen sich praktisch keine Verbesserungen erzielen. Es ist denkbar, die Installations-URL als QR-Code zu veröffentlichen, sodass zumindest die Manuelle Suche in Google Play\footnote{\url{https://play.google.com/store}} verkürzt wird.
 
-Durch Nutzung von dynamischem DNS können IP-basierte Lesezeichen auf Domain-basierte Lesezeichen umgestellt werden. Dabei wird im Vorfeld eine URL bei einem Dynamic-DNS-Anbieter reserviert. Die zu dieser URL gehörige IP wird auf eine vom Anbieter definierte Art gesetzt. Sollten Änderungen an der IP notwendig sein, so kann die IP neu gesetzt werden. Die Änderung wird innerhalb weniger Sekunden wirksam. Da das Spiel innerhalb der Universität gehostet wird, sind die gesetzten IPs nur aus dem internen Netzwerk der Universität Potsdam gültig. Somit ist das Risiko eines Angriffes auf den hostenden Server gering, obwohl die IP global bekanntgemacht wird.
+Durch Nutzung von dynamischem DNS können IP-basierte Lesezeichen auf Domain-basierte Lesezeichen umgestellt werden. Dabei wird im Vorfeld eine URL bei einem Dynamic-DNS-Anbieter reserviert. Die zu dieser URL gehörige IP wird auf eine vom Anbieter definierte Art gesetzt. Sollten Änderungen an der IP notwendig sein, so kann die IP neu gesetzt werden. Die Änderung wird innerhalb weniger Sekunden wirksam. Da das Spiel innerhalb der Universität gehostet wird, sind die gesetzten IPs nur innerhalb des internen Netzwerkes der Universität Potsdam gültig. Somit ist das Risiko eines Angriffes auf den hostenden Server gering, obwohl die IP global bekanntgemacht wird.
 
 \subsubsection{Interaktive Karte}
 
-Mentale Hürden erhöhen die Hemmschwelle, um in einen pervasiven Kontext einzutauchen. Deshalb ist es von besonderem Interesse, mentale Hürden zu identifizieren und abzubauen. So ist in den Testläufen immer wieder aufgefallen, dass es Personen gab, die Schwierigkeiten mit der Koordination von digitaler Karte und realer Laufrichtung hatten. Das führte dazu, dass diese Personen immer wieder stehenblieben, das Smartphone mit der Karte nach Norden ausrichteten und anschließend überlegten, in welche Richtung sie weiterlaufen mussten, um zu einem auf der Karte angezeigten Punkt zu gelangen.
+Mentale Hürden erhöhen die Hemmschwelle, um in einen pervasiven Kontext einzutauchen. Deshalb ist es von besonderem Interesse, mentale Hürden zu identifizieren und abzubauen. So ist in den Testläufen immer wieder aufgefallen, dass es Personen gab, die Schwierigkeiten mit der Koordination von virtueller Karte und realer Laufrichtung hatten. Das führte dazu, dass diese Personen immer wieder stehenblieben, das Smartphone mit der Karte nach Norden ausrichteten und anschließend überlegten, in welche Richtung sie weiterlaufen mussten, um zu einem auf der Karte angezeigten Punkt zu gelangen.
 
 Dieses Verhalten zeigt deutlich, dass die statische Karte eine mentale Hürde darstellt. Besser ist es, wenn sich die Karte nach der Position des Smartphones ausrichtet. Dabei ist die korrekte Ausrichtung der Himmelsrichtung nur ein Teilaspekt. Wenn auch die Neigung des Smartphones einbezogen wird, dann ist die mentale Hürde so stark reduziert, dass das Smartphone nicht mehr nur als Anzeigegerät für, sondern als Fenster in das Spiel wahrgenommen werden kann.
 
-\subsection{Zuverlässigkeit}
+\subsection{Zuverlässigkeit der Ausführungsumgebung}\label{browserabhaengigkeit}
 
 Für ein gutes Spielerlebnis zählt nicht nur die Pervasivität. Wenn die Spieler eingetaucht sind, muss verhindert werden, dass sie durch technische Probleme aus dem Spiel gerissen werden. Dieser Abschnitt befasst sich mit der Verbesserung der technischen Zuverlässigkeit von RouteMe.
 
-\subsubsection{Ausführungsumgebung}\label{browserabhaengigkeit}
-
-Das bisherige Spiel ist auf die Ausführung im Browser ausgelegt. Das heißt, dass sowohl Indoor- als auch Knoten-Spieler das Spiel in einem Browser laufen lassen. Dabei hat sich gezeigt, dass die Smartphone-Sicht besonders fehler- und problemanfällig ist. Sowohl die Sensor-Zugriffe als auch die Seiten-Darstellung sind sehr Browser-spezifisch. Die Auswahl der in den gängigen Browsern implementierten HTML5-Features ist noch sehr unterschiedlich\footnote{Es gibt Seiten, die die unterschiedlichen Features der auf dem Markt verfügbaren Browser testen und gegenüberstellen. Eine solche Seite ist \url{http://html5test.com/}, von der die folgende Übersicht stammt: \url{http://html5test.com/compare/browser/android23/android40/operamobile1400.html}, \url{http://html5test.com/compare/browser/chromemobile25/ffmobile19/ios70.html}}. Hinzu kommt, dass nicht alle Browser auf allen Betriebssystemen verfügbar. So ist Chrome nur ab Android 4 verfügbar.
+Das bisherige Spiel ist auf die Ausführung im Browser ausgelegt. Das heißt, dass sowohl Indoor- als auch Knoten-Spieler das Spiel in einem Browser laufen lassen. Dabei hat sich gezeigt, dass die Smartphone-Sicht besonders fehler- und problemanfällig ist. Sowohl die Sensor-Zugriffe als auch die Seiten-Darstellung sind sehr Browser-spezifisch. Die Auswahl der in den gängigen Browsern implementierten HTML5-Features ist noch sehr unterschiedlich\footnote{Es gibt Seiten, die die unterschiedlichen Features der auf dem Markt verfügbaren Browser testen und gegenüberstellen. Eine solche Seite ist \url{http://html5test.com/}, von der die folgende Übersicht stammt: \url{http://html5test.com/compare/browser/android23/android40/operamobile1400.html}, \url{http://html5test.com/compare/browser/chromemobile25/ffmobile19/ios70.html}}. Hinzu kommt, dass nicht alle Browser auf allen Betriebssystemen verfügbar sind. So kann ist Google Chrome nur ab Android 4 installiert werden.
 
 Im Folgenden werden die zwei größten Problembereiche vorgestellt. Zum einen wird auf die Sensoren mit Fokus auf GPS eingegangen. Zum anderen wird die Darstellung der Knoten-Sicht genauer beleuchtet.
 
-\paragraph{GPS}\label{konzept-gps}
+\paragraph{GPS}\label{konzept-gps} Geolocation-Daten können aus unterschiedlichen Quellen stammen. Eine Übersicht von Quellen stellt Abbildung~\ref{fig:gps_sources} dar. Die häufigsten Geolocation-Quellen auf den getesteten Smartphones waren WLAN und GPS, wobei WLAN eine Genauigkeit von $20m$ bis $50m$ und GPS eine Genauigkeit von $5m$ bis $15m$ im vorgesehenen Spielbereich erreichte. Da der vorgesehene Spielbereich etwa $20m \times 50m$ groß ist, folgt, dass eine Genauigkeit von $5m$ und weniger notwendig ist, um ein gutes Spielerlebnis zu sichern.
 
-Das \ac{GPS} wird zur Positionsbestimmung der Knoten-Spieler eingesetzt. Geolocation-Daten können aus unterschiedlichen Quellen stammen. Eine Übersicht von Quellen stellt Abbildung~\ref{fig:gps_sources} dar. Die häufigsten Geolocation-Quellen auf den getesteten Smartphones waren WLAN und GPS, wobei WLAN eine Genauigkeit von $20m$ bis $50m$ und GPS eine Genauigkeit von $5m$ bis $15m$ im vorgesehenen Spielbereich hatte. Da der vorgesehen Spielbereich etwa $20m \times 50m$ groß ist, ist eine Genauigkeit von $5m$ und weniger notwendig, um ein gutes Spielerlebnis zu sichern.
-
-Die getesteten Browser lieferten keine zuverlässigen Lokations-Daten. Um kontinuierlich zuverlässige Daten zu bekommen, wird im Hintergrund eine Android-App gestartet, die direkt über das Betriebssystem auf die Lokations-Daten zugreift. Diese Daten werden an den Browser weitergegeben.
+Die getesteten Browser lieferten keine zuverlässigen Lokations-Daten. Um kontinuierlich zuverlässige Daten zu bekommen, wurde im Hintergrund eine Android-App gestartet, die direkt über das Betriebssystem auf die Lokations-Daten zugreift. Diese Daten werden an den Browser weitergegeben.
 
 \begin{figure}
 	\centering
-	\scalegraphics{pics/gps_sources.png}
+	\includegraphics[width=7.5cm]{pics/gps_sources.jpg}
 	\caption{Mögliche Geolocation-Quellen~\cite{Gardner.2012}}
 	\label{fig:gps_sources}
 \end{figure}
 
-Die Design-Philosophie für die Geolocation-Bestimmung ist bei W3C-kompatiblen Browsern und Android-Apps sehr ähnlich. Anstatt die zu verwendende Geolocation-Hardware anzugeben, werden stattdessen die erforderliche Genauigkeit sowie ein Aktualisierungs-Intervall angegeben. Der ausführende Container (also der Browser oder das Android-OS) wählt eine geeignete Datenquelle. Dabei kann der Container eigene Kriterien bei der Auswahl der Geolocation-Quelle einfließen lassen. So präferiert der Safari-Browser des iOS4 aus Energiegründen WLAN gegenüber GPS, obwohl letzteres eine höhere Genauigkeit liefern würde\footnote{\url{http://stackoverflow.com/questions/6790368/why-is-geolocation-in-mobile-safari-way-less-accurate-than-the-location-in-a-nat}}.
+Die Design-Philosophie für die Geolocation-Bestimmung ist bei W3C-kompatiblen Browsern und Android-Apps sehr ähnlich. Anstatt die zu verwendende Geolocation-Hardware anzugeben, werden stattdessen die erforderliche Genauigkeit sowie ein Aktualisierungsintervall angegeben. Der ausführende Container (also der Browser oder das Android-OS) wählt eine geeignete Datenquelle. Dabei kann der Container eigene Kriterien bei der Auswahl der Geolocation-Quelle einfließen lassen. So präferiert der Safari-Browser des iOS4 aus Energiegründen WLAN gegenüber GPS, obwohl letzteres eine höhere Genauigkeit liefern würde\footnote{\url{http://stackoverflow.com/questions/6790368/}}.
 
-Auf den verfügbaren Lehrstuhl-Smartphones benötigt der GPS-Sensor in den meisten Fällen zwischen 30 Sekunden und fünf Minuten, um eine initiale Geolocation zu erhalten. Anschließend wird die Geolocation einmal pro Sekunde aktualisiert. Bei der Nutzung von WLAN-Geolocations war keine initiale Verzögerung zu bemerken. Auch in diesem Fall erfolgt die Aktualisierung einmal pro Sekunde.
+Auf den für diese Arbeit verfügbaren Smartphones benötigt der GPS-Sensor in den meisten Fällen zwischen 30 Sekunden und fünf Minuten, um eine initiale Geolocation zu erhalten. Anschließend wird die Geolocation einmal pro Sekunde aktualisiert. Bei der Nutzung von WLAN-Geolocations war keine initiale Verzögerung zu bemerken. Auch in diesem Fall erfolgt die Aktualisierung einmal pro Sekunde.
 
-Wie die Android-App bereits zeigt, ist eine native App den getesteten Browser bei den Zugriffen auf Smartphone-Sensoren überlegen. Für das Spiel wird eine Genauigkeit benötigt, die Browser-basiert und ohne native Unterstützung nicht geliefert werden kann.
+Wie die Android-App bereits zeigte, ist eine native App den getesteten Browser bei den Zugriffen auf Smartphone-Sensoren überlegen. Für das Spiel wird eine Genauigkeit benötigt, die Browser-basiert und ohne native Unterstützung nicht geliefert werden kann.
 
-\paragraph{Darstellung}
-
-Die Darstellung der Knoten-Sicht erfolgt auf Basis des Frameworks Sencha Touch 1.1.0\footnote{\url{http://www.sencha.com/products/touch}}. Sencha Touch arbeitet auf HTML5-Basis und ist für WebKit-Browser entwickelt. Entgegen den Erwartungen ist die Darstellung der Oberfläche in verschiedenen Browsern sehr unterschiedlich.
+\paragraph{Darstellung} Die Darstellung der Knoten-Sicht erfolgt auf Basis des Frameworks \textit{Sencha Touch 1.1.0}\footnote{\url{http://www.sencha.com/products/touch}}. Sencha Touch arbeitet auf HTML5-Basis und ist für WebKit-Browser entwickelt. Entgegen den Erwartungen ist die Darstellung der Oberfläche in verschiedenen Browsern sehr unterschiedlich.
 
 Die Vorgängerarbeit hat sich bereits mit dem Testen des Spieles auf unterschiedlichen Browsern und Systemen beschäftigt.~\cite{Dehne.26.April2013} Am intensivsten wurden Browser auf Android-4-Basis getestet. Durch die Beschränkung auf WebKit-Browser ist Firefox für Android nicht unterstützt\footnote{\url{http://www.sencha.com/forum/showthread.php?120949-Sencha-Touch-WebKit-and-Firefox}}. Die Darstellung mit Firefox ist so fehlerhaft, dass die Nutzung nicht einmal eingeschränkt möglich ist. Der native Android-Browser hat Probleme mit der Kartendarstellung, da er Elemente doppelt und mit leichtem Versatz zeichnet. Chrome hat die besten Ergebnisse geliefert. Allerdings ist Chrome nur für Android 4 verfügbar.
 
-\paragraph{}
+\paragraph{} Es lässt sich also zusammenfassen, dass aktuelle Browser als Ausführungsumgebung für \textit{RouteMe} nicht geeignet sind. Der unzureichende Zugriff auf Sensoren sowie die unzuverlässige Darstellung legen den Schluss nahe, dass ein Wechsel der Ausführungsumgebung notwendig ist, um bessere Ergebnisse zu erzielen.
 
-Es lässt sich also zusammenfassen, dass aktuelle Browser als Ausführungsumgebung für RouteMe nicht geeignet sind. Der unzureichende Zugriff auf Sensoren sowie die unzuverlässige Darstellung legen den Schluss nahe, dass ein Wechsel der Ausführungsumgebung notwendig ist, um bessere Ergebnisse zu erzielen.
-
-Aus dem Vorgängerprojekt gesammelte Erfahrungen mit Android zeigen, dass der Sensor-Zugriff auf Android-Basis zuverlässig und genau ist.~\cite{Dehne.26.April2013} Neben der GPS-Genauigkeit bietet Android weitere Vorteile, die es also Ziel-Plattform für eine Portierung attraktiv machen. Zum einen bietet hat Android einen sehr großen Marktanteil bei Smartphones und Tablets. Zum anderen bietet Android mit Java eine Programmiersprache, die im universitären Bereich gelehrt wird und stark verbreitet ist, womit die Langzeit-Unterstützung und -Weiterentwicklung gesichert ist. Verbunden damit bietet eine Android eine breite und starke Community.
+Aus dem Vorgängerprojekt gesammelte Erfahrungen mit Android zeigen, dass der Sensor-Zugriff auf Android-Basis zuverlässig und genau ist.~\cite{Dehne.26.April2013} Neben der GPS-Genauigkeit bietet Android weitere Vorteile, die es also Ziel-Plattform für eine Portierung attraktiv machen. Zum einen hat Android einen sehr großen Marktanteil bei Smartphones und Tablets. Zum anderen bietet Android mit Java eine Programmiersprache, die im universitären Bereich gelehrt wird und stark verbreitet ist, womit die Langzeitunterstützung und Weiterentwicklung gesichert sind. Verbunden damit bietet eine Android eine breite und starke Community.
 
 Eine Festlegung auf Android bringt aber auch verschiedene Einschränkungen mit sich. So geht beispielsweise die Plattformunabhängigkeit verloren, die mit der Browser-App vorgesehen war. Dies ist aber kein großer Verlust, da nicht einmal eine Browserunabhängigkeit erreicht wurde.
 
-\subsubsection{Skalierbarkeit}
+%\subsubsection{Skalierbarkeit}
+%
+%\begin{itemize}
+%	\item Zwei Standpunkte: Besserer Server oder stärkere Clients
+%	\item Serverlosigkeit mit PushFork
+%	\item RESTful-Philosophie umsetzen über dokumentbasiertes Vorgehen
+%\end{itemize}
+%
+%\subsection{Erweiterbarkeit}
+%
+%\subsubsection{Vorbereitung auf weitere Routing-Algorithmen}
+%
+%\begin{itemize}
+%	\item Jedes Routing-Protokoll hat eine eigene Repräsentation von Datenpaketen. MANET Working Group versucht, Datenformat für künftige MANET-Routing-Algorithmen zu vereinheitlichen~\cite{InternetEngineeringTaskForce.02.2009}. AODVv2 und OLSRv2 sind auf dieses vereinheitlichte Format ausgerichtet~\cite{InternetEngineeringTaskForce.23.03.2013, InternetEngineeringTaskForce.12.03.2013}, für ältere Algorithmen wie AODV, OLSR und DSR sind noch eigene Formate definiert~\cite{InternetEngineeringTaskForce.July2003, InternetEngineeringTaskForce.10.2003, InternetEngineeringTaskForce.02.2007}.
+%	\item Um Entkopplung innerhalb von Datenbank und Spiellogik zu erreichen, ist gemeinsame Basis empfehlenswert. Schichtenmodell als Möglichkeit.
+%	\item Repräsentation auf View-Seite flexibel, da derzeit nur angezeigt wird, wo abgeschicktes Paket gerade ist (Indoor) und wie viele Pakete gerade warten (Indoor, Mobile)
+%	\item Repräsentation auf View-Seite wird detailierter, sobald AODV-Level 3 implementiert ist
+%\end{itemize}
+%
+%\begin{itemize}
+%	\item Weitere Möglichkeit der Aufteilung: Nutzung einer Dokument-orientierten Datenbank gegenüber einer relationalen Datenbank. Vorteil: Dokumentorientierung ist auf Ablegen und Durchsuchen von unstrukturierten Daten spezialisiert. Dokumentorientierte Datenbanken verwenden keine Tabellen-Schemata. Relationale Datenbanken unterstützen dieses Vorgehen durch simulierte Vererbung, sodass jeder Routing-Algorithmus eine eigene Tabelle pro verwendetem Paketformat hätte, wobei alle Tabellen auf eine Obertabelle verweisen.
+%	\item Vorteil Dokumentorientierung: Keine Schema, dadurch gesicherte Abwärtskompatibilität im laufenden Betrieb.
+%	\item Brauchen wir diesen Vorteil? Nein, da Datenbanken nur von Spiel zu Spiel benötigt werden, Spiele auf Laufzeiten im Minuten- oder Stundenbereich angelegt sind und keine Daten zwischen Spielen gehalten werden
+%	\item Hibernate ist auf relationale Datenbanken ausgerichtet\footnote{\url{http://www.hibernate.org/about/orm.html}}
+%\end{itemize}
+%
+%\subsubsection{Überlegungen zur Kommunikation zwischen Client und Server}
+%
+%\paragraph{Rest / RESTful}
+%
+%\begin{itemize}
+%	\item Begriff REST von Roy Fielding eingeführt~\cite{Fielding.2000}
+%	\item Basiert auf grundlegenden Internet-Technologien wie URI, HTTP
+%	\item Verwendet HTTP-Verben wie GET, POST, PUT um dokumentbasierte Kommunikation zwischen Client und Server zu ermöglichen
+%	\item Roy Fielding plädiert auf intensive Nutzung des HTTP-Standards, um bestehende WWW-Infrastruktur optimal auszunutzen
+%	\item Er betont ausgiebig die bestehenden Client-Server-Architekturen unter Einbeziehung von Caches, Firewalls und Proxies
+%	\item Roy Fieldings Arbeit bleibt sehr abstrakt, weshalb sich viele Interpretationen des REST-Konzeptes herausgebildet haben~\cite{Richardson.2007}
+%	\item Viele Probleme und Missverständnisse in der Umsetzung\footnote{\url{http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven}}\footnote{\url{https://weblogs.java.net/blog/mkarg/archive/2010/02/14/what-hateoas-actually-means}}
+%	\item Nach Fielding soll Kommunikation soweit wie möglich mit HTTP durchgeführt werden, ohne HTTP nur als Transportprotokoll für erweiterte Formate einzusetzen. Für die Umsetzung von speziellen Anforderungen empfiehlt er die Verwendung von (eigenen) HTTP-Erweiterungen
+%	\item Media type ist Schlüsselbestandteil in REST (siehe Zitat am Ende der Tabelle)
+%	\item Beschreibung der media types im Gegensatz Beschreibung von URL-Bau-Schemata. Alle Informationen, die zum Bau von URLs als Zustandsübergänge nötig sind, sollen in den übertragenen Informationen stecken
+%	\item Starker Fokus auf Zustandslosigkeit: Alle Informationen, die ein Client benötigt, sollen in den übertragenen Informationen enthalten sein. Informationen für Zustandübergänge sollen in diesen Informationen enthalten sein. Es gibt nur einen URL-Einstiegspunkt in die Applikation, alle anderen URLs werden von dort aus ermittelt
+%\end{itemize}
+%
+%\begin{quotation}
+%A REST API should spend almost all of its descriptive effort in defining the media type(s) used for representing resources and driving application state, or in defining extended relation names and/or hypertext-enabled mark-up for existing standard media types. Any effort spent describing what methods to use on what URIs of interest should be entirely defined within the scope of the processing rules for a media type (and, in most cases, already defined by existing media types).\footnote{\url{http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven}}
+%\end{quotation}
+%
+%\begin{itemize}
+%	\item Was bedeutet das für RouteMe?
+%	\item Media types müssen definiert werden, anstatt application/json zu verwenden
+%	\item URLs müssen generiert werden, z.B. zum Einsammeln von Items
+%\end{itemize}
+%
+%\begin{itemize}
+%	\item Gegenüberstellung Dokumentbasiert vs. RPC vs. Hybrid~\cite{Richardson.2007}
+%	\item XML-RPC zeichnet sich dadurch aus, als HTTP-Verb POST verwendet wird, HTTP nur das Trägermedium bildet und alle relevanten Informationen für den Aufruf (Kontext, Operation, Daten) im transportierten XML stehen. Die URL bleibt für alle Aufrufe die gleiche
+%	\item Dokumentbasiert verwendet die HTTP-Verben, um die Operation auszudrücken, eine URL, um den Kontext auszudrücken und HTTP-Content, um die Daten zu übertragen
+%\end{itemize}
+%
+%\begin{itemize}
+%	\item GWT setzt auf XML-RPC
+%	\item GWT kann auch REST-Kommunikation abbilden\footnote{\url{http://restygwt.fusesource.org/}}\footnote{\url{https://code.google.com/p/gwt-rest-client/}}\footnote{\url{https://code.google.com/p/gwt-rest/}}
+%	\item GWT wird auf Admin- und auf Indoor-Seite eingesetzt
+%	\item REST wird auf Indoor- und auf Mobile-Seite eingesetzt
+%	\item Vereinheitlichung sinnvoll:
+%	\item Weniger Wartungsaufwand: Verschiedene Schnittstellen erfordern verschiedene Frameworks. Wenn nur eine Schnittstelle angeboten wird, dann muss auf Änderungen in der Kommunikation nur innerhalb einer Architektur-Philosophie und nur unter Nutzung eines Technologie-Stacks reagiert werden
+%	\item Wiederverwendbarkeit gleicher Schnittstellen zwischen unterschiedlichen Interfaces
+%	\item Wiederverwendbarkeit gleicher Schnittstellen zwischen unterschiedlichen Implementationen
+%\end{itemize}
+%
+%\paragraph{Ein- und Ausgabeformate}
+%
+%\begin{itemize}
+%	\item Nicht festgelegt
+%	\item XML und JSON am häufigsten
+%\end{itemize}
+%
+%\paragraph{Hyperlinks}
+%
+%\begin{itemize}
+%	\item XML hat XLink~\cite{W3C.06.05.2010}
+%	\item JSON fehler Hyperlinks, allerdings verschiedene Projekte, um Erweiterung zu realisieren\footnote{\url{http://www.mnot.net/blog/2011/11/25/linking_in_json}}
+%	\item Verschiedene Ansätze, JSON um Links zu erweitern, bisher kein Standard
+%\end{itemize}
+%
+%\paragraph{Ausführungsort von Code}
+%
+%\begin{itemize}
+%	\item Wo wird was ausgeführt (Schichten-Grafik)
+%	\item Wo sollen die rechenintensiven Aufgaben durchgeführt werden?
+%	\item Option 1: Alles auf Clients, Server nur für Kommunikation innerhalb der Clients benötigt, z.B. mittles PushFork\footnote{\url{http://pushfork.com/}}
+%	\item Option 2: Alles auf Server, Clients nur als Anzeige benötigt
+%	\item Option 3: Statische Aufteilung der Aufgaben von Server und Client
+%	\item Option 4: Dynamische Aufteilung der Aufgaben von Server und Client über Code-on-demand~\cite{Fielding.2000}
+%\end{itemize}
 
-\begin{itemize}
-	\item Zwei Standpunkte: Besserer Server oder stärkere Clients
-	\item Serverlosigkeit mit PushFork
-	\item RESTful-Philosophie umsetzen über dokumentbasiertes Vorgehen
-\end{itemize}
-
-\subsection{Erweiterbarkeit}
-
-\subsubsection{Vorbereitung auf weitere Routing-Algorithmen}
-
-\begin{itemize}
-	\item Jedes Routing-Protokoll hat eine eigene Repräsentation von Datenpaketen. MANET Working Group versucht, Datenformat für künftige MANET-Routing-Algorithmen zu vereinheitlichen~\cite{InternetEngineeringTaskForce.02.2009}. AODVv2 und OLSRv2 sind auf dieses vereinheitlichte Format ausgerichtet~\cite{InternetEngineeringTaskForce.23.03.2013, InternetEngineeringTaskForce.12.03.2013}, für ältere Algorithmen wie AODV, OLSR und DSR sind noch eigene Formate definiert~\cite{InternetEngineeringTaskForce.July2003, InternetEngineeringTaskForce.10.2003, InternetEngineeringTaskForce.02.2007}.
-	\item Um Entkopplung innerhalb von Datenbank und Spiellogik zu erreichen, ist gemeinsame Basis empfehlenswert. Schichtenmodell als Möglichkeit.
-	\item Repräsentation auf View-Seite flexibel, da derzeit nur angezeigt wird, wo abgeschicktes Paket gerade ist (Indoor) und wie viele Pakete gerade warten (Indoor, Mobile)
-	\item Repräsentation auf View-Seite wird detailierter, sobald AODV-Level 3 implementiert ist
-\end{itemize}
-
-\begin{itemize}
-	\item Weitere Möglichkeit der Aufteilung: Nutzung einer Dokument-orientierten Datenbank gegenüber einer relationalen Datenbank. Vorteil: Dokumentorientierung ist auf Ablegen und Durchsuchen von unstrukturierten Daten spezialisiert. Dokumentorientierte Datenbanken verwenden keine Tabellen-Schemata. Relationale Datenbanken unterstützen dieses Vorgehen durch simulierte Vererbung, sodass jeder Routing-Algorithmus eine eigene Tabelle pro verwendetem Paketformat hätte, wobei alle Tabellen auf eine Obertabelle verweisen.
-	\item Vorteil Dokumentorientierung: Keine Schema, dadurch gesicherte Abwärtskompatibilität im laufenden Betrieb.
-	\item Brauchen wir diesen Vorteil? Nein, da Datenbanken nur von Spiel zu Spiel benötigt werden, Spiele auf Laufzeiten im Minuten- oder Stundenbereich angelegt sind und keine Daten zwischen Spielen gehalten werden
-	\item Hibernate ist auf relationale Datenbanken ausgerichtet\footnote{\url{http://www.hibernate.org/about/orm.html}}
-\end{itemize}
-
-\subsubsection{Überlegungen zur Kommunikation zwischen Client und Server}
-
-\paragraph{Rest / RESTful}
-
-\begin{itemize}
-	\item Begriff REST von Roy Fielding eingeführt~\cite{Fielding.2000}
-	\item Basiert auf grundlegenden Internet-Technologien wie URI, HTTP
-	\item Verwendet HTTP-Verben wie GET, POST, PUT um dokumentbasierte Kommunikation zwischen Client und Server zu ermöglichen
-	\item Roy Fielding plädiert auf intensive Nutzung des HTTP-Standards, um bestehende WWW-Infrastruktur optimal auszunutzen
-	\item Er betont ausgiebig die bestehenden Client-Server-Architekturen unter Einbeziehung von Caches, Firewalls und Proxies
-	\item Roy Fieldings Arbeit bleibt sehr abstrakt, weshalb sich viele Interpretationen des REST-Konzeptes herausgebildet haben~\cite{Richardson.2007}
-	\item Viele Probleme und Missverständnisse in der Umsetzung\footnote{\url{http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven}}\footnote{\url{https://weblogs.java.net/blog/mkarg/archive/2010/02/14/what-hateoas-actually-means}}
-	\item Nach Fielding soll Kommunikation soweit wie möglich mit HTTP durchgeführt werden, ohne HTTP nur als Transportprotokoll für erweiterte Formate einzusetzen. Für die Umsetzung von speziellen Anforderungen empfiehlt er die Verwendung von (eigenen) HTTP-Erweiterungen
-	\item Media type ist Schlüsselbestandteil in REST (siehe Zitat am Ende der Tabelle)
-	\item Beschreibung der media types im Gegensatz Beschreibung von URL-Bau-Schemata. Alle Informationen, die zum Bau von URLs als Zustandsübergänge nötig sind, sollen in den übertragenen Informationen stecken
-	\item Starker Fokus auf Zustandslosigkeit: Alle Informationen, die ein Client benötigt, sollen in den übertragenen Informationen enthalten sein. Informationen für Zustandübergänge sollen in diesen Informationen enthalten sein. Es gibt nur einen URL-Einstiegspunkt in die Applikation, alle anderen URLs werden von dort aus ermittelt
-\end{itemize}
-
-\begin{quotation}
-A REST API should spend almost all of its descriptive effort in defining the media type(s) used for representing resources and driving application state, or in defining extended relation names and/or hypertext-enabled mark-up for existing standard media types. Any effort spent describing what methods to use on what URIs of interest should be entirely defined within the scope of the processing rules for a media type (and, in most cases, already defined by existing media types).\footnote{\url{http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven}}
-\end{quotation}
-
-\begin{itemize}
-	\item Was bedeutet das für RouteMe?
-	\item Media types müssen definiert werden, anstatt application/json zu verwenden
-	\item URLs müssen generiert werden, z.B. zum Einsammeln von Items
-\end{itemize}
-
-\begin{itemize}
-	\item Gegenüberstellung Dokumentbasiert vs. RPC vs. Hybrid~\cite{Richardson.2007}
-	\item XML-RPC zeichnet sich dadurch aus, als HTTP-Verb POST verwendet wird, HTTP nur das Trägermedium bildet und alle relevanten Informationen für den Aufruf (Kontext, Operation, Daten) im transportierten XML stehen. Die URL bleibt für alle Aufrufe die gleiche
-	\item Dokumentbasiert verwendet die HTTP-Verben, um die Operation auszudrücken, eine URL, um den Kontext auszudrücken und HTTP-Content, um die Daten zu übertragen
-\end{itemize}
-
-\begin{itemize}
-	\item GWT setzt auf XML-RPC
-	\item GWT kann auch REST-Kommunikation abbilden\footnote{\url{http://restygwt.fusesource.org/}}\footnote{\url{https://code.google.com/p/gwt-rest-client/}}\footnote{\url{https://code.google.com/p/gwt-rest/}}
-	\item GWT wird auf Admin- und auf Indoor-Seite eingesetzt
-	\item REST wird auf Indoor- und auf Mobile-Seite eingesetzt
-	\item Vereinheitlichung sinnvoll:
-	\item Weniger Wartungsaufwand: Verschiedene Schnittstellen erfordern verschiedene Frameworks. Wenn nur eine Schnittstelle angeboten wird, dann muss auf Änderungen in der Kommunikation nur innerhalb einer Architektur-Philosophie und nur unter Nutzung eines Technologie-Stacks reagiert werden
-	\item Wiederverwendbarkeit gleicher Schnittstellen zwischen unterschiedlichen Interfaces
-	\item Wiederverwendbarkeit gleicher Schnittstellen zwischen unterschiedlichen Implementationen
-\end{itemize}
-
-\paragraph{Ein- und Ausgabeformate}
-
-\begin{itemize}
-	\item Nicht festgelegt
-	\item XML und JSON am häufigsten
-\end{itemize}
-
-\paragraph{Hyperlinks}
-
-\begin{itemize}
-	\item XML hat XLink~\cite{W3C.06.05.2010}
-	\item JSON fehler Hyperlinks, allerdings verschiedene Projekte, um Erweiterung zu realisieren\footnote{\url{http://www.mnot.net/blog/2011/11/25/linking_in_json}}
-	\item Verschiedene Ansätze, JSON um Links zu erweitern, bisher kein Standard
-\end{itemize}
-
-\paragraph{Ausführungsort von Code}
-
-\begin{itemize}
-	\item Wo wird was ausgeführt (Schichten-Grafik)
-	\item Wo sollen die rechenintensiven Aufgaben durchgeführt werden?
-	\item Option 1: Alles auf Clients, Server nur für Kommunikation innerhalb der Clients benötigt, z.B. mittles PushFork\footnote{\url{http://pushfork.com/}}
-	\item Option 2: Alles auf Server, Clients nur als Anzeige benötigt
-	\item Option 3: Statische Aufteilung der Aufgaben von Server und Client
-	\item Option 4: Dynamische Aufteilung der Aufgaben von Server und Client über Code-on-demand~\cite{Fielding.2000}
-\end{itemize}
-
+\pagebreak
 \section{Umsetzung}\label{umsetzung}
 
-Nachdem die Konzeption abschlossen ist, folgt nun eine Beschreibung der Konzeptumsetzung. Der Inhalt folgt dabei chronologisch nach Zeitpunkt der Umsetzung. Die Android-Portierung war die Basis aller Erweiterungen, um einen entstehenden Mehraufwand in der Implementierung von Erweiterungen zu verhindern.
+Nachdem die Konzeption abschlossen ist, folgt nun eine Beschreibung der Konzeptumsetzung. Der Inhalt folgt dabei chronologisch dem Zeitpunkt der Umsetzung. Die Android-Portierung war die Basis aller Erweiterungen, um einen entstehenden Mehraufwand in der Implementierung zu verhindern.
 
 \subsection{Android-Portierung}
 
-Der erste Schritt besteht daraus, die im Knoten-Interface eingesetzten Methoden und Bibliotheken auf Android-Ersatz zu prüfen. Soweit möglich werden verwendete Funktionalitäten mit Android-Mitteln abgedeckt. Falls nötig werden Android-kompatible Bibliotheken gesucht.
+Der erste Schritt besteht daraus, die im Knoten-Interface eingesetzten Methoden und Bibliotheken auf Android-Ersatz zu prüfen. Soweit möglich wurden verwendete Funktionalitäten mit Android-Mitteln abgedeckt. Falls nötig wurden Android-kompatible Bibliotheken gesucht.
 
 Das Interface für Knoten-Spieler besteht aus
 
@@ -470,19 +436,17 @@ Das jQuery- und das Maps-Skript sind Drittanbieter-Bibliotheken.
 
 Google Maps wird zur Darstellung von Karte und Karten-Symbolen verwendet. Maps ist als Bibliothek auf Android verfügbar, die API ist hier sehr ähnlich der Javascript-Version.
 
-jQuery wird vom Spiel-Skript für unterschiedliche Aspekte genutzt. Einerseits wird die Bibliothek genutzt, um UI-Elemente zu manipulieren. Android hat hier eine andere Vorgehensweise, weshalb für UI-Manipulationen Android-Äquivalenzen genutzt werden.
+jQuery wird vom Spiel-Skript für unterschiedliche Aspekte genutzt. Einerseits wird die Bibliothek eingesetzt, um UI-Elemente zu manipulieren. Android hat hier eine andere Vorgehensweise, weshalb für UI-Manipulationen Android-Äquivalenzen verwendet wurden. Andererseits werden über jQuery AJAX-Anfragen abgesetzt. Hierfür bietet Android keinen gleichwertigen Ersatz, weshalb die Bibliothek \textit{Spring for Android}\footnote{\url{http://www.springsource.org/spring-android}} verwendet wurde. Die Kommunikation zwischen Client und Server erfolgt im JSON-Format. Da JSON eine Javascript-Objektnotation ist, kann es direkt aus Javascript heraus verwendet werden. Auf Android-Seite muss zwischen JSON-Objekten und Java-Objekten eine Umwandlung erfolgen. Hierfür wurde \textit{Google Gson}\footnote{\url{https://code.google.com/p/google-gson/}} genutzt.
 
-Andererseits werden über jQuery AJAX-Anfragen abgesetzt. Hierfür bietet Android keinen gleichwertigen Ersatz, weshalb die Bibliothek \textit{Spring for Android}\footnote{\url{http://www.springsource.org/spring-android}} verwendet wird. Die Kommunikation zwischen Client und Server erfolgt im JSON-Format. Da JSON eine Javascript-Objektnotation ist, kann es direkt aus Javascript heraus verwendet werden. Auf Android-Seite muss zwischen JSON-Objekten und Java-Objekten eine Umwandlung erfolgen. Hierfür wird \textit{Google Gson}\footnote{\url{https://code.google.com/p/google-gson/}} verwendet.
-
-Außerdem bietet jQuery verschiedene Helfer-Funktionen an, von denen die Funktion \textit{each} im Spiel-Skript verwendet. Diese Funktion lässt sich leicht mit Java-Mitteln nachbilden.
+Außerdem bietet jQuery verschiedene Helfer-Funktionen an, von denen die Funktion \textit{each} im Spiel-Skript verwendet wird. Diese Funktion lässt sich leicht mit Java-Mitteln nachbilden.
 
 Das Spiel-Skript baut mit Hilfe von Sencha Touch die UI auf. Diese Funktionalität wird vollständig von Android-Bordmitteln bereitgestellt.
 
 \subsubsection{Code-Portierung}
 
-Um den Code aus dem Hauptskript des Knoten-Interface für die Android-Plattform kompatibel zu machen, musste er von Javascript nach Java portiert werden. Im Vorgängerprojekt wurde bereits Erfahrung mit der Portierung von PHP-Servercode auf Java-Servercode gesammelt.~\cite{Dehne.26.April2013} Javascript und PHP sind Skriptsprachen, Java ist eine statische Sprache. Javascript besitzt einige PHP-ähnliche Eigenschaften, weshalb bei der Portierung auf bereits bestehende Erfahrungswerte zurückgegriffen werden kann.
+Um den Code aus dem Hauptskript des Knoten-Interface für die Android-Plattform kompatibel zu machen, musste er von Javascript nach Java portiert werden. Im Vorgängerprojekt wurde bereits Erfahrung mit der Portierung von PHP-Servercode auf Java-Servercode gesammelt.~\cite{Dehne.26.April2013} Javascript und PHP sind Skriptsprachen, Java ist eine statische Sprache. Javascript besitzt einige PHP-ähnliche Eigenschaften, weshalb bei der Portierung auf bereits bestehende Erfahrungswerte zurückgegriffen werden konnte.
 
-So muss Code - im Gegensatz zu Java - nicht in Strukturen wie Klassen existieren, sondern lediglich in einer Datei notiert sein. In PHP und Javascript sind keine Namespace-Konzepte erforderlich, für Java-Code werden Namespace-Deklarationen nachdrücklich empfohlen. In der Praxis findet sich keine Java-Bibliothek ohne Namespaces, was bei PHP und Javascript durchaus der Fall ist.
+So muss Code in Javascript und PHP - im Gegensatz zu Java - nicht in Strukturen wie Klassen existieren, sondern lediglich in einer Datei notiert sein. In PHP und Javascript sind keine Namespace-Konzepte erforderlich, für Java-Code werden Namespace-Deklarationen nachdrücklich empfohlen. In der Praxis findet sich keine Java-Bibliothek ohne Namespaces. Dem gegenüber sind fehlende Namespaces bei PHP und Javascript durchaus üblich.
 
 Bei Java sind alle Funktionen mit einem Rückgabetyp und einem Funktionsnamen definiert und können um Optionen zur Sichtbarkeit erweitert werden. Javascript und PHP erfordern das Schlüsselwort \textit{function} und einen Funktionsnamen, bei Javascript werden aber keine Sichtbarkeiten oder Rückgabetypen definiert. Die Sichtbarkeit einer Funktionen ergibt sich hier aus der Sichtbarkeit der Variable, in der die Funktion gehalten wird.
 
@@ -500,23 +464,23 @@ Zusammenfassend müssen also bei der Portierung die folgenden Aspekte beachtet we
 	\item Frameworkumgang
 \end{itemize}
 
-Im folgenden wird grob auf das Vorgehen bei der Übertragung des Codes eingegangen. Dabei wurden verschiedene Ideen aus Industrie-Standard-Werken als grobe Orientierung verwendet.~\cite{Feathers.2009,Fowler.2010}
+Im Folgenden wird grob auf das Vorgehen bei der Übertragung des Codes eingegangen. Dabei wurden verschiedene Ideen aus Industrie-Standard-Werken als Orientierung verwendet.~\cite{Feathers.2009,Fowler.2010}
 
-Zuerst wurde eine Java-Klasse \textit{FunctionsMobile} erstellt, die den gleichen Namen wie das Haupt-Skript trägt. Anschließend wurden die Funktionen korrigiert, indem aus \textit{function} in Javascript \textit{private void} in Java gemacht wurde. Dieser Schritt lies sich durch die Suchen-und-Ersetzen-Funktion von Eclipse automatisieren.
+Zuerst wurde eine Java-Klasse \textit{FunctionsMobile} erstellt, die den gleichen Namen wie das Hauptskript trägt. Anschließend wurden die Funktionen korrigiert, indem aus \textit{function} in Javascript \textit{private void} in Java gemacht wurde. Dieser Schritt lies sich durch die Suchen-und-Ersetzen-Funktion von Eclipse automatisieren.
 
-Um Javas Typenanforderungen gerecht zu werden, wurden alle Variablendeklarationen und das erste Auftreten einer Variable mit der Klasse \textit{Object} versehen. Hierbei eignete sich \textit{Object}, da es die Oberklasse aller Java-Objekte ist und somit den gemeinsamen Obertyp aller aller Java-Objekte darstellt. Soweit benötigt wurden die Deklarationen später verfeinert.
+Um Javas Typenanforderungen gerecht zu werden, wurden alle Variablendeklarationen und das erste Auftreten einer Variable mit der Klasse \textit{Object} versehen. Hierbei eignete sich \textit{Object}, da es die Oberklasse aller Java-Objekte ist und somit den gemeinsamen Obertyp aller Java-Objekte darstellt. Wenn nötig wurden die Deklarationen später verfeinert.
 
-Für Funktionen, die vom Browser oder von Frameworks bereitgestellt wurden, mussten Wrapperklassen und -funktionen eingeführt werden. Dies betraf vor allem Funktionen aus dem jQuery-Framework sowie die UI-Elemente.
+Für Funktionen, die vom Browser oder von Frameworks bereitgestellt wurden, mussten Wrapperklassen und -funktionen eingeführt werden. Dies betraf vor allem Funktionen aus dem jQuery-Framework sowie UI-Elemente.
 
-Anschließend konnten die vom Java-Compiler bemängelt Stellen Stück für Stück korrigiert werden. Hierbei wurden häufig Wrapper-Klassen und Code-Stubs erstellt, um Javascript-Objekte und deren Funktion nachzubilden.
+Anschließend konnten die vom Java-Compiler bemängelten Stellen Stück für Stück korrigiert werden. Hierbei wurden häufig Wrapperklassen und Code-Stubs erstellt, um Javascript-Objekte und deren Funktion nachzubilden.
 
-Nachdem das Haupt-Skript vollständig syntaktisch portiert wurden, konnten die während des Portierungsprozesses erstellten Wrapper und Stubs implementiert werden. Hier wurden Adapter für die ausgetauschten Bibliotheken erstellt.
+Nachdem das Hauptskript vollständig syntaktisch portiert wurde, konnten die während des Portierungsprozesses erstellten Wrapper und Stubs implementiert werden. Hier wurden Adapter für die ausgetauschten Bibliotheken eingesetzt.
 
 Um zu verhindern, dass bei der Portierung syntaktische Fehler in den bei der Kommunikation mit dem Server übertragenen Daten entstehen, wurden alle für die Android-App relevanten Server-Daten in einer Testschnittstelle mit vordefinierten Daten präpariert und deren Empfang auf Android durch Tests überprüft.
 
 \subsubsection{UI-Portierung}
 
-Die UI wird auf Android XML-basiert definiert, während hier auf Javascript-Seite Javascript-Code und das Sencha-Touch-Framework verwendet sind. Das aus dem Javascript-Code generierte HTML wurde mit Google Chrome untersucht und anschließend konzeptionell verwendet, um die UI mit Android nachzubilden. Das Ergebnis der Portierung ist in den Abbildung~\ref{fig:browser-login} und~\ref{fig:android-login} dargestellt.
+Die UI wird auf Android XML-basiert definiert, während im Javascript-Code das Sencha-Touch-Framework verwendet sind. Das aus dem Javascript-Code generierte HTML wurde mit Google Chrome untersucht und anschließend konzeptionell verwendet, um die UI mit Android nachzubilden. Das Ergebnis der Portierung ist in den Abbildung~\ref{fig:browser-login} und~\ref{fig:android-login} dargestellt.
 
 \begin{figure}[ht!]%
 	\centering
@@ -535,23 +499,22 @@ Die UI wird auf Android XML-basiert definiert, während hier auf Javascript-Seite
 
 Eine Schwierigkeit in der Portierung ergab sich aus den unterschiedlichen UI-Architekturen der Plattformen. In Javascript ist das Konzept des UI-Thread unbekannt, UI-Elemente können somit beliebig verändert werden. Android hat einen UI-Thread, auf dem alle Manipulationen von UI-Elementen durchgeführt werden müssen.
 
-Deshalb stellt Android verschiedene Funktionen zur Verfügung, um die Ausführung von Code auf dem UI-Thread zu erzwingen. Es ist allerdings nicht möglich, den gesamten Code auf dem UI-Thread auszuführen, da langanhaltende Operationen die Reaktionsfähigkeit der Oberfläche verhindern könnten\footnote{\url{http://developer.android.com/guide/components/processes-and-threads.html}}\footnote{\url{http://developer.android.com/training/articles/perf-anr.html}}. So ist es nicht erlaubt, einen Netzwerkzugriff auf dem UI-Thread durchzuführen. Um die Manipulation der UI-Elemente zu ermöglichen, wurden die UI-Wrapper-Klassen angepasst. Sie ermöglichten damit transparenten Zugriff auf die UI-Elemente und abstrahierten das UI-Thread-Konzept, sodass der portierte Code keiner weiteren Anpassung bedurfte.
+Deshalb stellt Android verschiedene Funktionen zur Verfügung, um die Ausführung von Code auf dem UI-Thread zu erzwingen. Es ist allerdings nicht möglich, den gesamten Code auf dem UI-Thread auszuführen, da langanhaltende Operationen die Reaktionsfähigkeit der Oberfläche verhindern könnten\footnote{\url{http://developer.android.com/guide/components/processes-and-threads.html}}\footnote{\url{http://developer.android.com/training/articles/perf-anr.html}}. So ist es nicht erlaubt, einen Netzwerkzugriff auf dem UI-Thread durchzuführen. Um die Manipulation der UI-Elemente zu ermöglichen, wurden die UI-Wrapperklassen angepasst. Sie ermöglichten damit transparenten Zugriff auf die UI-Elemente und abstrahierten das UI-Thread-Konzept, sodass der portierte Code keiner weiteren Anpassung bedurfte.
 
 \subsection{Selbstkonfiguration}
 
 \subsubsection{DNS}
 
-Für die Umsetzung von Dynamic DNS wurde basierend auf zwei obligatorischen und einem optionalen Kriterium ein Anbieter gesucht. Zum einen musste die Nutzung des Dienstes kostenlos sein. Zum anderen sollte die Oberfläche zum Einstellen der IP dynamisch sein. Optional war, dass der generierte Domain-Name gut lesbar ist.
-
-Ein Anbieter, der alle drei Kriterien erfüllt, ist DNSdynamic.org\footnote{\url{https://www.dnsdynamic.org/}}. Die reservierte URL lautet \texttt{routeme.dnsdynamic.com}.
+Für die Umsetzung von Dynamic DNS wurde basierend auf zwei obligatorischen und einem optionalen Kriterium ein Anbieter gesucht. Zum einen musste die Nutzung des Dienstes kostenlos sein. Zum anderen sollte die Oberfläche zum Einstellen der IP dynamisch sein. Optional war, dass der generierte Domain-Name gut lesbar ist. Ein Anbieter, der alle drei Kriterien erfüllt, ist DNSdynamic.org\footnote{\url{https://www.dnsdynamic.org/}}. Die reservierte URL lautet \texttt{routeme.dnsdynamic.com}.
 
 \subsubsection{WiFi-Modul}
 
-Android-Apps können WLAN-Verbindungen suchen und aufbauen. Dazu benötigen sie die Rechte \texttt{CHANGE\_WIFI\_STATE} und \texttt{ACCESS\_WIFI\_STATE}. Im Rahmen dieser Arbeit entstand ein Modul, das zu einem Tupel aus SSID und Passwort eine Verbindung aufbaut. Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde dabei auf eine hohe Entkopplung geachtet.
+Android-Apps können WLAN-Verbindungen suchen und aufbauen. Im Rahmen dieser Arbeit entstand ein Modul, das zu einem Tupel aus SSID und Passwort eine Verbindung aufbaut. Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde dabei auf eine hohe Entkopplung geachtet.
 
 \subsubsection{QR-Code}
 
-Da für QR-Codes bereits viele Lese-Apps existieren, wurde auf die Entwicklung einer eigenen Lese-Komponente verzichtet. Stattdessen wurde die Android-App so aufgebaut, dass sie durch den Aufruf einer URL gestartet wird. Nach der Installation ist die App auf die URL \texttt{routeme://android?ssid=WLANSSID\&password=WLANPASSWORD} registriert. \texttt{WLANSSID} muss hierbei durch die SSID des WLAN ersetzt werden, \texttt{WLANPASSWORD} durch das WLAN-Passwort. Der der URL zugehörige QR-Code ist in Abbildung~\ref{fig:qr-code} dargestellt.
+Da für QR-Codes bereits viele Lese-Apps existieren, wurde auf die Entwicklung einer eigenen Lese-Komponente verzichtet. Stattdessen wurde die Android-App so aufgebaut, dass sie durch den Aufruf einer URL gestartet wird. Nach der Installation ist die App auf die URL\linebreak
+\texttt{routeme://android?ssid=WLANSSID\&password=WLANPASSWORD} registriert. \texttt{WLANSSID} muss hierbei durch die SSID des WLAN ersetzt werden, \texttt{WLANPASSWORD} durch das WLAN-Passwort. Der der URL zugehörige QR-Code ist in Abbildung~\ref{fig:qr-code} dargestellt.
 
 \begin{figure}
 	\centering
@@ -561,6 +524,14 @@ Da für QR-Codes bereits viele Lese-Apps existieren, wurde auf die Entwicklung ei
 \end{figure}
 
 Die Erstellung kompatibler QR-Codes ist nicht in das Spiel integriert. Stattdessen wird an dieser Stelle auf geeignete Dienste wie QRCode-Generator.de\footnote{\url{http://www.qrcode-generator.de/}} verwiesen, mit dem auch der abgebildete QR-Code erstellt wurde.
+
+%\begin{itemize}
+%	\item Nutze Möglichkeit, Android-Apps per URL zu starten
+%	\item Parameterübergabe für WLAN-SSID und WLAN-Schlüssel über URL-Parameter
+%	\item Nachteil: Kein Aufruf von URLs ohne Netzwerkverbindung. Nicht klar, warum dem so ist
+%	\item Workarounds: QR-Reader aus App heraus starten. Nachteil: Abhängigkeit von bestimmter QR-App, die installiert sein muss
+%	\item Alternative: Bild selbst untersuchen. Hoher Eigenaufwand
+%\end{itemize}
 
 \subsection{Pervasive Gesten}
 
@@ -579,11 +550,18 @@ Die Erkennung der Schüttel-Geste wird dem Spieler durch haptisches Feedback in F
 
 \subsection{Interaktive Karte}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=7.5cm]{pics/screenshots/android-app-game-2.png}
+	\caption{Implementierung der Interaktiven Karte}
+	\label{fig:interaktive-karte}
+\end{figure}
+
 Das in der Android-App eingesetzt Karten-Fragment hat Methoden, um die Geo-Position, einen Dreh- und einen Neigungswinkel einzustellen. Der Drehwinkel liegt hierbei zwischen 0° und 360°, wobei 0° eine Ausrichtung nach Norden bedeutet und der Winkel im Uhrzeigersinn vergrößert wird. Der Neigungswinkel liegt zwischen 0° und 67.5°, wobei 0° für Vogelperspektive steht.
 
 Android abstrahiert die für diese Werte notwendigen Sensoren. Das Ergebnis ist eine gesammelte Übersicht von Sensordaten, die unter anderem den Dreh- und Neigungswinkel des Smartphones angeben und ohne erweiterte Umformung für die Manipulation des Karten-Fragmentes geeignet sind.
 
-Auf Basis dieser Sensoren wurde ein Modul entwickelt, das die Karten-Darstellung mit der Ausrichtung und der Position des Smartphones synchronisiert. Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde bei der Entwicklung des Modules auf eine hohe Entkopplung geachtet.
+Auf Basis dieser Sensoren wurde ein Modul entwickelt, das die Karten-Darstellung mit der Ausrichtung und der Position des Smartphones synchronisiert. Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde bei der Entwicklung des Modules auf eine hohe Entkopplung geachtet. Eine Darstellung der Implementierung ist in Abbildung~\ref{fig:interaktive-karte} zu sehen.
 
 \subsection{Netzwerk-Visualisierung}
 
@@ -621,237 +599,387 @@ Zuletzt war die dritte Option, dass die Zeitstempel aus Option zwei durch ein Fe
 
 Von den vorgestellten Optionen eignete sich die dritte für eine Implementierung. Die erste Option hätte zwei Kommunikationen zwischen sendendem Knoten und Server benötigt, die zweite wäre mit den hohen Hürden der Zeitstempelsynchronisation unnötig komplex geworden. Mit der dritten Option kann der Zeitstempel innerhalb des Servers bleiben, sodass keine Synchronisation mit den Knoten erforderlich ist.
 
+Neben der Anpassung der Android-App wurden auch die künstlichen Mitspieler angepasst, sodass sie in regelmäßigen Abständen HELLO-Nachrichten aussenden.
+
 \paragraph{Spielerische Entscheidungen} Für das Senden einer HELLO-Nachricht hat sich ein konstanter Malus von fünf Batterie-Punkten als günstig erwiesen. Die Punkte für Nachbarverbindungen bleiben gleich, werden allerdings nur vergeben, wenn ein Nachbar durch den Empfang einer HELLO-Nachricht ermittelt wurde.
 
 Unter kompetitiven Gesichtspunkten mag erst im ersten Moment günstig erscheinen, selbst keine HELLO-Nachrichten zu senden, da der Empfang einer gesendeten HELLO-Nachricht dem Empfänger Punkte für gefundene Nachbarverbindungen gibt. Allerdings Erlangen Knoten, die keine HELLO-Nachrichten aussenden, auch keine Pakete, mit deren Routing sie sich Punkte verdienen.
 
+\pagebreak
 \section{Evaluation}\label{evaluation}
 
-\begin{itemize}
-	\item Art der Routen-Ziehung verhindert Server-Eingreifen und Server-Unterstützung
-\end{itemize}
+Für RouteMe existiert bereits ein Evaluationskonzept, das sehr umfangreich ist.~\cite{JulianDehne.201204.03.2013E} Aus Zeitgründen war eine Evaluation des Lernerfolges allerdings nicht möglich. Deshalb folgt eine funktionale Evaluation, in die einzelnen Bestandteile geprüft werden.
 
-\begin{itemize}
-	\item Nutze Möglichkeit, Android-Apps per URL zu starten
-	\item Parameterübergabe für WLAN-SSID und WLAN-Schlüssel über URL-Parameter
-	\item Nachteil: Kein Aufruf von URLs ohne Netzwerkverbindung. Nicht klar, warum dem so ist
-	\item Workarounds: QR-Reader aus App heraus starten. Nachteil: Abhängigkeit von bestimmter QR-App, die installiert sein muss
-	\item Alternative: Bild selbst untersuchen. Hoher Eigenaufwand
-	\item QR-Code wird bei Spielerstellung generiert. PDF mit QR-Code und kodierten Daten wird erstellt
-\end{itemize}
+\subsection{Android-Portierung}
 
-\begin{itemize}
-	\item QR-Code-Starten gestestet
-	\item Start über beliebige externe App
-	\item Überraschenderweise benötigen QR-Reader eine Netzwerk-Verbindung, um eine URL zu öffnen, auch wenn die URL nur einen Start der App auf dem Smartphone bewirkt. 
-Auf den Test-Smartphones des Lehrstuhles ist keine SIM-Karte eingelegt, somit ist keine Verbindung über 2G / 3G / 4G möglich. Bei einem Smartphone, bei dem WLAN unkonfiguriert ist, ist außerdem keine Netzwerkverbindung vorhanden. Dieses Verhalten verhindert, dass die App gestartet werden kann. Eine Idee der App war, dass beim Start über einen QR-Code das Smartphone sich mit dem im QR-Code kodierte WLAN verbindet.
-\end{itemize}
+Da es sich bei der Android-App um eine portierte Version der Browser-App handelt, soll zunächst sichergestellt sein, dass alle Funktionen aus der Browser-App auch in der Android-App funktionieren. Die zu testenden Funktionen sind hierbei der Login, das Übermitteln der aktuellen Position, das Einsammeln von Gegenständen und das Sehen von Nachbarn.
 
-\begin{itemize}
-	\item Evaluation in großem Stil -> Julians Arbeit~\cite{JulianDehne.201204.03.2013E}
-	\item Aus Zeitgründen war eine Evaluation des Lernerfolges nicht möglich
-	\item Deshalb: Funktionale Evaluation
-\end{itemize}
-
-Szenario: Ping versenden
-
+\paragraph{Login} (ok)
 \begin{enumerate}
-	\item Spiel starten
-	\item 
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-eins-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-App
 \end{enumerate}
 
-Szenario: Ping empfangen
+\paragraph{Positionsübermittlung} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-eins-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-App
+	\item (ok) Starten des Spieles
+	\item (ok) Automatische Übertragung der Position
+\end{enumerate}
 
-Szenario: Gegenstand einsammeln
+\paragraph{Aufsammeln eines Gegenstandes}\label{evaluation-aufsammeln} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-eins-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-App
+	\item (ok) Starten des Spieles
+	\item (ok) Aufsammeln eines Gegenstandes
+\end{enumerate}
 
-Szenario: Nachricht versenden
+\paragraph{Nachbarsichtung} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-eins-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-App
+	\item (ok) Starten des Spieles
+	\item (ok) Automatisches Sichten eines Nachbarn
+\end{enumerate}
 
-\subsection{Codestruktur}
+\subsection{Selbstkonfiguration}
 
-\begin{itemize}
-	\item Einsatz von ReSharper 101
-	\item ReSharper-Metrik "`Fat"' und "`Tangled"'
-\end{itemize}
+Die Selbstkonfiguration soll den Spielaufbau erleichtern. Zu testende Funktionen sind das Setzen der Server-IP-Adresse, das Starten der Android-App durch Lesen eines QR-Codes und die automatische Verbindung mit einem WLAN.
 
-\section{Fazit}\label{fazit}
+\paragraph{Setzen der Server-IP-Adresse} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Überprüfen der IP mittels Ping
+\end{enumerate}
 
-\begin{itemize}
-	\item QR-Code-Lesen aus App heraus, z.B. über ZXing\footnote{\url{https://code.google.com/p/zxing/}}
-	\item Portierung der bisherigen Kommunikation nach REST
-	\item Portierung der Datenbank und Datenbankabfragen auf Event-getriebene Struktur
-\end{itemize}
+\paragraph{Lesen eines QR-Codes} (fehlgeschlagen)
+\begin{enumerate}
+	\item (ok) Erstellen eines QR-Codes
+	\item (ok) Starten der QR-Reader-App
+	\item (ok) Lesen des QR-Codes
+	\item (fehlgeschlagen) Automatisches Starten der Android-App
+\end{enumerate}
+Die QR-Reader-App zeigt die Fehlermeldung "`Die angeforderte Aktion kann nicht ausgeführt werden, weil sie eine Internetverbindung erfordert"' an. Der Grund für den Fehler ist eine fehlende Netzwerkverbindung. In den folgenden Testfällen wird das Smartphone mit bestehender GPRS-Verbindung verwendet.
 
-\begin{itemize}
-	\item Spielerische Aspekte stärken
-	\item Ausscheiden von Knoten: AODV definiert Reboot-Verfahren
-	\item Audio einbinden: Bei Ping senden / Ping empfangen
-	\item Vibration einsetzen: Bei Ping empfangen
-	\item Ablauf eines Pings verdeutlichen
-\end{itemize}
+\paragraph{WLAN-Verbindung} (eingeschränkt)
+\begin{enumerate}
+	\item (ok) Erstellen eines QR-Codes
+	\item (ok) Starten der QR-Reader-App
+	\item (ok) Lesen des QR-Codes
+	\item (eingeschränkt) Automatisches Starten der Android-App
+	\item (ok) Automatisches Verbinden mit WLAN
+\end{enumerate}
 
-\begin{itemize}
-	\item Audio-Feedback für Ping aussenden / empfangen
-	\item Vibrations-Feedback für Ping empfangen
-	\item Pervasive Karte
-	\item Items an Horizont
-\end{itemize}
+\subsection{Pervasive Gesten}
 
-\begin{itemize}
-	\item App benötigt noch viele Anpassungen
-	\item Weitere Level
-	\item Anzeige, wann Ping ausläuft
-	\item Stärkere Annäherung an Android best practices
-	\item Aufteilung in Async Tasks
-	\item Stärkere Entkopplung von Komponenten, um Wiederverwendbarkeit in anderen Android-Applikationen zu ermöglichen
-\end{itemize}
+Zu den pervasiven Gesten gehören das Schütteln des Smartphones zum Aufsammeln von Gegenständen sowie das Berühren der Karte zum Aussenden einer HELLO-Nachricht, was durch eine Welle visualisiert wird. Dabei ist zu beachten, dass der HELLO-Versand nur in Level-zwei-Spielen möglich ist.
 
-\begin{itemize}
-	\item QR-Code-Generierung in Admin-Frontend einbauen
-	\item Abhängigkeit von externem QR-Reader lösen
-	\item Abhängigkeit von Netzwerk lösen, WLAN-Funktionalität sonst witzlos
-\end{itemize}
+\paragraph{Schüttel-Erkennung} (ok) Diese Funktion wurde bereits in Abschnitt~\ref{evaluation-aufsammeln} getestet.
 
-\begin{itemize}
-	\item Indoor-Routen ein- und ausanimieren
-	\item UI-Anpassungen im Indoor
-\end{itemize}
+\paragraph{HELLO-Versand} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-zwei-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-App
+	\item (ok) Starten des Spieles
+	\item (ok) Tippen auf Karte
+	\item (ok) Automatisches Ausbreiten der Welle
+\end{enumerate}
 
-\section{Ignore Me}
+\subsection{Interaktive Karte}
 
-\subsection{Verfügbare Hard- und Software}
+Die interaktive Karte soll sich entsprechend der Lage und der Bewegung des Smartphones anpassen. Dabei ist zu testen, ob die Drehung, die Neigung und Positionsaktualisierung funktionieren.
 
-Zur Entwicklungszeit stand ein \textit{Galaxy Nexus I9250XXLH1} Smartphone mit Android 4.2.1 zur Verfügung. Der Lehrstuhl \textit{Komplexe Multimediale Anwendungsarchitekturen}\footnote{\url{http://apache.cs.uni-potsdam.de/de/profs/ifi/mm}} der Universität Potsdam besitzt mehrere dieser Smartphones, die zum Spielen an die Spiel-Teilnehmer verliehen werden. Zudem steht ein \textit{Motorola Xoom 2} Tablet\footnote{TODO: Android-Version herausfinden} zur Verfügung, um auch Tablet-spezifische Eigenschaften testen zu können.
+\paragraph{Drehende Karte} (ok)
+\begin{enumerate}
+	\item (ok) Starten der Android-App
+	\item (ok) Drehen des Smartphones
+	\item (ok) Automatisches Drehen der Karte
+\end{enumerate}
 
-Zur Weiterentwicklung der Software standen ein Laptop\footnote{TODO: Specs ermitteln} und ein Desktop-PC\footnote{TODO: Specs ermitteln} zur Verfügung.
+\paragraph{Neigende Karte} (ok)
+\begin{enumerate}
+	\item (ok) Starten der Android-App
+	\item (ok) Neigen des Smartphones
+	\item (ok) Automatisches Neigen der Karte
+\end{enumerate}
 
-\begin{itemize}
-	\item Lehrstuhl-Smartphones
-	\item Lehrstuhl-Tablets
-	\item Entwickler-PC
-	\item Entwickler-Laptop
-	\item WLAN-Router
-\end{itemize}
+\paragraph{Positionsaktualisierende Karte} (ok)
+\begin{enumerate}
+	\item (ok) Starten der Android-App
+	\item (ok) Automatisches Aktualisieren der Position auf der Karte
+\end{enumerate}
 
-\begin{itemize}
-	\item Web-Applikation
-	\item Backend auf Java-Basis
-	\item Frontend auf HTML/CSS/JS-Basis
-	\item GWT-Framework
-	\item Relationale InMemory-Datenbank H2
-\end{itemize}
+\subsection{Netzwerk-Visualisierung}
 
-\subsection{Existierendes Spiel aus technischer Sicht}
+Die Verbindungen zwischen Knoten sollen in der Indoor-Sicht sichtbar sein. Dazu müssen Verbindungslinien angezeigt werden.
 
-\begin{itemize}
-	\item Spielbereich in Vorgängerarbeit~\cite{Dehne.26.April2013} festgelegt. Basis für Entscheidung war Kompromiss aus Geolocation-Genauigkeit und WLAN-Verfügbarkeit.
-\end{itemize}
+\paragraph{Anzeige von Verbindungslinien} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-eins-Spieles
+	\item (ok) Starten der Indoor-Sicht
+	\item (ok) Starten der KI
+	\item (ok) Login auf Indoor-Sicht
+	\item (ok) Starten des Spieles
+	\item (ok) Automatisches Anzeigen von Verbindungslinien
+\end{enumerate}
 
-\begin{itemize}
-	\item hält sich nicht ganz an AODV
-	\item RREQ / RREP / Routenaufbau nicht nach Standard -> kein RREP zurückgesendet
-	\item Automatisches Neighbour Find in einfachstem Schwierigkeitsgrad stellt Verknüpfungen zu Nachbarn her (RERR bei verlust des Nachbarn) -> nicht standardkonform
-\end{itemize}
+\subsection{AODV Level 2}
 
-\subsection{Schwierigkeiten beim Spielen}
+Die Implementierung eines zweiten Level machen sich sowohl in der Indoor- als auch in der Knoten-Sicht bemerkbar. Deshalb müssen die spezifischen Eigenschaften beider Sichten getrennt getestet werden. In der Indoor-Sicht ist der Versand von Nachrichten zu testen. In der Knoten-Sicht sind der Versand und Empfang von HELLO-Nachrichten zu prüfen.
 
-\begin{itemize}
-	\item Übersichtlichkeit in Indoor-UI mangelhaft
-	\item Verbindungen zwischen Knoten / aktuelles Netzwerk nur mit Erfahrung oder Zeit zu erkennen
-	\item Spiel-Geschwindigkeit und Spieler-Geschwindigkeit passen nicht zusammen -> Routing-Vorgänge fühlen sich langsam an, Spieler bewegen zu schnell, um Routen, die mehr als drei Knoten beinhalten, zu nutzen
-\end{itemize}
+\paragraph{Versand von Nachrichten} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-zwei-Spieles
+	\item (ok) Starten der Indoor-Sicht
+	\item (ok) Starten der KI
+	\item (ok) Login auf Indoor-Sicht
+	\item (ok) Starten des Spieles
+	\item (ok) Auswählen einer Route
+	\item (ok) Automatisches Transportieren der Nachricht
+\end{enumerate}
 
-\begin{itemize}
-	\item server ausgelastet
-	\item lange, ständig wechselnde ip-basierte addressen
-	\item IP muss immer auf jedem einzelnen Client geändert werden
-	\item Sehr ähnliche IPs -> automatische vervollständigung des Browsers unnütz, da nicht alle passenden IPs angezeigt
-	\item Spielfeld rechteckig entlang längen- und breitengrade, aber nicht drehbar oder in Form änderbar
-\end{itemize}
+\paragraph{Versand von HELLO-Nachrichten} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-zwei-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-App
+	\item (ok) Starten des Spieles
+	\item (ok) Tippen auf Karte
+	\item (ok) Automatisches Reduzieren des Akku-Standes
+\end{enumerate}
 
-\subsection{Android-Grundlagen}
+\paragraph{Empfang von HELLO-Nachrichten} (ok)
+\begin{enumerate}
+	\item (ok) Setzen der Server-IP-Adresse
+	\item (ok) Starten des Servers
+	\item (ok) Erstellen eines Level-zwei-Spieles
+	\item (ok) Starten der Android-App
+	\item (ok) Starten der KI
+	\item (ok) Login auf Android-APP
+	\item (ok) Starten des Spieles
+	\item (ok) Automatisches Empfangen von HELLO-Nachrichten
+\end{enumerate}
 
-\subsubsection{Programmiermodell}
+\pagebreak
+\section{Zusammenfassung und Ausblick}\label{fazit}
 
-\begin{itemize}
-	\item Subject-Observer-Pattern
-	\item Besteht aus \texttt{Activity}s und \texttt{Service}s
-\end{itemize}
+Diese Arbeit hat sich mit der Weiterentwicklung unterschiedlicher Aspekte von \textit{RouteMe} befasst. Es ging sowohl um Lerninhalte, als auch um Spielelemente, Pervasivität und Zuverlässigkeit. Obwohl die Konzeption nahezu vollständig umgesetzt werden konnten, ergeben sich noch viele Anknüpfungspunkte.
 
-Exceptions, die nicht abgefangen werden, lassen die Applikation abstürzen.
+So fehlen ein drittes Level für AODV sowie die Implementierung weiterer Routing-Algorithmen. Hier bieten sich insbesondere solche Algorithmen an, die dem vorhandenen reaktiven kontrastreich gegenübergestellt werden können.~\cite{InternetEngineeringTaskForce.10.2003,InternetEngineeringTaskForce.23.03.2013}
 
-\subsubsection{Lebenszyklus}
+Außerdem war die Umsetzung nicht vollständig erfolgreich. Das Lesen von QR-Tags ist nur eingeschränkt brauchbar. Hier verspricht eine andere Herangehensweise mit in die App integrierter Erkennung, z.B. über das Framework ZXing\footnote{\url{https://code.google.com/p/zxing/}}, mehr Erfolg.
 
-HIER BILD AUS ANDROID-DOKU!
+Die Erstellung von QR-Codes muss derzeit über Drittplattformen durchgeführt werden. Für Java existieren bereits verschiedene Bibliotheken zur Generierung, durch Integration in die Admin-Sicht lassen sich hier weitere manuelle Schritte einsparen. So könnten die erforderlichen Zugangsdaten bereits bei der Erstellung des Spieles abgefragt werden. Anschließend würden dem Spielleiter ein Link zum generierten QR-Code sowie die Möglichkeit, den Code in einem PDF auszudrucken, angeboten.
 
-\subsubsection{Rechtemanagement}
+Die Methode, mit der derzeit die auswählbaren Routen in Level zwei ermittelt werden, basiert lediglich auf Zufall. Hier besteht für den Server eine sehr gute Möglichkeit, in das Spielgeschehen einzugreifen. So könnten mit steigender Punktzahl immer anspruchsvollere Routen ausgewählt werden. Ebenso könnten schwächere Spieler durch leichtere Routen unterstützt werden.
 
-Um Zugriff auf Hardware-Ressourcen oder sensible Informationen zu erlangen muss die Applikation vorher diese Rechte am System anmelden. Dies geschieht über das \texttt{ApplicationManifest}, in dem die benötigten Rechte eingetragen werden. Vor der Installation der Applikation bekommt der Benutzer eine Übersicht über die für die Applikation erforderlichen Rechte. Mit der Installation werden der Applikation die eingetragenen Rechte gewährt. Rechte werden immer vollständig gewährt. Es ist nicht möglich, Rechte im Nachhinein zu entziehen oder einzuschränken.
+Es bietet sich an, die gesamte Kommunikation zwischen dem Server und seinen Clients nach REST zu portieren. An der Portierung der App war bereits zu erkennen, wie sehr eine gute Schnittstelle zur Plattformunabhängigkeit beiträgt.
 
-Typische Rechte sind der Zugriff auf das Internet, Zugriff auf den GPS-Empfänger oder Zugriff auf die auf dem Smartphone gespeicherten Kontaktdaten.
+Die künstlichen Spieler sollten ausgebaut und um Intelligenzen erweitert werden. Denkbar ist ebenfalls eine Manipulation von Objekten der realen Welt durch die künstlichen Spieler. So könnten künstliche Intelligenzen Spielzeug-Drohnen steuern, um mangelnde Knoten-Spieler-Beteiligung auszugleichen. Künstliche Spieler für die Indoor-Sicht sind ebenfalls denkbar.
 
-\subsubsection{UI-Thread}
+Die spielerischen Aspekte sollten weiter gestärkt werden. So existiert bisher kein befriedigender Umgang mit Spielern, deren virtuelle Batterie vorzeitig entladen ist. Bisher können diese Spieler wiedereinsteigen, indem sie sich unter neuem Namen anmelden. In Computerspielen gibt es häufig ein Respawn-Modell, das Spielern einen geordneten Wiedereinstieg in das Spiel ermöglicht. AODV definiert sogar ein Reboot-Verfahren, über das zwischenzeitlich ausgefallene Knoten wieder in das Netzwerk integriert werden.~\cite{InternetEngineeringTaskForce.July2003}
 
-Wie viele andere Desktop-UIs setzt auch Android auf ein UI-Thread-Modell. Änderungen an GUI-Elementen dürfen nur auf dem UI-Thread durchgeführt werden. Versuche, Änderungen außerhalb des UI-Threads durchzuführen, werden mit Exceptions zurückgewiesen.
+Die Fähigkeiten der Smartphones sollten stärker genutzt werden. So gibt es bisher keinerlei Audio-Nutzung. Denkbar ist ein akustisches Feedback beim Versenden und Empfangen von HELLO-Nachrichten: Beim Empfang einer HELLO-Nachricht ertönt auf dem Smartphone ein Sonar-ähnlicher Ping. Das würde nicht nur die Aufmerksamkeit des Empfängers erregen, sondern auch dem Sender, der sich nahe dem Empfänger befinden muss, die Gewissheit geben, dass sein Handeln unmittelbare Auswirkungen auf seine Umwelt hat.
 
-Um Änderungen auf dem UI-Thread durchzuführen müssen Aufgabenblöcke, in Java \texttt{Runnable}s, explizit auf den UI-Thread geschoben werden.
+Die Fähigkeiten der Karte könnten erweitert werden. So würde das Suchen nach Gegenständen vielleicht weniger frustrierend sein, wenn am Rand des Spielbereiches angezeigt würde, in welche Richtung noch etwas zu finden ist.
 
-\subsubsection{Hintergrundoperationen}
+Die App sollte einer breiteren Öffentlichkeit zugänglich gemacht werden. Derzeit ist die App nur für Android 4 und höher ausgelegt. Mit vergleichsweise geringem Aufwand wären hier mehr Smartphones unterstützbar, sodass Studenten ihre eigenen Geräte mitbringen könnten und nicht auf fremde Smartphones angewiesen wären.
 
-Es gibt verschiedene Möglichkeiten, Operationen im Hintergrund laufen zu lassen:
+Die Knoten- und Indoor-Sicht können durch den Einsatz von Animationen ihren Spielcharakter stärker betonen. Visuelles Feedback wirkt belohnend und gibt Anreize auszuprobieren.
 
-\begin{itemize}
-	\item Android-AsyncTasks
-	\item Android-Services
-	\item Java-Threads
-\end{itemize}
+Zusammenfassend ist zu sagen, dass das Spiel RouteMe mit dieser Arbeit ein gutes Stück vorangekommen ist. Es bleiben aber noch viele Verbesserungsmöglichkeiten und offene Fragen, die in zukünftigen Projekten realisiert werden sollten.
 
-\paragraph{AsyncTasks} Hintergrundoperationen, die nur für eine sehr begrenzte Zeit laufen, können in einem \texttt{AsyncTask} durchgeführt werden. Aus Kompatibilitätsgründen wird pro Applikation und zu jedem Zeitpunkt standardmäßig immer nur ein \texttt{AsyncTask} ausgeführt. Ein \texttt{AsyncTask} muss vom UI-Thread gestartet werden. Android übernimmt die Bearbeitung im Hintergrund. Bei Beendigung der Bearbeitung wird eine Methode mit dem Ergebniss der Hintergrund-Aufgabe aufgerufen. Android stellt sicher, dass diese Methode im Kontext des UI-Threads läuft. Somit können UI-Manipulationen, die auf dem Ergebnis der Hintergrundoperation beruhen, ohne weiteren Aufwand durchgeführt werden.
+%\begin{itemize}
+%	\item QR-Code-Starten gestestet
+%	\item Start über beliebige externe App
+%	\item Überraschenderweise benötigen QR-Reader eine Netzwerk-Verbindung, um eine URL zu öffnen, auch wenn die URL nur einen Start der App auf dem Smartphone bewirkt. 
+%Auf den Test-Smartphones des Lehrstuhles ist keine SIM-Karte eingelegt, somit ist keine Verbindung über 2G / 3G / 4G möglich. Bei einem Smartphone, bei dem WLAN unkonfiguriert ist, ist außerdem keine Netzwerkverbindung vorhanden. Dieses Verhalten verhindert, dass die App gestartet werden kann. Eine Idee der App war, dass beim Start über einen QR-Code das Smartphone sich mit dem im QR-Code kodierte WLAN verbindet.
+%\end{itemize}
 
-\paragraph{Services} Lange Hintergrundoperationen, die unabhängig von der GUI laufen sollen, können in Services durchgeführt werden. Wie eine \texttt{Activity} hat auch ein \texttt{Service} einen eigenen Lebenszyklus. Die Bindung zwischen \texttt{Activity} und \texttt{Service} wird beim Erstellen des \texttt{Service} festgelegt. \texttt{Service} und \texttt{Activity} können unabhängig voneinander arbeiten und undabhängig voneinander Lebenszyklus-Phasen durchlaufen.
+%\begin{itemize}
+%	\item Portierung der Datenbank und Datenbankabfragen auf Event-getriebene Struktur
+%\end{itemize}
 
-\paragraph{Threads} Die aus der Java-Welt bekannten Threads sind auch in Android verfügbar. Sie bieten feingranulare Zugriffs- und Einstellungsmöglichkeiten für parallele Verarbeitung, bieten aber keine Unterstützung für die Manipulation des UI-Thread. Sie sind am besten als Zwischenstufe für die Portierung von Java-Code auf Android-Systeme geeignet.
+%\section{Ignore Me}
+%
+%\subsection{Verfügbare Hard- und Software}
+%
+%Zur Entwicklungszeit stand ein \textit{Galaxy Nexus I9250XXLH1} Smartphone mit Android 4.2.1 zur Verfügung. Der Lehrstuhl \textit{Komplexe Multimediale Anwendungsarchitekturen}\footnote{\url{http://apache.cs.uni-potsdam.de/de/profs/ifi/mm}} der Universität Potsdam besitzt mehrere dieser Smartphones, die zum Spielen an die Spiel-Teilnehmer verliehen werden. Zudem steht ein \textit{Motorola Xoom 2} Tablet\footnote{TODO: Android-Version herausfinden} zur Verfügung, um auch Tablet-spezifische Eigenschaften testen zu können.
+%
+%Zur Weiterentwicklung der Software standen ein Laptop\footnote{TODO: Specs ermitteln} und ein Desktop-PC\footnote{TODO: Specs ermitteln} zur Verfügung.
+%
+%\begin{itemize}
+%	\item Lehrstuhl-Smartphones
+%	\item Lehrstuhl-Tablets
+%	\item Entwickler-PC
+%	\item Entwickler-Laptop
+%	\item WLAN-Router
+%\end{itemize}
+%
+%\begin{itemize}
+%	\item Web-Applikation
+%	\item Backend auf Java-Basis
+%	\item Frontend auf HTML/CSS/JS-Basis
+%	\item GWT-Framework
+%	\item Relationale InMemory-Datenbank H2
+%\end{itemize}
+%
+%\subsection{Existierendes Spiel aus technischer Sicht}
+%
+%\begin{itemize}
+%	\item Spielbereich in Vorgängerarbeit~\cite{Dehne.26.April2013} festgelegt. Basis für Entscheidung war Kompromiss aus Geolocation-Genauigkeit und WLAN-Verfügbarkeit.
+%\end{itemize}
+%
+%\begin{itemize}
+%	\item hält sich nicht ganz an AODV
+%	\item RREQ / RREP / Routenaufbau nicht nach Standard -> kein RREP zurückgesendet
+%	\item Automatisches Neighbour Find in einfachstem Schwierigkeitsgrad stellt Verknüpfungen zu Nachbarn her (RERR bei verlust des Nachbarn) -> nicht standardkonform
+%\end{itemize}
+%
+%\subsection{Schwierigkeiten beim Spielen}
+%
+%\begin{itemize}
+%	\item Übersichtlichkeit in Indoor-UI mangelhaft
+%	\item Verbindungen zwischen Knoten / aktuelles Netzwerk nur mit Erfahrung oder Zeit zu erkennen
+%	\item Spiel-Geschwindigkeit und Spieler-Geschwindigkeit passen nicht zusammen -> Routing-Vorgänge fühlen sich langsam an, Spieler bewegen zu schnell, um Routen, die mehr als drei Knoten beinhalten, zu nutzen
+%\end{itemize}
+%
+%\begin{itemize}
+%	\item server ausgelastet
+%	\item lange, ständig wechselnde ip-basierte addressen
+%	\item IP muss immer auf jedem einzelnen Client geändert werden
+%	\item Sehr ähnliche IPs -> automatische vervollständigung des Browsers unnütz, da nicht alle passenden IPs angezeigt
+%	\item Spielfeld rechteckig entlang längen- und breitengrade, aber nicht drehbar oder in Form änderbar
+%\end{itemize}
+%
+%\subsection{Android-Grundlagen}
+%
+%\subsubsection{Programmiermodell}
+%
+%\begin{itemize}
+%	\item Subject-Observer-Pattern
+%	\item Besteht aus \texttt{Activity}s und \texttt{Service}s
+%\end{itemize}
+%
+%Exceptions, die nicht abgefangen werden, lassen die Applikation abstürzen.
+%
+%\subsubsection{Lebenszyklus}
+%
+%HIER BILD AUS ANDROID-DOKU!
+%
+%\subsubsection{Rechtemanagement}
+%
+%Um Zugriff auf Hardware-Ressourcen oder sensible Informationen zu erlangen muss die Applikation vorher diese Rechte am System anmelden. Dies geschieht über das \texttt{ApplicationManifest}, in dem die benötigten Rechte eingetragen werden. Vor der Installation der Applikation bekommt der Benutzer eine Übersicht über die für die Applikation erforderlichen Rechte. Mit der Installation werden der Applikation die eingetragenen Rechte gewährt. Rechte werden immer vollständig gewährt. Es ist nicht möglich, Rechte im Nachhinein zu entziehen oder einzuschränken.
+%
+%Typische Rechte sind der Zugriff auf das Internet, Zugriff auf den GPS-Empfänger oder Zugriff auf die auf dem Smartphone gespeicherten Kontaktdaten.
+%
+%\subsubsection{UI-Thread}
+%
+%Wie viele andere Desktop-UIs setzt auch Android auf ein UI-Thread-Modell. Änderungen an GUI-Elementen dürfen nur auf dem UI-Thread durchgeführt werden. Versuche, Änderungen außerhalb des UI-Threads durchzuführen, werden mit Exceptions zurückgewiesen.
+%
+%Um Änderungen auf dem UI-Thread durchzuführen müssen Aufgabenblöcke, in Java \texttt{Runnable}s, explizit auf den UI-Thread geschoben werden.
+%
+%\subsubsection{Hintergrundoperationen}
+%
+%Es gibt verschiedene Möglichkeiten, Operationen im Hintergrund laufen zu lassen:
+%
+%\begin{itemize}
+%	\item Android-AsyncTasks
+%	\item Android-Services
+%	\item Java-Threads
+%\end{itemize}
+%
+%\paragraph{AsyncTasks} Hintergrundoperationen, die nur für eine sehr begrenzte Zeit laufen, können in einem \texttt{AsyncTask} durchgeführt werden. Aus Kompatibilitätsgründen wird pro Applikation und zu jedem Zeitpunkt standardmäßig immer nur ein \texttt{AsyncTask} ausgeführt. Ein \texttt{AsyncTask} muss vom UI-Thread gestartet werden. Android übernimmt die Bearbeitung im Hintergrund. Bei Beendigung der Bearbeitung wird eine Methode mit dem Ergebniss der Hintergrund-Aufgabe aufgerufen. Android stellt sicher, dass diese Methode im Kontext des UI-Threads läuft. Somit können UI-Manipulationen, die auf dem Ergebnis der Hintergrundoperation beruhen, ohne weiteren Aufwand durchgeführt werden.
+%
+%\paragraph{Services} Lange Hintergrundoperationen, die unabhängig von der GUI laufen sollen, können in Services durchgeführt werden. Wie eine \texttt{Activity} hat auch ein \texttt{Service} einen eigenen Lebenszyklus. Die Bindung zwischen \texttt{Activity} und \texttt{Service} wird beim Erstellen des \texttt{Service} festgelegt. \texttt{Service} und \texttt{Activity} können unabhängig voneinander arbeiten und undabhängig voneinander Lebenszyklus-Phasen durchlaufen.
+%
+%\paragraph{Threads} Die aus der Java-Welt bekannten Threads sind auch in Android verfügbar. Sie bieten feingranulare Zugriffs- und Einstellungsmöglichkeiten für parallele Verarbeitung, bieten aber keine Unterstützung für die Manipulation des UI-Thread. Sie sind am besten als Zwischenstufe für die Portierung von Java-Code auf Android-Systeme geeignet.
+%
+%\subsubsection{Fragments}
+%
+%Aus Einzelblöcken zusammengesetzte UI-Elemente, die wiederverwendet werden können, heißen \textit{Fragments}. Diese haben ein eigenes Layout und eigenen Java-Code. Kommunikation mit \textit{Fragments} erfolgt über Interfaces. Um die Übersichtlichkeit in Applikationen zu erhalten, wird empfohlen, logisch zusammenhängende Einheiten in \textit{Fragments} zu kapseln.
+%
+%Eines der bekannten \textit{Fragments} ist das \texttt{SupportMapFragment} für Googles Maps-Service.
+%
+%\subsubsection{Sensoren}
+%
+%Android-Smartphones besitzen eine Vielzahl von verfügbaren Sensoren. Dazu gehören unter anderem GPS-Empfänger, Beschleunigungs- und Lage-Sensoren. Die Vielzahl an automatisch auslesbaren Sensoren machen Smartphones besonders interessant für pervasive Anwendungen. Die große Verbreitung von Android sorgt dabei für eine Vielzahl an unterschiedlichen Smartphones mit sehr verschiedenen Konfigurationen und Ausstattungen.
+%
+%Android bietet einfachen Zugriff auf die verfügbaren Sensoren. Die Applikation ist dabei selbst verantwortlich, sich an das verfügbare System anzupassen und nicht vorhandene Sensoren zu kompensieren. Sensoren werden über den \texttt{SensorManager} angesprochen. Android verwendet auf für Sensoren das \textit{observer pattern}. Im Folgenden werden drei Sensoren vorgestellt, die in der Arbeit verwendet wurden.
+%
+%\begin{itemize}
+%	\item Motion-Sensor
+%	\item Tilt-Sensor
+%	\item GPS-Sensor
+%\end{itemize}
+%
+%\subsubsection{APIs}
+%
+%\begin{itemize}
+%	\item Google Maps -> Play Services
+%	\item Einbindung von Google Maps
+%	\item Deployment und API-Keys
+%	\item Aufbau und Benutzung sehr ähnlich zu JS-API Version 3
+%\end{itemize}
+%
+%\subsubsection{Einbindung von Drittbibliotheken}
+%
+%Wie von Java bekannt können externe Bibliotheken über JAR-Archive eingebunden werden. Dabei ist allerdings ganz besonders auf die Kompatibilität mit der Android-VM zu achten. Android bietet nur eine Untermenge der aus der Java-API bekannten Klassen und Interfaces an. Somit lassen sich viele Bibliotheken nur mit Anpassung des Quellcodes nutzen.
+%
+%Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. Eine Android-Bibliothek ist ein Android-Projekt, bei dem das \texttt{android.library}-Flag gesetzt ist. Android-Bibliotheken sind nicht ausführbar und können deshalb auch nicht separat getestet werden. Android-Bibliotheken können sowohl von Android-Projekten als auch von Java-Projekten verwendet werden. Im Gegensatz dazu können Java-Projekte nicht als Bibliotheken in Android-Projekten eingebunden werden.
+%
+%\subsubsection{Audio}
+%
+%\begin{itemize}
+%	\item Audio muss beantragt werden
+%	\item Für kurze Audio-Schnippsel gibt es ein besonderes Flag, das Hintergrundgeräusche / Hintergrundmusik nicht stoppt, sondern nur herunterregelt
+%\end{itemize}
 
-\subsubsection{Fragments}
-
-Aus Einzelblöcken zusammengesetzte UI-Elemente, die wiederverwendet werden können, heißen \textit{Fragments}. Diese haben ein eigenes Layout und eigenen Java-Code. Kommunikation mit \textit{Fragments} erfolgt über Interfaces. Um die Übersichtlichkeit in Applikationen zu erhalten, wird empfohlen, logisch zusammenhängende Einheiten in \textit{Fragments} zu kapseln.
-
-Eines der bekannten \textit{Fragments} ist das \texttt{SupportMapFragment} für Googles Maps-Service.
-
-\subsubsection{Sensoren}
-
-Android-Smartphones besitzen eine Vielzahl von verfügbaren Sensoren. Dazu gehören unter anderem GPS-Empfänger, Beschleunigungs- und Lage-Sensoren. Die Vielzahl an automatisch auslesbaren Sensoren machen Smartphones besonders interessant für pervasive Anwendungen. Die große Verbreitung von Android sorgt dabei für eine Vielzahl an unterschiedlichen Smartphones mit sehr verschiedenen Konfigurationen und Ausstattungen.
-
-Android bietet einfachen Zugriff auf die verfügbaren Sensoren. Die Applikation ist dabei selbst verantwortlich, sich an das verfügbare System anzupassen und nicht vorhandene Sensoren zu kompensieren. Sensoren werden über den \texttt{SensorManager} angesprochen. Android verwendet auf für Sensoren das \textit{observer pattern}. Im Folgenden werden drei Sensoren vorgestellt, die in der Arbeit verwendet wurden.
-
-\begin{itemize}
-	\item Motion-Sensor
-	\item Tilt-Sensor
-	\item GPS-Sensor
-\end{itemize}
-
-\subsubsection{APIs}
-
-\begin{itemize}
-	\item Google Maps -> Play Services
-	\item Einbindung von Google Maps
-	\item Deployment und API-Keys
-	\item Aufbau und Benutzung sehr ähnlich zu JS-API Version 3
-\end{itemize}
-
-\subsubsection{Einbindung von Drittbibliotheken}
-
-Wie von Java bekannt können externe Bibliotheken über JAR-Archive eingebunden werden. Dabei ist allerdings ganz besonders auf die Kompatibilität mit der Android-VM zu achten. Android bietet nur eine Untermenge der aus der Java-API bekannten Klassen und Interfaces an. Somit lassen sich viele Bibliotheken nur mit Anpassung des Quellcodes nutzen.
-
-Das Android-Eclipse-Plugin ermöglicht die Erstellung von Android-Bibliotheken. Eine Android-Bibliothek ist ein Android-Projekt, bei dem das \texttt{android.library}-Flag gesetzt ist. Android-Bibliotheken sind nicht ausführbar und können deshalb auch nicht separat getestet werden. Android-Bibliotheken können sowohl von Android-Projekten als auch von Java-Projekten verwendet werden. Im Gegensatz dazu können Java-Projekte nicht als Bibliotheken in Android-Projekten eingebunden werden.
-
-\subsubsection{Audio}
-
-\begin{itemize}
-	\item Audio muss beantragt werden
-	\item Für kurze Audio-Schnippsel gibt es ein besonderes Flag, das Hintergrundgeräusche / Hintergrundmusik nicht stoppt, sondern nur herunterregelt
-\end{itemize}
-
+\pagebreak
 \bibliography{literatur}
+
+\pagebreak
+\section{Abkürzungsverzeichnis}
+
+\begin{acronym}[YTM]
+\setlength{\itemsep}{-\parsep}
+\acro{AODV}{Ad hoc On-Demand Distance Vector}
+\acro{GPS}{Global Positioning System}
+\acro{MANETs}{Mobilen Ad-hoc-Netzwerke}
+\acro{RREQ}{Route Request}
+\acro{RREP}{Route Reply}
+\acro{RERR}{Route Error}
+\acro{WPS}{Wi-Fi Protected Setup}
+\end{acronym}
 
 \pagebreak
 \section{Erklärung der Redlichkeit}

@@ -29,7 +29,8 @@ pdflatex %MAIN%
 if errorlevel 1 goto latexerror
 echo.
 
-.\%MAIN%.pdf
+cp %MAIN%.pdf "C:\Users\hgessner\Dropbox\Uni\Hendriks Bachelorarbeit"
+rem .\%MAIN%.pdf
 
 :latexerror
 echo error occured whith (latex %MAIN%)
