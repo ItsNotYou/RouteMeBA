@@ -562,7 +562,7 @@ Da für QR-Codes bereits viele Lese-Apps existieren, wurde auf die Entwicklung ei
 
 Die Erstellung kompatibler QR-Codes ist nicht in das Spiel integriert. Stattdessen wird an dieser Stelle auf geeignete Dienste wie QRCode-Generator.de\footnote{\url{http://www.qrcode-generator.de/}} verwiesen, mit dem auch der abgebildete QR-Code erstellt wurde.
 
-\subsubsection{Pervasive Gesten}
+\subsection{Pervasive Gesten}
 
 Es existiert bereits eine Bachelorarbeit, in der ein Framework für eine allgemeine Gestenerkennung auf Smartphones implementiert und evaluiert wurde. Allerdings bietet das Ergebnis nur eine unbefriedigende Erkennungsrate von etwa 60\% und viele \textit{false positives}.~\cite{Pfeiffer.30.08.2011}
 
@@ -575,7 +575,7 @@ Die im Spiel verwendeten Werte sind
 	\item Timeout: 750ms
 \end{itemize}
 
-Um die Wiederverwendbarkeit in anderen Projekten zu fördern wurde bei der Entwicklung des Modules auf eine hohe Entkopplung geachtet.
+Die Erkennung der Schüttel-Geste wird dem Spieler durch haptisches Feedback in Form einer kurzen Vibration vermittelt.
 
 \subsection{Interaktive Karte}
 
@@ -593,56 +593,43 @@ Die Javascript-Google-Maps-API bietet Pfeile als Kartenelemente an. In den vom S
 
 Dieses Vorgehen würde sich lohnen, wenn die Analyse der Daten ausreichend komplex wäre, um eine doppelte Konversion zu rechtfertigen. Da die Analyse aber lediglich in einem Vergleich von bereits bekannten und unbekannten Nachbarverbindungen besteht, erscheint der Weg über Java unnötig komplex. Daher field die Entscheidung für eine Javascript-basierte Erweiterung.
 
-\paragraph{Sicherung der Qualität}
+\paragraph{Sicherung der Qualität} Bevor eine Veränderung von bestehendem Code durchgeführt wird, sollten alle beteiligten Komponenten durch Tests abgesichert sein.~\cite{Feathers.2009} Im Gegensatz zu in Java geschriebenem Code war für den Javascript-basierten Teil des Projektes noch kein automatisierter Qualitätssicherungs-Mechanismus etabliert. Bevor die Arbeiten am Code begannen, wurden deshalb der Javascript-Testrunner Karma (vormals Testacular)\footnote{\url{http://karma-runner.github.io/}} und das Javascript-Test-Framework Jasmine\footnote{\url{http://pivotal.github.io/jasmine/}} eingerichtet.
 
-
-
-
-
-
-
-\begin{itemize}
-	\item GWT ermöglichte Integration von bestehendem JS-Code mit im Rahmen des Refactoring erzeugtem Java-Code.
-\end{itemize}
+Karma überwacht das Dateisystem und lässt alle im Projekt verfügbaren Tests durchlaufen, sobald eine Datei geändert wird. Jasmine wird zur Definition der zu durchlaufenden Tests verwendet. Diese Kombination vereinfacht testgetriebenes Vorgehen massiv. Durch das testgetriebene Vorgehen können Erweiterungen schnell und sicher implementiert werden.~\cite{Feathers.2009}
 
 \subsection{AODV Level 2}
 
 \subsubsection{Nachrichtenversand}
 
-\begin{itemize}
-	\item Ziel: Möglichst viel Code behalten, um Aufwand gering zu halten
-	\item Mix aus GWT und JS
-	\item Originaler JS-Code für Maps erhalten, Click wird in JS an Server gesendet
-	\item Bei Update von Server wird Subset von Infos per JSNI nach GWT gegeben
-	\item GWT-UI reagiert darauf
-	\item Einfach und gut
-\end{itemize}
+\paragraph{Technische Anpassungen} Aus programmatischer Sicht handelt es sich beim veränderten Nachrichtenversand von Level zwei um den Nachrichtenversand von Level eins mit ein paar Veränderungen. So werden Start und Ziel nicht mehr vom Spieler über die Karte, sondern vom Spieler aus einer Liste ausgewählt. Außerdem werden in der Knotenauswahl nicht mehr der gewählte Start- und Zielknoten angezeigt, sondern eine Liste von Paaren von Start- und Zielknoten, aus denen gewählt werden kann.
 
-\begin{itemize}
-	\item Routen werden per Zufall zwischen den verfügbaren Knoten in Client erstellt
-	\item Verhindert Server-Eingreifen und Server-Unterstützung
-\end{itemize}
+Das Ziel war es also, möglichst viel bereits vorhandenen Code zu behalten, um den Aufwand einer Neuimplementierung und die Wahrscheinlichkeit für Fehler gering zu halten. In der Kommunikation mit dem Server musste nichts geändert werden, alle erforderlichen Änderungen konnten vollständig auf Clientseite durchgeführt werden. Deshalb bot sich ein Mix aus Code in Java und Code in Javascript an. Die kartennahen Bestandteile wurden weiter durch Javascript-basierten Code manipuliert, die Legende durch Java-basierten. Der zu schreibende Code wurde nahezu vollständig in Java gehalten, lediglich die für die Javascript-zu-Java erforderlichen Wrapper entstanden in Javascript.
 
-\paragraph{JS-Testing} Verwendung von Karma (vormals Testacular) als Testrunner, Jasmine als Framework.
+\paragraph{Spielerische Entscheidungen} Es hat sich als günstig erwiesen, dem Spieler etwa zehn Routen gleichzeitig zur Auswahl zu stellen. Die angezeigten Routen werden dabei zufällig aus dem Pool von möglichen Routen ausgewählt. Wenn eine angezeigte Route nicht mehr verfügbar ist, beispielsweise weil einer der beteiligten Knoten ausgefallen ist, wird die ausgefallene Route, soweit möglich, durch eine andere mögliche Route ersetzt.
 
-\subsubsection{Hello-Nachrichten}
+\subsubsection{HELLO-Nachrichten}
 
-\begin{itemize}
-	\item Auf Serverseite: Verbindungen bekommen Last-Ping-Timestamp
-	\item Anzeigeideen hinter Ping-Feedback
-	\item Synchronisierter Timestamp
-	\item Mit Server synchronisierter Timestamp
-	\item Server verbirgt Timestamp, arbeitet intern mit Server-Timestamp
-	\item Knoten senden ping und ping-invalidate
-\end{itemize}
+\paragraph{Technische Anpassungen} Um das Konzept der HELLO-Nachrichten umzusetzen, mussten einige technische Veränderungen an Server und Knoten-Interface durchgeführt werden. Die Indoor- und Admin-Sicht blieben dabei unverändert.
 
-\begin{itemize}
-	\item In Verbindungstabelle ist last-ping angegeben.
-	\item Statischer Malus für jeden Ping von fünf Batterie-Punkten
-	\item Punkte für Nachbar haben bleibt gleich
-\end{itemize}
+Um einem Knoten A zu kommunizieren, dass sein Nachbar B eine HELLO-Nachricht abgesetzt hat, die Knoten A empfängt, musste die Kommunikation zwischen Server und Client verändert werden. Die Darstellung sollte dabei so erfolgen, dass bei Empfang einer HELLO-Nachricht der sendende Knoten auf der Karte des empfangenden Knotens mit Wellensymbolen markiert wird. Die Dauer einer Hervorhebung ist für alle Knoten gleich. Im Folgenden werden die architekturellen Möglichkeiten für eine solche Kommunikation vorgestellt und anschließend gegeneinander abgewogen.
+
+Als erste Option war denkbar, dass der sendende Knoten ein Ping-Flag setzt, dass er nach einiger Zeit selbst entfernt. Der empfangende Knoten würde dann bei jeder Statusabfrage an den Server überprüfen, ob das Ping-Flag gesetzt ist. Falls es gesetzt ist, so würde der sendende Knoten mit Wellen markiert.
+
+Die zweite Option war ein mit dem Server synchronisierter Zeitstempel, der aussagt, wann ein sendender Knoten nicht mehr als sendend markiert wäre. Der empfangende Knoten würde dann den empfangenen Zeitstempel mit der eigenen Uhr vergleichen, um zu ermitteln, ob ein Knoten noch als sendend gilt.
+
+Zuletzt war die dritte Option, dass die Zeitstempel aus Option zwei durch ein Feld für verbleibende Dauer ersetzt werden. Dem empfangenden Knoten würde also bei einer Serveranfrage mitgeteilt, wie lange ein sendender Knoten noch als sendend gilt.
+
+Von den vorgestellten Optionen eignete sich die dritte für eine Implementierung. Die erste Option hätte zwei Kommunikationen zwischen sendendem Knoten und Server benötigt, die zweite wäre mit den hohen Hürden der Zeitstempelsynchronisation unnötig komplex geworden. Mit der dritten Option kann der Zeitstempel innerhalb des Servers bleiben, sodass keine Synchronisation mit den Knoten erforderlich ist.
+
+\paragraph{Spielerische Entscheidungen} Für das Senden einer HELLO-Nachricht hat sich ein konstanter Malus von fünf Batterie-Punkten als günstig erwiesen. Die Punkte für Nachbarverbindungen bleiben gleich, werden allerdings nur vergeben, wenn ein Nachbar durch den Empfang einer HELLO-Nachricht ermittelt wurde.
+
+Unter kompetitiven Gesichtspunkten mag erst im ersten Moment günstig erscheinen, selbst keine HELLO-Nachrichten zu senden, da der Empfang einer gesendeten HELLO-Nachricht dem Empfänger Punkte für gefundene Nachbarverbindungen gibt. Allerdings Erlangen Knoten, die keine HELLO-Nachrichten aussenden, auch keine Pakete, mit deren Routing sie sich Punkte verdienen.
 
 \section{Evaluation}\label{evaluation}
+
+\begin{itemize}
+	\item Art der Routen-Ziehung verhindert Server-Eingreifen und Server-Unterstützung
+\end{itemize}
 
 \begin{itemize}
 	\item Nutze Möglichkeit, Android-Apps per URL zu starten
