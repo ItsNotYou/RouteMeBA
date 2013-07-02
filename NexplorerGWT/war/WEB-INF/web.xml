@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5"
-         xmlns="http://java.sun.com/xml/ns/javaee">
+  version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->  
-  
+  <!-- Servlets -->
+
   <servlet>
     <servlet-name>admin</servlet-name>
     <servlet-class>de.unipotsdam.nexplorer.server.Admin</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>admin</servlet-name>
     <url-pattern>/nexplorergwt/admin</url-pattern>
-  </servlet-mapping>  
-  
-    <servlet>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>indoor</servlet-name>
     <servlet-class>de.unipotsdam.nexplorer.server.Indoor</servlet-class>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>indoor</servlet-name>
     <url-pattern>de.unipotsdam.nexplorer.IndoorGWT/indoor</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
   
-  
-   <servlet>
+  <servlet>
+    <servlet-name>icons</servlet-name>
+    <servlet-class>de.unipotsdam.nexplorer.server.IconCreator</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>icons</servlet-name>
+    <url-pattern>icons</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>Jersey REST Service</servlet-name>
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
     <init-param>
@@ -36,20 +44,20 @@
       <param-value>de.unipotsdam.nexplorer.server.rest</param-value>
     </init-param>
     <init-param>
-            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-            <param-value>true</param-value>
-     </init-param>
+      <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+      <param-value>true</param-value>
+    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
-  
+
   <servlet-mapping>
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
-  
-<!--   Default page to serve -->
-<!--   <welcome-file-list> -->
-<!--     <welcome-file>NexplorerGWT.html</welcome-file> -->
-<!--   </welcome-file-list> -->
+
+  <!-- Default page to serve -->
+  <!-- <welcome-file-list> -->
+  <!-- <welcome-file>NexplorerGWT.html</welcome-file> -->
+  <!-- </welcome-file-list> -->
 
 </web-app>
