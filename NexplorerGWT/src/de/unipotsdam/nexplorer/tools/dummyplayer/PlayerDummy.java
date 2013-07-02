@@ -100,7 +100,7 @@ public class PlayerDummy extends Thread {
 
 	private void pingIfNecessary(Location loc, long locationSendCount) {
 		// Send a ping once in five location updates
-		if (locationSendCount % 5 == 0) {
+		if (locationSendCount % 5 == 0 && gameStatus == ISRUNNING) {
 			connection.ping();
 		}
 	}
