@@ -300,11 +300,11 @@ function drawPlayerMarkerAtLatitudeLongitude(latitude, longitude, name,
     var latlng = new google.maps.LatLng(latitude, longitude);
 
     if (packetCount > 3) {
-        markerImagePath = 'media/images/icons/network-status-busy.png';
+        markerImagePath = 'icons?status=busy&id=' + playerId;
     } else if (packetCount > 1 && packetCount <= 3) {
-        markerImagePath = 'media/images/icons/network-status-away.png';
+        markerImagePath = 'icons?status=away&id=' + playerId;
     } else if (packetCount <= 1) {
-        markerImagePath = 'media/images/icons/network-status.png';
+        markerImagePath = 'icons?status=clear&id=' + playerId;
     }
 
     var markerImage = new google.maps.MarkerImage(markerImagePath,

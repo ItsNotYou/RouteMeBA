@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.indoor;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -14,37 +15,35 @@ import de.unipotsdam.nexplorer.client.util.HasTable;
 
 public class LegendBinder extends HasTable {
 
-	private static LegendBinderUiBinder uiBinder = GWT
-			.create(LegendBinderUiBinder.class);
+	private static LegendBinderUiBinder uiBinder = GWT.create(LegendBinderUiBinder.class);
+	private static String media = "media/images/icons/";
 
 	interface LegendBinderUiBinder extends UiBinder<Element, LegendBinder> {
 	}
 
 	@UiField
 	TableElement legendTable;
-	
-	HashMap<String, String> legendItems;		
-	
+
+	private List<LegendPair> legendItems;
+
 	/**
-	 * Dieser Binder zeigt eine Tabelle mit Legendeneinträgen
-	 * zu den icons des indoor Spielers 
-	 * */
+	 * Dieser Binder zeigt eine Tabelle mit Legendeneinträgen zu den icons des indoor Spielers
+	 */
 	public LegendBinder() {
 		setElement(uiBinder.createAndBindUi(this));
-		initLegendItems();		
-		insertLegendRows();				 
+		initLegendItems();
+		insertLegendRows();
 	}
 
-	/*
-	 * 
-	 * füllt die Tabelle mit Legendeeinträge
+	/**
+	 * Füllt die Tabelle mit Legendeeinträge
 	 */
 	private void insertLegendRows() {
-		for (String item : legendItems.keySet()) {
-			TableRowElement tableRow = this.legendTable.insertRow(-1);			
-			Image image = new Image("media/images/icons/"+item);		
-			addCell(tableRow, image, -1, "text-align" , "center" );
-			addCell(tableRow, legendItems.get(item), -1);
+		for (LegendPair item : legendItems) {
+			TableRowElement tableRow = this.legendTable.insertRow(-1);
+			Image image = new Image(item.getLocation());
+			addCell(tableRow, image, -1, "text-align", "center");
+			addCell(tableRow, item.getDescription(), -1);
 		}
 	}
 
@@ -52,19 +51,37 @@ public class LegendBinder extends HasTable {
 	 * initialisiere die Map mit den Icons
 	 */
 	private void initLegendItems() {
-		this.legendItems = new HashMap<String, String>();
-		this.legendItems.put("network-wireless-small.png", "Spieler / Knoten");
-		this.legendItems.put("network-status.png", "Knoten (geringe Auslastung)");
-		this.legendItems.put("network-status-away.png", "Knoten (mittlere Auslastung)");
-		this.legendItems.put("network-status-busy.png", "Knoten (starke Auslastung)");
-		this.legendItems.put("mail.png", "Nachricht unterwegs");
-		this.legendItems.put("mail--tick.png", "Nachricht unterwegs");
-		this.legendItems.put("mail--exclamation.png", "Wartet auf Wegfindung");
-		this.legendItems.put("mail--slash.png",  "Fehler bei der Routensuche");
-		this.legendItems.put("mail--clock.png", "Wartet weil Knoten busy");
-		this.legendItems.put("flag-white.png", "Startknoten");
-		this.legendItems.put("flag-black.png", "Zielknoten");
-		this.legendItems.put("star.png", "Bonusziel");
+		this.legendItems = new ArrayList<LegendPair>();
+		this.legendItems.add(new LegendPair(media + "network-wireless-small.png", "Spieler / Knoten"));
+		this.legendItems.add(new LegendPair("icons?status=clear&id=0", "Knoten (geringe Auslastung)"));
+		this.legendItems.add(new LegendPair("icons?status=away&id=0", "Knoten (mittlere Auslastung)"));
+		this.legendItems.add(new LegendPair("icons?status=busy&id=0", "Knoten (starke Auslastung)"));
+		this.legendItems.add(new LegendPair(media + "mail.png", "Nachricht unterwegs"));
+		this.legendItems.add(new LegendPair(media + "mail--tick.png", "Nachricht unterwegs"));
+		this.legendItems.add(new LegendPair(media + "mail--exclamation.png", "Wartet auf Wegfindung"));
+		this.legendItems.add(new LegendPair(media + "mail--slash.png", "Fehler bei der Routensuche"));
+		this.legendItems.add(new LegendPair(media + "mail--clock.png", "Wartet weil Knoten busy"));
+		this.legendItems.add(new LegendPair(media + "flag-white.png", "Startknoten"));
+		this.legendItems.add(new LegendPair(media + "flag-black.png", "Zielknoten"));
+		this.legendItems.add(new LegendPair(media + "star.png", "Bonusziel"));
 	}
 
+	private class LegendPair {
+
+		private String location;
+		private String description;
+
+		public LegendPair(String location, String description) {
+			this.location = location;
+			this.description = description;
+		}
+
+		public String getLocation() {
+			return this.location;
+		}
+
+		public String getDescription() {
+			return this.description;
+		}
+	}
 }

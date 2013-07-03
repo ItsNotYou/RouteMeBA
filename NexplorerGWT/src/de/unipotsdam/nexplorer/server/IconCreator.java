@@ -24,6 +24,16 @@ public class IconCreator extends HttpServlet {
 
 	private static final long serialVersionUID = -4234683874504768278L;
 
+	private Color clear;
+	private Color away;
+	private Color busy;
+
+	public IconCreator() {
+		this.clear = new Color(181, 230, 29);
+		this.away = new Color(255, 242, 0);
+		this.busy = new Color(255, 127, 39);
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String idValue = req.getParameter("id");
@@ -31,12 +41,24 @@ public class IconCreator extends HttpServlet {
 			return;
 		}
 
-		int xSize = 28;
-		int ySize = 28;
+		Color background = Color.white;
+		String status = req.getParameter("status");
+		if (status == null) {
+			return;
+		} else if (status.equals("clear")) {
+			background = clear;
+		} else if (status.equals("away")) {
+			background = away;
+		} else if (status.equals("busy")) {
+			background = busy;
+		}
+
+		int xSize = 16;
+		int ySize = 16;
 
 		Color transparent = Color.cyan;
 
-		BufferedImage bufferedImage = createImage(idValue, xSize, ySize, transparent);
+		BufferedImage bufferedImage = createImage(idValue, xSize, ySize, transparent, background);
 		Image finalImage = makeColorTransparent(bufferedImage, transparent);
 		BufferedImage sendableCopy = copyImage(finalImage, xSize, ySize);
 
@@ -54,7 +76,7 @@ public class IconCreator extends HttpServlet {
 		return result;
 	}
 
-	private BufferedImage createImage(String idValue, int xSize, int ySize, Color transparent) {
+	private BufferedImage createImage(String idValue, int xSize, int ySize, Color transparent, Color background) {
 		int ovalWidth = 2;
 
 		Font font = getFont();
@@ -69,7 +91,7 @@ public class IconCreator extends HttpServlet {
 		g.setColor(Color.black);
 		g.fillOval(-1, -1, xSize + 1, ySize + 1);
 
-		g.setColor(Color.white);
+		g.setColor(background);
 		g.fillOval(ovalWidth / 2 - 1, ovalWidth / 2 - 1, xSize - ovalWidth + 1, ySize - ovalWidth + 1);
 
 		g.setColor(Color.black);
@@ -81,7 +103,7 @@ public class IconCreator extends HttpServlet {
 	}
 
 	private Font getFont() {
-		return Font.decode("Verdana");
+		return Font.decode("Verdana").deriveFont(9f);
 	}
 
 	private Dimension calculateStartCoordinates(String message, int xSize, int ySize, Graphics g, Font font) {
