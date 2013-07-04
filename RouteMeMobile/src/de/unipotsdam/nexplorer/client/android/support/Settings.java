@@ -3,7 +3,7 @@ package de.unipotsdam.nexplorer.client.android.support;
 public class Settings {
 
 	private static final String hostAddress = "http://routeme.dnsdynamic.com:8080";
-	private static final boolean IS_DEBUG = true;
+	private static final boolean IS_DEBUG = false;
 
 	public String getHostAddress() {
 		return hostAddress;
