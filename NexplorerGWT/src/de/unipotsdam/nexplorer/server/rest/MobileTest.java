@@ -1,11 +1,16 @@
 package de.unipotsdam.nexplorer.server.rest;
 
+import static de.unipotsdam.nexplorer.server.rest.dto.LoginResultJSON.NO_GAME_CREATED;
+import static de.unipotsdam.nexplorer.server.rest.dto.LoginResultJSON.SERVER_ERROR;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -13,6 +18,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
+import de.unipotsdam.nexplorer.server.rest.dto.LoginResultJSON;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
 import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.GameStatus;
@@ -69,5 +75,18 @@ public class MobileTest {
 		result.gameStats.setRemainingPlaytime(1234567890l);
 
 		return result;
+	}
+
+	@POST
+	@Path("login_player_mobile")
+	@Produces("application/json")
+	public LoginResultJSON loginPlayerMobile(@FormParam("name") String name, @FormParam("isMobile") String isMobile) {
+		if (name.equals("IAmOk")) {
+			return new LoginResultJSON(7);
+		} else if (name.equals("NoGameCreated")) {
+			return new LoginResultJSON(NO_GAME_CREATED);
+		} else {
+			return new LoginResultJSON(SERVER_ERROR);
+		}
 	}
 }
