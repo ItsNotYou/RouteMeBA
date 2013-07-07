@@ -45,7 +45,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 	}
 
 	/**
-	 * collects and item which should be present in the db as well as shown in the gui. Is there any case where this might not be so?
+	 * Collects an item which should be present in the db as well as shown in the gui. Is there any case where this might not be so?
 	 */
 	@Override
 	public boolean collectItem(long playerId) {
