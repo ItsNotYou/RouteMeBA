@@ -28,7 +28,12 @@ public class Player implements Locatable {
 	/**
 	 * Set booster duration to 15 seconds.
 	 */
-	private static long BOOSTER_DURATION = 15000;
+	private static final long BOOSTER_DURATION = 15000;
+
+	/**
+	 * Set booster range to 4 meters.
+	 */
+	private static final long BOOSTER_RANGE = 4;
 
 	@InjectLogger
 	private Logger logger;
@@ -53,7 +58,7 @@ public class Player implements Locatable {
 	public long getRange() {
 		Long signalRangeBooster = inner.getHasSignalRangeBooster();
 		if (isBoosterActive(signalRangeBooster)) {
-			return inner.getBaseNodeRange() + 4;
+			return inner.getBaseNodeRange() + BOOSTER_RANGE;
 		} else {
 			return inner.getBaseNodeRange();
 		}
