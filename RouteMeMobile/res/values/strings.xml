@@ -13,5 +13,6 @@
     <string name="default_noposition">Bitte warten. Position konnte nicht ermittelt werden.</string>
     <string name="title_activity_scanned">ScannedActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_scan_start">ScanStartActivity</string>
 
 </resources>
