@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -88,12 +91,23 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			gameSettings.setPingDuration(request.getPingDuration());
 
 			dbAccess.persist(gameSettings);
+		} catch (Exception e) {
+			e.printStackTrace();
+			unit.cancel();
 		} finally {
 			unit.close();
 		}
 
-		ServerTimer timer = unit.resolve(ServerTimer.class);
-		timer.pause();
+		unit = new Unit();
+		try {
+			ServerTimer timer = unit.resolve(ServerTimer.class);
+			timer.pause();
+		} catch (Exception e) {
+			e.printStackTrace();
+			unit.cancel();
+		} finally {
+			unit.close();
+		}
 
 		long end = System.currentTimeMillis();
 		performance.trace("startGame took {}ms", end - begin);
@@ -374,6 +388,20 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		return true;
 	}
 
+	private static String findSettingsPath() throws UnsupportedEncodingException {
+		URL ClassUrl = Admin.class.getProtectionDomain().getCodeSource().getLocation();
+		String jarURL = ClassUrl.getFile();
+		jarURL = jarURL.replace(Admin.class.getCanonicalName(), "");
+		jarURL = URLDecoder.decode(jarURL, "UTF-8");
+
+		File currentDir = new File(jarURL);
+		while (!currentDir.getName().equals("WEB-INF")) {
+			currentDir = currentDir.getParentFile();
+		}
+
+		return currentDir.getAbsolutePath() + "/" + PROPERTIES_PATH;
+	}
+
 	@Override
 	public Settings getDefaultGameStats() {
 		long begin = System.currentTimeMillis();
@@ -382,7 +410,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		FileOutputStream fileOutputStream = null;
 		Properties props = new Properties();
 		try {
-			fileInput = new FileInputStream(new File(PROPERTIES_PATH));
+			fileInput = new FileInputStream(new File(findSettingsPath()));
 			props.loadFromXML(fileInput);
 			if (!props.containsKey("playingTime")) {
 				props.setProperty("playingTime", "10");
@@ -399,7 +427,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 				props.setProperty("updateDisplayIntervalTime", "1000");
 				props.setProperty("updatePositionIntervalTime", "1000");
 				props.setProperty("pingDuration", "1000");
-				fileOutputStream = new FileOutputStream(new File(PROPERTIES_PATH));
+				fileOutputStream = new FileOutputStream(new File(findSettingsPath()));
 				props.storeToXML(fileOutputStream, null);
 			}
 		} catch (IOException e) {

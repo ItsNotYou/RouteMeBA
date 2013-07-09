@@ -23,7 +23,7 @@
 
   <servlet-mapping>
     <servlet-name>indoor</servlet-name>
-    <url-pattern>de.unipotsdam.nexplorer.IndoorGWT/indoor</url-pattern>
+    <url-pattern>/indoorgwt/indoor</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -33,7 +33,7 @@
 
   <servlet-mapping>
     <servlet-name>icons</servlet-name>
-    <url-pattern>icons</url-pattern>
+    <url-pattern>/icons</url-pattern>
   </servlet-mapping>
 
   <servlet>

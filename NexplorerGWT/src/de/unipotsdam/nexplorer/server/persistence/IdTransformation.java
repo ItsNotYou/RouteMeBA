@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.server.persistence;
 
-import com.google.gwt.thirdparty.guava.common.base.Function;
+import com.google.common.base.Function;
 
 public class IdTransformation implements Function<Player, Long> {
 

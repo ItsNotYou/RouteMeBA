@@ -1,6 +1,6 @@
 package de.unipotsdam.nexplorer.server.persistence;
 
-import static com.google.gwt.thirdparty.guava.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.filter;
 
 import java.util.Collection;
 import java.util.Date;
@@ -10,8 +10,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
-import com.google.gwt.dev.util.collect.Lists;
-import com.google.gwt.thirdparty.guava.common.base.Predicate;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -88,9 +88,9 @@ public class Player implements Locatable {
 		}
 
 		// Nachbar existiert noch nicht in der Liste
-		Collection<Player> newNeighbours = Lists.create(filter(reachableNodes, isNotIn(knownNeighbours)));
+		Collection<Player> newNeighbours = Lists.newArrayList(filter(reachableNodes, isNotIn(knownNeighbours)));
 		// Spieler ist nicht mehr Nachbar, wenn er in der Abfrage der aktuellen Nachbarn nicht mehr auftaucht
-		Collection<Player> lostNeighbours = Lists.create(filter(knownNeighbours, isNotIn(reachableNodes)));
+		Collection<Player> lostNeighbours = Lists.newArrayList(filter(knownNeighbours, isNotIn(reachableNodes)));
 
 		for (Player p : newNeighbours) {
 			logger.trace("Node {} hat {} als neu gefunden", getId(), p.getId());
