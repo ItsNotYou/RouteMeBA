@@ -1,8 +1,6 @@
 package de.unipotsdam.nexplorer.server.persistence.hibernate;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -27,6 +25,9 @@ public class ItemCheater extends TimerTask {
 			for (Players p : players) {
 				placeNewBatteryFor(p, unit.resolve(DatabaseImpl.class));
 			}
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -34,11 +35,11 @@ public class ItemCheater extends TimerTask {
 
 	private boolean hasLocation(Players p, DatabaseImpl dbAccess) {
 		Setting setting = dbAccess.getSettings();
-		
+
 		if (p.getLatitude() == setting.inner().getPlayingFieldUpperLeftLatitude() && p.getLongitude() == setting.inner().getPlayingFieldUpperLeftLongitude()) {
 			return false;
 		} else {
-			return true;			
+			return true;
 		}
 	}
 

@@ -32,6 +32,9 @@ public class SettingsManipulation {
 			result.setMaxBatteries(inner.getMaxBatteries());
 			result.setMaxBoosters(inner.getMaxBoosters());
 			return result;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -63,6 +66,9 @@ public class SettingsManipulation {
 
 			if (update.getMaxBoosters() != null)
 				inner.setMaxBoosters(update.getMaxBoosters());
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}

@@ -55,6 +55,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 		try {
 			ItemCollector items = unit.resolve(ItemCollector.class);
 			items.collectFor(playerId);
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -82,6 +85,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Player player = dbAccess.getPlayerById(playerId);
 			aodv.updateNeighbourhood(player);
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -129,6 +135,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
 				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood();
 			}
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -142,6 +151,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			for (Player node : nodes) {
 				instance.updateNeighbours(node.getId());
 			}
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -160,6 +172,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			GameStats stats = new GameStats(dbAccess.getSettings().inner());
 			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node);
 			return result;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 

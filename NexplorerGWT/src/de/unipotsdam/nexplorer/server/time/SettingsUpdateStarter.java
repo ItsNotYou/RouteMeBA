@@ -26,6 +26,9 @@ public class SettingsUpdateStarter extends StatelessTimer {
 			settings.inner().setRunningSince(new Date().getTime());
 			settings.inner().setLastPause(null);
 			settings.save();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -39,6 +42,9 @@ public class SettingsUpdateStarter extends StatelessTimer {
 			Setting settings = dbAccess.getSettings();
 			settings.inner().setGameState(GameStatus.ISPAUSED);
 			settings.save();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -70,6 +76,9 @@ public class SettingsUpdateStarter extends StatelessTimer {
 			// hier ist current null gewesen
 			currentStatus = settings.inner().getGameState();
 			logger.trace("Spielstatus nach Update: {}", currentStatus);
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -85,7 +94,11 @@ public class SettingsUpdateStarter extends StatelessTimer {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			Setting settings = dbAccess.getSettings();
 			settings.inner().setGameState(GameStatus.HASENDED);
+
 			settings.save();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
