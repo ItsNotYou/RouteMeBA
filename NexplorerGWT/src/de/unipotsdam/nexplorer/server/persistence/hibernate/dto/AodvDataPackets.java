@@ -148,14 +148,66 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable 
 	public void setAwardedScore(Integer score) {
 		super.setAwardedScore(score);
 	}
-	
+
 	@Version
 	@Column(name = "OPTLOCK")
 	public Integer getVersion() {
 		return this.version;
 	}
-	
+
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@Override
+	public int hashCode() {
+		return 1;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+
+		AodvDataPackets other = (AodvDataPackets) obj;
+		if (other.didReachBonusGoal != didReachBonusGoal) {
+			return false;
+		} else if (other.hopsDone != hopsDone) {
+			return false;
+		} else if (other.id != id) {
+			return false;
+		} else if (other.messageDescription == null && messageDescription != null) {
+			return false;
+		} else if (!other.messageDescription.equals(messageDescription)) {
+			return false;
+		} else if (other.playersByCurrentNodeId == null && playersByCurrentNodeId != null) {
+			return false;
+		} else if (!other.playersByCurrentNodeId.equals(playersByCurrentNodeId)) {
+			return false;
+		} else if (other.playersByDestinationId == null && playersByDestinationId != null) {
+			return false;
+		} else if (!other.playersByDestinationId.equals(playersByDestinationId)) {
+			return false;
+		} else if (other.playersByOwnerId == null && playersByOwnerId != null) {
+			return false;
+		} else if (!other.playersByOwnerId.equals(playersByOwnerId)) {
+			return false;
+		} else if (other.playersBySourceId == null && playersBySourceId != null) {
+			return false;
+		} else if (!other.playersBySourceId.equals(playersBySourceId)) {
+			return false;
+		} else if (other.processingRound != processingRound) {
+			return false;
+		} else if (other.status != status) {
+			return false;
+		} else if (other.version != version) {
+			return false;
+		}
+
+		return true;
 	}
 }

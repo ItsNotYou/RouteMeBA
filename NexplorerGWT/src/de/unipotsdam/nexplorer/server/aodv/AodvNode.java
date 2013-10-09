@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -223,11 +225,11 @@ public class AodvNode implements NeighbourAction {
 		table.deleteRouteTo(exNeighbour.getId());
 	}
 
-	void enqueMessage(DataPacket message) {
+	Collection<Object> enqueMessage(DataPacket message) {
 		long destination = message.getMessageDescription().getDestinationNodeId();
 
 		if (!theNode.hasBattery()) {
-			return;
+			return Collections.emptyList();
 		}
 
 		if (table.hasRouteTo(destination)) {
@@ -236,7 +238,8 @@ public class AodvNode implements NeighbourAction {
 			pause(message);
 			sendRREQFor(destination).toNeighbours();
 		}
-		dbAccess.persist(message);
+
+		return Arrays.asList((Object) message);
 	}
 
 	private RREQDestination sendRREQFor(long destination) {

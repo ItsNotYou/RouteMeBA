@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.logging.log4j.Logger;
@@ -31,7 +32,7 @@ public class AodvRoutingAlgorithm {
 		this.settings = null;
 	}
 
-	public void aodvInsertNewMessage(Player src, Player dest, Player owner) throws PlayerDoesNotExistException {
+	public Collection<Object> aodvInsertNewMessage(Player src, Player dest, Player owner) throws PlayerDoesNotExistException {
 		Setting gameSettings = getGameSettings();
 		logger.trace("Insert new message from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
 		AodvDataPackets newMessage = new AodvDataPackets();
@@ -42,7 +43,7 @@ public class AodvRoutingAlgorithm {
 		newMessage.setProcessingRound(gameSettings.getCurrentDataRound() + 1);
 		newMessage.setHopsDone((short) 0);
 		newMessage.setDidReachBonusGoal((byte) 0);
-		factory.create(src).enqueMessage(newMessage);
+		return factory.create(src).enqueMessage(newMessage);
 	}
 
 	public void aodvResendRouteRequest(Player owner) {

@@ -1,5 +1,6 @@
 package de.unipotsdam.nexplorer.server;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +89,10 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			try {
-				aodv.aodvInsertNewMessage(src, dest, owner);
+				Collection<Object> persistables = aodv.aodvInsertNewMessage(src, dest, owner);
+				for (Object persistable : persistables) {
+					dbAccess.persistObject(persistable);
+				}
 			} catch (PlayerDoesNotExistException e) {
 				throw new PlayerNotFoundException(e);
 			}

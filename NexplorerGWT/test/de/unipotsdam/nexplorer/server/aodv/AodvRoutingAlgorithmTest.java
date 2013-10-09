@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import static de.unipotsdam.nexplorer.testing.RefWalker.refEq;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -206,16 +208,16 @@ public class AodvRoutingAlgorithmTest {
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvInsertNewMessage(src, dest, owner);
+		Collection<Object> result = sut.aodvInsertNewMessage(src, dest, owner);
 
 		AodvRoutingMessages RREQ = new AodvRoutingMessages(other.getId(), Aodv.ROUTING_MESSAGE_TYPE_RREQ, src.getId(), dest.getId(), 8l, srcSequenceNumber + 1, 1l, "1", routingProcessingRound + 1);
 		AodvDataPackets dataPacket = new AodvDataPackets(destPlayer, ownerPlayer, srcPlayer, srcPlayer, (short) 0, Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE, dataProcessingRound + 1, (byte) 0);
 		AodvRouteRequestBufferEntries bufferEntry = new AodvRouteRequestBufferEntries(src.getId(), src.getId(), srcPlayer.getSequenceNumber());
 
 		verify(dbAccess).persist(srcPlayer);
-		verify(dbAccess).persist(refEq(dataPacket));
 		verify(dbAccess).persist(refEq(bufferEntry));
 		verify(dbAccess).persist(refEq(RREQ));
+		assertTrue(result.contains(dataPacket));
 	}
 
 	@Test
@@ -224,10 +226,11 @@ public class AodvRoutingAlgorithmTest {
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvInsertNewMessage(src, dest, owner);
+		Collection<Object> result = sut.aodvInsertNewMessage(src, dest, owner);
 
 		verify(dbAccess).getSettings();
 		verifyNoMoreInteractions(dbAccess);
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
@@ -252,7 +255,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getRouteToDestination(destPlayer.getId(), otherPlayer.getId())).thenReturn(factory.create(otherRoute));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvInsertNewMessage(src, dest, owner);
+		Collection<Object> result = sut.aodvInsertNewMessage(src, dest, owner);
 
 		AodvDataPackets packet = new AodvDataPackets();
 		packet.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
@@ -264,7 +267,7 @@ public class AodvRoutingAlgorithmTest {
 		packet.setPlayersBySourceId(srcPlayer);
 		packet.setProcessingRound(3l);
 
-		verify(dbAccess).persist(refEq(packet));
+		assertTrue(result.contains(packet));
 	}
 
 	@Test
