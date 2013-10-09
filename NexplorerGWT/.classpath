@@ -63,10 +63,10 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ehcache-core-2.4.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-ehcache-4.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/postgresql-9.1-901.jdbc4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LocationLibrary"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dev.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RouteMeRestLibrary"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>

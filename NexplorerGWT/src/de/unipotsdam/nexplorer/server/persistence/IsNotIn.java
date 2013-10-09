@@ -2,8 +2,8 @@ package de.unipotsdam.nexplorer.server.persistence;
 
 import java.util.Collection;
 
-import com.google.gwt.thirdparty.guava.common.base.Predicate;
-import com.google.gwt.thirdparty.guava.common.collect.Collections2;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 public class IsNotIn implements Predicate<Player> {
 

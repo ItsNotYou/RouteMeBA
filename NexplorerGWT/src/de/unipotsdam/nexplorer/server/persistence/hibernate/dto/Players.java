@@ -24,7 +24,6 @@ import javax.persistence.Version;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.GwtTransient;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -92,7 +91,6 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 		try {
 			HashMap<Long, Players> result = new HashMap<Long, Players>();
 			if (getNeighbourses() == null) {
-				GWT.log("Neighbours are empty, returning");
 				return result;
 			}
 
@@ -107,7 +105,6 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 				result.put(fullNeighbour.getId(), strippedNeighbour);
 			}
 
-			GWT.log("Neighbours found, returning " + result.size());
 			return result;
 		} catch (NullPointerException e) {
 			throw e;
