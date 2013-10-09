@@ -28,7 +28,13 @@ public class LoginTask extends AsyncTask<String, Void, LoginAnswer> {
 	protected LoginAnswer doInBackground(String... params) {
 		try {
 			String name = params[0];
-			return rest.login(name);
+
+			LoginAnswer result = rest.login(name);
+			if (result.error != null) {
+				cancel(false);
+			}
+
+			return result;
 		} catch (Exception e) {
 			cancel(false);
 			return null;

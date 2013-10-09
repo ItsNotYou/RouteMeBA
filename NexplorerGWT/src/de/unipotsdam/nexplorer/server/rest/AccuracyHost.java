@@ -64,6 +64,9 @@ public class AccuracyHost {
 			}
 
 			return result;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -163,6 +166,9 @@ public class AccuracyHost {
 					session.clear();
 				}
 			}
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}

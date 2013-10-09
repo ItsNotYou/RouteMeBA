@@ -63,6 +63,9 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 				}
 				return new PlayerInfo(internal.get(), settings.inner(), transmittablePacket);
 			}
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 
@@ -90,6 +93,9 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 				throw new PlayerNotFoundException(e);
 			}
 			return true;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 
@@ -109,6 +115,9 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			aodv.aodvResendRouteRequest(owner);
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -117,7 +126,7 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 		performance.trace("getPlayerInfo took {}ms", end - begin);
 		return true;
 	}
-	
+
 	@Override
 	public boolean policyDummy(MessageDescription desc) {
 		return true;
@@ -133,6 +142,9 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			aodv.aodvResetPlayerMessage(player);
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -166,6 +178,9 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 			}
 
 			return new MarkersJSON(jsonNodes, jsonPackets);
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 
@@ -183,6 +198,9 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			Setting settings = dbAccess.getSettings();
 			return settings.inner().getUpdateDisplayIntervalTime().intValue();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 

@@ -59,8 +59,8 @@ public class NodeMapper {
 			throw new PlayerDoesNotExistException("avoiding nullpointer in NodeMapper");
 		}
 		if (!existing.containsKey(p.getId())) {
-			Players node = p;
-			existing.put(p.getId(), p);
+			Players node = new Players();
+			existing.put(p.getId(), node);
 
 			Player player = data.create(p);
 			List<Item> items = player.getVisibleItems();

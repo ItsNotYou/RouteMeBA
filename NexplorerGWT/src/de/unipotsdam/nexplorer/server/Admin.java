@@ -92,8 +92,8 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 
 			dbAccess.persist(gameSettings);
 		} catch (Exception e) {
-			e.printStackTrace();
 			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -121,6 +121,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		Unit unit = new Unit();
 		try {
 			unit.resolve(ServerTimer.class).stop();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -137,6 +140,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		Unit unit = new Unit();
 		try {
 			unit.resolve(ServerTimer.class).pause();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -152,6 +158,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		Unit unit = new Unit();
 		try {
 			unit.resolve(ServerTimer.class).resume();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -180,6 +189,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 
 			GameStats stats = new GameStats(settings);
 			return stats;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 
@@ -200,6 +212,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 				stats.add(item.inner());
 			}
 			return stats;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 
@@ -232,6 +247,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 
 			PlayerStats stats = new PlayerStats(messagers, nodes);
 			return stats;
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 
@@ -284,6 +302,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			ItemPlacer placer = new ItemPlacer(dbAccess);
 			placer.placeItems();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -300,6 +321,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		try {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			dbAccess.resetDatabase();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -318,6 +342,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			Setting settings = dbAccess.getSettings();
 			settings.findNewBonusGoal();
 			settings.save();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
@@ -356,6 +383,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 				}
 			}
 		} catch (Exception e) {
+			unit.cancel();
 			System.err.println(e.getMessage());
 		} finally {
 			unit.close();
@@ -379,6 +407,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			}
 
 			settings.save();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}

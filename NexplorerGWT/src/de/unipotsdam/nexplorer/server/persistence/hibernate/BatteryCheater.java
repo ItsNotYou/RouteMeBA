@@ -22,7 +22,8 @@ public class BatteryCheater extends TimerTask {
 					node.save();
 				}
 			}
-		} catch (Throwable t){
+		} catch (Throwable t) {
+			unit.cancel();
 			System.err.println(t.getMessage());
 		} finally {
 			unit.close();

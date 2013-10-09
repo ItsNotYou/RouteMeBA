@@ -25,6 +25,16 @@ import de.unipotsdam.nexplorer.shared.Location;
 
 public class Player implements Locatable {
 
+	/**
+	 * Set booster duration to 15 seconds.
+	 */
+	private static final long BOOSTER_DURATION = 15000;
+
+	/**
+	 * Set booster range to 4 meters.
+	 */
+	private static final long BOOSTER_RANGE = 4;
+
 	@InjectLogger
 	private Logger logger;
 	private final Players inner;
@@ -40,13 +50,36 @@ public class Player implements Locatable {
 		this.data = data;
 	}
 
+	/**
+	 * Gets the nodes sending range. Considers enhancements like signal range boosters.
+	 * 
+	 * @return Nodes sending range in meters.
+	 */
 	public long getRange() {
 		Long signalRangeBooster = inner.getHasSignalRangeBooster();
-		if (signalRangeBooster != null && signalRangeBooster > 0) {
-			return inner.getBaseNodeRange() + 4;
+		if (isBoosterActive(signalRangeBooster)) {
+			return inner.getBaseNodeRange() + BOOSTER_RANGE;
 		} else {
 			return inner.getBaseNodeRange();
 		}
+	}
+
+	/**
+	 * A booster is active if a booster was activated within the last {@link #BOOSTER_DURATION} ms.
+	 * 
+	 * @param lastBoosterActivation
+	 *            Timestamp of the last booster activation. The timestamp is defined as the value that is returned by {@link Date#getTime()}.
+	 * @return <tt>true</tt> if a booster is active, <tt>false</tt> otherwise.
+	 */
+	private boolean isBoosterActive(Long lastBoosterActivation) {
+		if (lastBoosterActivation == null) {
+			return false;
+		}
+
+		long now = new Date().getTime();
+		long then = lastBoosterActivation;
+
+		return (now - then) <= BOOSTER_DURATION;
 	}
 
 	public Long incSequenceNumber() {

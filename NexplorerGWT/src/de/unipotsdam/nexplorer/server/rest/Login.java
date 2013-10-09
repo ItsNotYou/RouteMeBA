@@ -58,6 +58,7 @@ public class Login {
 
 			return new LoginResultJSON(thePlayer.getId());
 		} catch (Throwable t) {
+			unit.cancel();
 			// Some error occurred
 			return new LoginResultJSON(SERVER_ERROR);
 		} finally {

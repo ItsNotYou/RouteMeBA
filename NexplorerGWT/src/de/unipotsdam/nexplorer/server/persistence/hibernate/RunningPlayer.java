@@ -40,6 +40,9 @@ public class RunningPlayer extends TimerTask {
 				mobile.updatePlayerPosition(new PlayerLocation(runnerId, 52.39345, 13.130513, 5.));
 				jumped = false;
 			}
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
 		} finally {
 			unit.close();
 		}
