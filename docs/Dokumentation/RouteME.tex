@@ -1,0 +1,1037 @@
+\documentclass[a4paper,notitlepage]{article}
+%Anfang der Settings
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage[latin1]{inputenc}
+%\usepackage[utf8]{inputenc} 
+%\usepackage[titleformat=commasep, commabeforerest = true,ibidem=name&title&auto,human, authorformat=smallcaps, authorformat = citationreversed,pages = test,see]{jurabib}
+\usepackage [numbib]{tocbibind}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{ltablex}
+\usepackage{tabularx}
+\usepackage{supertabular}
+\usepackage{multirow}
+\usepackage{listings} 
+\usepackage{url}
+%\renewcommand*{\biburlprefix}{(Website verfügbar auf: }
+%\renewcommand*{\biburlsuffix}{)}
+\usepackage[a4paper,left=2.5cm, right=2.5cm]{geometry}
+\usepackage{lscape}
+\usepackage{pdfpages}
+\usepackage{float}
+
+%Glossar konfigurieren
+\usepackage{glossaries-babel}
+\usepackage[nonumberlist,numberedsection=autolabel, translate=false,toc,style=long,]{glossaries}
+%\numberline{}
+%\usepackage{ams,amsmath,amscd,amsthm,amssymb, bbm}
+%\renewcommand*{\glossaryname}{Stichwortverzeichnis}
+%\usepackage{translator}
+\makeglossaries
+
+%Abbildungsverzeichnis soll auch eine Nummer haben
+\renewcommand{\listoffigures}{\begingroup
+\tocsection
+\tocfile{\listfigurename}{lof}
+\endgroup} 
+
+%Literaturverzeichnis umbenennen
+\settocbibname{Literaturverzeichnis}
+%\usepackage[nottoc]{tocbibind}
+
+%Schriftgröße festlegen
+\onehalfspacing
+\fontsize{12}{15}\selectfont
+
+%Einstellungen für Paragraphen
+\widowpenalties 1 10000
+\raggedbottom
+
+%Glossareinträge
+%\newglossaryentry{mot}{name=Extrinsische Motivation,description={Motivation, die durch äußere Zwänge entsteht. Häufig begleitet Furcht}}
+%\newglossaryentry{exp}{name=Exploratives Lernen,description={Entdeckendes, selbst-gesteuertes Lernen}}
+%\newglossaryentry{ld}{name=Lernzieldefinition,description={Definition einer Kompetenz, einer messbaren Folge einer Lernsituation}}
+%\newglossaryentry{mod}{name=Modelllernen,description={Lernen, indem man Modelle der Wirklichkeit schafft und diese vergleicht}}
+%\newglossaryentry{nne}{name=Neuigkeitseffekt,description={Der Effekt, dass eine neue Lernmethode wegen ihrer Neuigkeit Erfolg hat}}
+%\newglossaryentry{game}{name=Game Pattern,description={Muster, die einen Spielaspekt ausmachen. Zum Beispiel Punkte sammeln}}
+%\newglossaryentry{Lokalitat}{name=Lokalität, description=Hier ortsgebundenes Lernen}
+%\newglossaryentry{Interaktivitat}{name=Interaktivität,description={Hier interaktives Lernen mit Mensch-Computer oder Mensch-Mensch Interaktion}}
+%\newglossaryentry{Relationalitat}{name=Relationalität,description={Hier lebensnahes Lernen}}
+%\newglossaryentry{Usability}{name=Usability,description={Benutzbarkeit von Software}}
+%\newglossaryentry{Community}{name=Community,description={Gemeinschaftliches Lernen}}
+%\newglossaryentry{Handlungsabsicht}{name=Handlungsabsicht,description={Die Absicht, aufgrund einer motivationalen Disposition gewisse Handlungen durchzuführen}}
+\newglossaryentry{GWT}{name=GWT,description={Google Web Toolkit}}
+\newglossaryentry{AODV}{name=AODV,description={Ad-hoc On-demand Distance Vector}}
+
+%\newacronym{LS}{LS}{Lernspiel}
+%\newacronym{LE}{LE}{Lernerfolg}
+\newacronym{WBT}{WBT}{Web Based Training}
+%Ende der Settings
+
+% Commands
+\newlength{\imgwidth}
+\newcommand\scalegraphics[1]{%   
+    \settowidth{\imgwidth}{\includegraphics{#1}}%
+    \setlength{\imgwidth}{\minof{\imgwidth}{\textwidth}}%
+    \centering%
+    \includegraphics[width=\imgwidth]{#1}%
+}
+
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% Default settings for code listings
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  frame=single,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
+%Titelseite konfigureren
+%\date{2.04.2012}
+\author{Julian Dehne \and Hendrik Geßner}
+\title{RouteMe - Dokumentation des Refactoring}
+
+%Beginn des eigentlichen Dokumentes
+\begin{document}
+\maketitle
+%Die Titelseite mit persönlichen Autoren des Autors anreichern
+\vfill
+
+\begin{quote}
+
+\textbf{}\newline\bigskip
+
+% Hier die persönlichen Daten
+Student:\newline
+Julian Dehne, Matrikelnummer: 752711 \newline
+B.A. European Studies \newline
+Fachsemester: 06 \newline
+Hochschulsemester: 08\newline
+
+Adresse:\newline 
+Stahnsdorfer Straße 156b\newline
+14482 Potsdam\newline
+Julian.Dehne@googlemail.com\newline
+\bigskip
+
+Student:\newline
+Hendrik Geßner, Matrikelnummer: 751352 \newline
+Fachsemester: 07 \newline
+Hochschulsemester: 07 \newline
+
+Adresse:\newline 
+Stahnsdorfer Straße 148a\newline
+14482 Potsdam\newline
+HENGE01@googlemail.com\newline
+\bigskip
+
+Institution: \newline
+Universität Potsdam\newline
+Institut für Informatik\newline
+
+\end{quote}
+
+\thispagestyle{empty}
+
+\thispagestyle{empty}
+\pagebreak
+
+%Inhaltsverzeichnis
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+
+\begin{abstract}
+\parindent0ptPervasives und spielbasiertes Lernen gehören zu einer neuen Gattung innovativer Lernmethoden. In diesem Kontext wurde an der Universität ein innovatives Spiel RouteMe entwickelt. Die Implementation auf PHP Basis offenbarte bei dem Versuch Fehler zu beheben und Struktur in den Quellcode zu bringen strukturelle wie auch konzeptionelle Schwächen. Daher haben wir uns entschieden, das Spiel auf Java Basis weitesgehend neu zu schreiben.
+Die vorgenommenen Änderungen bieten nachfolgenden Arbeiten die Möglichkeit auf einer stabilen und stärker gekapselten Architektur aufzubauen.
+\begin{center}
+\textbf{Keywords}: \textit{Pervasives Lernen}, \textit{Spielbasiertes Lernen}, \textit{Evaluation}, \textit{Refaktorisierung}
+\end{center}
+\end{abstract}
+
+\section{Einleitung}
+
+Da nachfolgende Dokument enthält eine technische Beschreibung des Prozesses der Refaktorisierung des Spiels RouteMe. 
+
+Diese Arbeit ist ein Teil eines größeren Forschungsprojektes des Lehrstuhls für komplexe multimediale Anwendungsarchitekturen, welches sich in folgenden Teilschritten bewegt:
+
+\begin{enumerate}
+	\item Das Spielkonzept basiert auf einer Diplomarbeit und lässt sich in einschlägigen Veröffentlichungen nachlesen.~\cite{Moebert.2011A}
+	\item Eine lerntheoretisch fundierte Evaluation des Spielkonzeptes wurde in einer Bachelorarbeit erstellt.~\cite{JulianDehne.201204.03.2013E}
+	\item Das Refaktorisierungsprojekt ist Gegenstand dieser Arbeit
+	\item Entwicklung weiterer Features stehen in Aussicht (Bachelorarbeit von Hendrik Geßner)
+\end{enumerate}
+
+
+
+% Hier der Inhalt
+\section{Prozessbeschreibung}
+
+\subsection{Ausgangslage}
+
+Im Herbst 2011 hat Julian Dehne die erste Implementierung des Spiels RouteMe von Tobias Moebert übernommen, um sie auszurollen und weiterzuentwickeln. Dies konnte aus folgenden Gründen nicht durchgeführt werden:
+
+Das erste Hindernis war, dass die neueren PHP Versionen (5.4+) bezüglich der JSON Klasse nicht rückwärtskompatibel sind (\textit{breaking changes}). Der Institusadmin war aus Sicherheitsgründen nicht bereit, eine ältere PHP Version einschließlich ihrer Sicherheitsprobleme zu installieren. Auf dem (einzigen) verfügbaren Produktionsserver liefen zu diesem Zeitpunkt noch andere Projekte, die durch eine Umkonfiguration der PHP-Engine gefährdet gewesen wären.
+
+Das zweite Hindernis bestand darin, dass Julian Dehne drei unterschiedliche Versionen des Quellcodes zu Verfügung standen, die sich zum Teil stark voneinander unterschieden. Eine Version wurde als Diplomarbeit eingereicht. Eine weitere Version mit Optimierungen wurde von Tobias Moebert zugeschickt und eine dritte Version stammt von einem Deployment auf einem externen Server von Raphael Zender.
+
+Ein drittes Hindernis bestand darin, dass sich die MySQL-Version seit der ersten Implementierung weiterentwickelt hatte (5.1 auf 5.3). Auch hier gab es institutionelle Probleme, eine ältere MySQL Version zu installieren
+
+Nachdem die oben stehenden Probleme umgangen oder behoben wurden, stellte sich heraus, dass die Software noch Programmierfehler enthielt. Dies wurde von Tobias Moebert im Emailverkehr bestätigt.
+
+Da in jedem Fall die Programmierfehler behoben werden mussten und ein Upgrade der Implementation auf aktuelle Versionen der Programmierumgebung notwendig wurde, kam es zur Entscheidung, die Software zu refaktorisieren.
+
+\subsection{Refaktorisierung des PHP Quellcodes}
+
+Im folgenden beschreiben wir unsere Vorgehensweise und unsere Lösungsstrategien, um mit auftretenden Problemen umzugehen.
+
+In dem Quellcode haben wir eine Reihe von konzeptionellen Schwächen entdeckt: Die Objektorientierung, die in PHP5 bereits angelegt ist, wurde nur sehr begrenzt verwendet. Alleine die Datenbanktabellen werden auf Klassen gemappt, wobei es hier zu einer Überladung mit Funktionen einzelner Klassen kommt. Zum Beispiel ist ein Großteil des Algorithmus in einer einzigen Klasse implementiert, die gleichzeitig auch sämtliche Felder eines Datenobjektes trägt.
+
+Eine Trennung von Logik, Anzeige und Persistenz wurde nicht durchgeführt. In Abbildung \ref{fig:phpmiserableview} wird durch die farbliche Markierung deutlich, wie zusätzlich zu dem PHP und HTML Code, Javascript in das Dokument integriert wird. Desweiteren wird sogar in der dritten Zeile des ersten Javascript Blocks Javascript von PHP aus dynamisch erstellt. Dies belegt die fehlende Trennung von serverseitiger und klientseitiger Implementierung. Konsequenter wäre es gewesen, die fehlenden Daten auch hier per Webservice oder mit einem blockierenden AJAX Aufruf aufzurufen.
+
+Unserer Meinung nach ist es bei PHP im Gegensatz zu Java oder C\# üblicher, Teillogik in den HTML Quellcode zu schreiben, allerdings setzten sich auch hier Template-Frameworks wie Smarty~\cite{smarty} durch. Außerdem ist es üblicher geworden, den Javascript Code zu injizieren, anstatt ihn \textit{inline} zu schreiben. Der Javascript-Code hat meist die Funktion Events abzufangen, wohingegen der PHP-Code die Logik oder das ViewModell übernimmt. Durch die Verwendung von AJAX, welches hier komplette HTML Seiten lädt, die mit PHP serverseitig erstellt wurden, werden diese Prinzipien in einer Weise verletzt, dass es unmöglich machte, etwas an der Darstellung zu ändern, ohne auch die Logik-Komponenten anzufassen.
+
+Ein weiteres Indiz für die Validität dieser Programmierprinzipien lässt sich an den Wiederholungen von identischem Code festmachen, der entweder durch \textit{copy-paste} oder andere problematische Techniken auftreten.
+
+Das Konzept von Namespaces, welches in PHP5 eingeführt wurde, wurde nicht benutzt, was dazu führte, dass einzelne Codeteile nicht sauber gekapselt sind. Eine Variable, die an einer beliebigen Stelle im Code deklariert wird, kann über PHP-\textit{includes} an einer ganz anderen Stelle verwendet werden. Dies ist nicht nur problematisch, weil es zu schwer erklärbaren Überschattungen zur Laufzeit kommen kann, sondern auch, weil dadurch die Wartbarkeit leidet. 
+
+Gleiches gilt für Funktionen und IDE Unterstützung: Der PHP-Code wurde mit Netbeans~\cite{netbeans} entwickelt, welches PHP-Entwickelern ermöglicht, die schwache Typisierung der Sprache durch PHP-Doc~\cite{phpdoc} auszugleichen, wodurch es möglich wird, die Klasse des Rückgabewerts von Funktionen zu kennen, ohne die Funktion semantisch lesen zu müssen. Desweiteren besteht dadurch die Möglichkeit, die Aufruf-Hierarchie von Funktionen im Code nachzuvollziehen.
+
+Ein rein wahrnehmungstechnisches Problem ergibt sich aus dem folgenden Umstand: Wenn in einer Datei PHP\-Code, HTML und Javascript durchmischt werden, leidet darunter die Lesbarkeit.
+
+\begin{figure}
+	\centering
+		\scalegraphics{pics/phpmiserableview.png}
+	\caption{Durchmischung der Programmierebenen}
+	\label{fig:phpmiserableview}
+\end{figure}
+
+Die rote Linie zeigt, wo Netbeans dem Entwickler die Seitengrenze bzw. einen Zeilenumbruch vorschlägt, damit der Quellcode auf einer A4-Seite dargestellt werden kann, ohne extrem weit nach rechts scrollen zu müssen.
+
+Die Unterstützung durch die IDE ist in PHP schlechter entwickelt als in Java. Es gibt unter anderem keine Möglichkeit, einzelne Programmteile halbautomatisch zu Methoden oder Klassen zusammenzufügen. 
+
+Hinzu kommt, dass es zu dem PHP-Code keinerlei technische Dokumentation gab außer wenigen unstrukturierten Kommentaren im Quellcode.
+
+Die Refaktorisierung des PHP-Codes gestaltete sich aus den oben benannten Gründen als sehr problematisch und für uns annähernd unmöglich. An manchen Stellen konnten wir Fehler in dem Quellcode erkennen (nicht benutzte Variablen, fehlende Zweige, Fehler etc.), aber der Gesamtzusammenhang war kaum zu verstehen, da zu viele mögliche Referenzen existierten. Für jemanden, der den Code nicht selber geschrieben hat, ist es so im Nachhinein beinahe unmöglich kleinteilige Änderungen vorzunehmen. Nach einiger Zeit entstand so eine Mischung aus ursprünglichem fehlerbehafteter und neu dazu gekommener fehleranfälliger Software, die nur pessimistische Aussichten bot.
+
+\subsection{Entscheidung gegen PHP und für Java}
+
+Wie in dem vorhergegangenen Kapitel beschrieben weist der ursprüngliche Quellcode nicht bewältigbare Mängel auf, so dass wir uns für eine weitesgehende Neuimplementierung entschieden haben.
+
+\bigskip
+Die Entscheidung für Java lässt sich mit den folgenden Argumenten rechtfertigen:
+
+\begin{enumerate}
+	\item Freie IDE und mächtige Open Source Community
+	\item Verbreitung im akademischen Bereich
+	\item Erfahrungen der Programmierer
+	\item Bekannte und getestete Frameworks
+	\item Betriebssystemunabhängigkeit
+	\item Die Integration von Zeit in kompilierenden Sprachen
+\end{enumerate}
+
+Die Probleme mit dem Ausrollen zeigen einen der wichtigsten Vorteile von Java gegenüber PHP, bei dem der Interpreter massiv von dem Betriebssystem abhängig ist. Ein Beweis dafür sind die Pfadangaben: Da in PHP das Namespace-Konzept nicht durchgängig integriert ist, entstehen die meisten Verweise durch relative Pfadangaben. Diese Pfadangaben sind jedoch von einem Betriebssystem zum nächsten unterschiedlich (Linux achtet auf Großschreibung im Gegensatz zu Windows).
+
+Ein weiteres Argument für Java gegenüber PHP ist die Programmierung von zeitabhängigen Ereignissen. Um diesen Punkt zu erklären müssen wir einen größeren Bogen spannen:
+
+ Das Spiel RouteMe funktioniert so, dass ein Routingprotokoll simuliert wird. Diese Simulation selber ist jedoch als Konzept nur wage definiert worden, was wir hier nacholen: Um eine computergesteuerte Simulation des AODV-Protokolls zu implementieren, gibt es nach unseren Überlegungen nur drei logische Varianten. Die erste wäre die, dass das Protokoll in Realzeit abläuft. Dies hätte aber das didaktische Problem zur Folge, dass die Spieler das Ergebnis ihrer Entscheidungen nicht angemessen würdigen können, da ihnen der Prozess, den sie ausgelöst haben, in seinen einzelnen Schritten verborgen bleibt. Ein entscheidendes Spielkonzept ist jenes, dass die Spieler bei einer überlasteten Route nach einiger Zeit die Entscheidung treffen können, eine neue zu wählen. Wäre die Route nur für einige Millisekunden überlastet, könnten die Lernenden diesen Vorgang nicht erfassen. Die zweite Möglichkeit ist die, eine Verzögerung einzubauen, aber dennoch den Algorithmus trotzdem dezentral ablaufen zu lassen. Dies hat zwei Nachteile: Zum einen ist es schwieriger Übersichtstabellen zu erstellen, da es keine Instanz gibt, die einen Zustand zu einem definierten Zeitpunkt zeigt. Zum anderen verbaut dies den Weg, andere Algorithmen zu integrieren, die auf einem anderen Prinzip basieren. Die dritte Möglichkeit ist die einer vollständigen Simulation. Dies ist diejenige, die in der Originalversion verfolgt wurde.
+
+Wenn ein Algorithmus zeitverzögert mit einer zentralen Instanz simuliert werden soll, dann muss es einen Taktgeber geben, der die Zeitverzögerung orchestriert. Es ist nicht ohne Weiteres möglich, die Verzögerung dezentral einzubauen, ohne auch die Logik dezentral zu lassen, da es hier eine wechselseitige Beeinflussung gibt.
+
+Der Taktgeber wurde in der PHP-Version dadurch realisiert, dass der Browser, in dem das Admininterface für das Spiel läuft, in regelmäßigen Abständen ein Step-Signal an den Server sendet. Bei den Testläufen stellte sich diese Architektur als äußerst instabil heraus, da das Spiel sofort in einen undefinierten Zustand gerät, sobald dieser Browser geschlossen wird.
+
+Das Problem bei PHP besteht darin, dass die Sprache interpretiert wird, wenn eine HTTP-Anforderung den unterliegenden Server erreicht. PHP ist nicht darauf ausgelegt eigenständige Dienste zu fahren, die zeitgesteurte Events auslösen. Hier ist Java wesentlich besser geeignet, da in Java ein logischer Thread aufgemacht werden kann, der von dem Betriebssystem regelmäßig beachtet wird und dann aus sich heraus agieren kann. Durch die Entscheidung für Java konnten wir neben unseren anderen bereits geschildeten Bedenken auch ein klares architektonisches Argument für den Umstieg finden.
+
+\subsection{Entscheidung für das Hibernate Datenbank Framework}
+
+Die Entscheidung für das Hibernate Framework~\cite{hibernatelocking} beruht auf der Erkenntnis, die in dem PHP-Projekt bereits erfolgt ist, dass Objektorientierung nur dann konsequent umgesetzt ist, wenn die Datenbankschicht auch aus Objekten, sogenannten \textit{Data Transfer Objects (DTO)}, besteht. In dem PHP-Projekt wurde Doctrine~\cite{doctrine} verwendet. Auf Java Ebene ist eines der wichtigsten OR-Frameworks Hibernate von JBoss. Im folgenden nennen wir einige Argumente, die die Entscheidung für Hibernate beeinflusst haben:
+
+\begin{enumerate}
+	\item Abstraktion: Es können sehr viele unterschiedliche Datenbanken angebunden werden
+	\item Automatische Generierung von Klassen
+	\item Programmatischer Auf- und Abbau der Datenbank
+	\item Integrierter Cache
+	\item Lazy Loading
+	\item Annotationen anstatt XML/YML	
+	\item Kenntnisse im Team
+	\item Query API
+	\item Named Queries
+	\item Kenntnisse im Team (von dem FreshUP Projekt)
+\end{enumerate}
+
+Im Laufe der Entwicklung hat sich herausgestellt, dass gerade der Algorithmus sehr viele Datenbankhits verursacht. Der Algorithmus wird durch Hibernate in mehrfacher Weise beschleunigt: Es werden nur die benötigten Daten \textit{lazy} nachgeladen, häufige Anfragen werden im Cache vorrätig gehalten.
+
+Trotz den großen Herausforderungen, die die Einbindung eines komplexen Frameworkes mit sich bringt, hat Hibernate bezüglich der Performanz und Wartbarkeit enorme Vorteile gebracht. Dadurch, dass im Team bereits Erfahrungen mit dem Framework vorherrschen, entsteht mit jedem Projekt eine größerer Produktionsgewinn.
+
+Im Gegensatz zu SQL hilft die Objektorientierung, die Persistenzschicht zu strukturieren und allgemein im Projekt verwendbare Datenobjekte zu schaffen.
+
+\subsection{Entscheidung für das Google Web Toolkit}
+
+Nach der Entscheidung gegen PHP auf Serverseite stellte sich die Frage, ob wir die Klientsicht auch verändern wollten. Tatsächlich ginge es technisch, eine auf REST basierende Schnittstelle zu schaffen und die dynamischen Elemente der Websiten mit PHP zu scripten.
+
+Aus pragmatischen Gründen wurde dieser Ansatz verworfen. Zum einen müsste man so einen Java- Container und einen HTTP-Server gleichzeitig konfigurieren und bedienen, zum anderen fielen dann die Vorteile von Java (Betriebssystemunabhängigkeit etc.) weg.
+
+Ein weiteres Problem stellte die Tatsache da, dass der klientseitige Quellcode nicht sauber von der Logik entkoppelt wurde, so dass es nicht unerheblichen Aufwand bereiten würde, den PHP-Code bei verändertem Backend beizubehalten. Insbesondere die Technik, die HTML-Seiten komplett per AJAX zu verschicken anstatt den veränderten Zustand, läge hier quer.
+
+Daher haben wir uns dafür entschieden auch auf Klientseite den PHP-Code zu ersetzen. Die Herausforderung war daraufhin die, dass die GUI in ihrem Layout und prinzipiellen Design beibhalten werden sollte. Daher mussten wir eine Technologie verwenden, die es erlaubt, das HTML, CSS und Javascript zu ummanteln, ohne dass semantische Veränderungen entstehen.
+
+Wir haben uns hier für das Google Web Toolkit (GWT) (https://developers.google.com/web-toolkit/) entschieden. Hierfür gibt es folgende Argumente:
+
+\begin{figure}[!ht]
+\begin{enumerate}
+	\item Es wird auf Klient und auf Server Seite in Java programmiert
+	\item Die Kommunikation (XML-RPC) zwischen Klient und Server wird durch den Kompiler geprüft
+	\item Der Debugger überspringt die Grenze zwischen Klient und Server 
+	\item Reifes und weit verbreitetes Framework
+	\item Kompiliert nach Javascript und kann sowohl natives Javascript aufrufen als auch umgekehrt
+	\item Erfahrungen im Team
+	\item Entkoppelung
+\end{enumerate}
+\end{figure}
+
+Durch die Verwendung von GWT konnten wir einen großen Teil von der ursprünglichen Implementierung der GUI beibehalten und konsequent neu strukurieren. Hierbei haben wir das Konzept verfolgt, dass einzelne GUI-Komponenten, die logisch eigenständig sind, auch als eigenständige Dateien und Klassen existieren, so dass sie genau wie andere Komponenten dynamisch komponiert werden können. Dazu haben wir das HTML nach Funktionen untergliedert und zu jeder Funktion einen HTML-Binder (GWT- kontrolliertes HTML) erstellt. Da GWT nach Javascript kompiliert, konnten wir die meisten Javascript Funktionen übernehmen.
+So konnten wir Schrittweise den Klientcode transferieren. In einigen wenigen Fällen mussten wir von GWT aus Javascript-Funktionen mittels des \textit{Javascript Native Interface} (JSNI) aufrufen, wie in Abbildung \ref{fig:jsni} zu sehen ist.
+
+\lstset{language=Java}
+\pagebreak
+\begin{figure}[!ht]	
+	\lstinputlisting{listedcode/JSNI.java}
+	\caption{Beispiel für Aufruf von Javascript Methoden aus GWT}
+	\label{fig:jsni}
+\end{figure}
+
+GWT hat einen weiteren Vorteil gebracht: AJAX-Aufrufe, die aufgrund der nun fehlenden PHP-Komponente keine Daten bekommen haben, wurden von GWT als HTTP-Fehler in der IDE gelistet. So konnten wir für die bestehenden Javascript Schnittstellen zum Backend systematisch ein neues Interface aufbauen, so dass die Funktionalität des Javascript-Codes bewahrt und gleichzeitig getestet wurde. Mit den Motiven für den Aufbau einer zusätzlichen REST-Schnittstelle beschäftigt sich das nächste Kapitel.
+
+\subsection{Entscheidung für eine zusätzliche REST Schnittstelle}
+
+Wie in dem letzten Kapitel beschrieben, haben wir uns dafür entschieden den Javascript-Code beizubehalten. Hier stellte sich jedoch die Frage, woher die Daten kommen sollen, die von Javascript mittels AJAX geladen und gesendet werden.
+
+Hier gab es zwei Möglichkeiten: Die erste wäre die direkte Nutzung von JSNI als Übergang von Javascript in Richtung Java. Allerdings ist der Weg von JSNI zu Java schwieriger, da Javascript im Gegensatz zu Java nicht stark typisiert ist. Das hieße, dass bei den Aufrufen die Java Namespaces kodiert werden müssten. Die zweite Möglichkeit besteht darin, neben der GWT eigenen XML-RPC Schnittstelle eine weitere REST-basierte Schnittstelle zu entwickeln. Die so entstandene Struktur der Schnittstellen sieht man in der folgenden Abbildung \ref{fig:schnittstellenkonzept}.
+
+\begin{figure} [h!]
+	\centering
+		\scalegraphics{pics/schnittstellenkonzept.pdf}
+	\caption{REST und XML-RPC Schnittstellen}
+	\label{fig:schnittstellenkonzept}
+\end{figure}
+
+Diese hat drei Vorteile: Zunächst arbeitet REST auf JSON, was Tobias Moebert korrekterweise als kompakteres Format bezeichnet und motiviert hat. Gerade die häufigen Positionsupdates lassen sich so schneller kommunizieren (wobei wir hier nie Zeitprobleme erkennen konnten). Zusätzlich haben wir so die Möglichkeit den Javascript-Code für die Rest-Aufrufe zu übernehmen. Schließlich bietet dies dem Programmierer die Möglichkeit komfortabel je nach Aufgabe entweder Javascript oder Java zu verwenden. Der Übergang von Java zu Javascript geschieht über JSNI.  Der Übergang von Javascript zu Java geschieht über eine REST-Schnittstelle, die auf Java Seite mit Jersey~\cite{jersey} umgesetzt ist. Jersey erlaubt es, Java-Klassen mit Annotationen automatisch zu JSON-serialisierten Objekten umzuwandeln und diese ebenfalls mit Annotationen an einen Pfad zu koppeln. Abbildung \ref{fig:beispielrest} entspricht dem Code für die Möglichkeit per \url{[serverurl]/game_events/get_players} eine Objekt zu bekommen, welches Spielern und Koordinaten aufeinander abbildet.
+
+\pagebreak
+\begin{figure}[!ht]	
+	\lstinputlisting{listedcode/GameEvents.java}
+	\caption{Beispiel für REST Schnittstelle}
+	\label{fig:beispielrest}
+\end{figure}
+
+Dieses Beispiel zeigt auch, dass im ursprünglichen Projekt das REST-Konzept nur unzureichend reflektiert wurde. Diese Abfrage sollte eigentlich mittels eines HTTP-GET anstatt POST durchgeführt werden. Die Schnittstellen sind nun gut dokumentiert und verständlich, aber bezüglich Standardeinhaltung noch ausbaufähig.
+
+\subsection{Entscheidung für eine Refaktorisierung der Persistenzschicht und der Schnittstellenschicht}
+
+Die interne Aufteilung im Team bestand darin, dass Julian Dehne den Klient nach GWT portiert und die Schittstellen auf Java Seite implementiert hat, während Hendrik Geßner die serverseitige Logik und die Datenbankschicht portiert hat. Diese Aufteilung führte zu disjunkten Klassenstrukturen, da es zunächst nicht erkennbar war, dass es einen logischen Zusammenhang zwischen der Persistenzschicht und der serverseitigen Schnittstellenschicht gibt.
+
+Sowohl die Schnittstellen als auch die Datenbank können als eine Art Persistenz- oder zustandsverändernde Schicht angesehen werden. Wenn der Zustand verändert wird, dann wird dieser Zustand sowohl in der Datenbank als auch gegenüber den Klienten kommuniziert. Für beide Vorgänge, Zustandsveränderung und Persistenz, lassen sich die gleichen Datentransferobjekte verwenden. Dies ist nicht zu verwechseln mit der Vermischung von View und Logik in dem ursprünglichen Projekt. Denn es gibt eine klare Trennung der Funktionen. Nur das Objekt der Funktionen ist gleichartig und kann wiederverwendet werden.
+
+Um dieses Konzept umzusetzen, mussten wir uns intensiver mit dem Datenbankframework, der GWT gesteuerten XML-RPC Schnittstelle und dem REST-Framework auseinandersetzen. Mittels Annotationen konnten wir für die verschiedenen Schnittstellen eine Untermenge der Klassen bereitstellen, indem wir die nicht verwendeten Properties ausgeblendet haben. Auch konnten wir so Properties bei der Serialisierung mittels Jersey nach JSON umbenennen, damit keine  Veränderung des Javascript-Codes notwendig wird. Auch gegenüber Hibernate mussten wir per Annotationen Änderungen vornehmen, damit einige Methoden nicht zu unnötigen Datenbankeinträgen führen.
+
+Diese Maßnahmen führten für den Programmierer zu einer erhöhten Komplexität, da er damit rechnen muss, dass die Klasse, an der er arbeitet, von drei schwergewichtigen Frameworks (unterschiedlich) interpretiert wird. Der Vorteil liegt darin, dass Redundanz bei den Klassen verringert wird. Der Code wird so verständlicher, da für neue Felder oder Assoziationen nur eine Klasse verändert werden muss. Mittels Annotationen kann danach feingesteuert werden, ob und durch welche Schnittstelle die hinzugekommenen Felder zu den Klienten kommuniziert werden.
+
+
+\subsection{Lokalisierung und GPS als programmatische Herausforderung}
+
+Nach der Refaktorisierung und bei funktionierenden Unit-Tests sahen wir uns unter realen Bedingungen einer Gemengelage von Störfaktoren gegenüber, die eine verwendbare Aktualisierung von GPS Daten unmöglich machte. Zu den Problembereichen gehörten Umweltbedingungen, Hardware und Software.
+
+Um den Einfluss von Umweltbedingungen zu erforschen stellten wir den Kontakt zu zwei Geowissenschaftlern\footnote{Rafael Schäffer, Doktorand an der Technischen Unversität Darmstadt, Udo Kracke, Vermessungsingeneuer, und Solveig Pospiech, Doktorandin an der Unversität Göttingen} her, die in ihren Messungen häufig auf GPS-Ortungen zurückgreifen. Gemeinsam konnten wir folgende Faktoren isolieren:
+
+\begin{figure}[h!]
+\begin{enumerate}
+	\item Hauswände reduzieren die Fläche, auf der die Satelliten gefunden werden. Trotzdem wird ein Signal gefunden, aber es dauert 5-10 Minuten bis das geschieht. 
+  \item Bäume: Baumkronen und organische Prozesse wie Photosynthese behindern GPS- Signale. 
+  \item Wolkendecke und Nieselregen blockieren Signale
+  \item Zu viel Sonne kann zu Lichtreflexionen und damit beeinträchtigen Signalen führen
+  \item Folgende grundsätzliche Zahlen gelten für die Genauigkeit:
+4-5 Satelliten bei guter Hardware bis zu 3 Meter, sonst 9-12 Meter. Bessere Ergebnisse gibt es nur mit AGPS. 
+\end{enumerate}
+\end{figure}
+
+Hardware als einflussnehmende Variable wurde von uns nicht systematisch erforscht. Es ist anzunehmen, dass es zwischen unterschiedlichen Endgeräten Varianz innerhalb der Erfassungsgenauigkeit und Frequenz gibt. Auch die Zeit, bis ein erstes Signal gefunden wurde, spielt eine Rolle.
+
+Als einflussreichste Störgröße stellte sich die Umsetzung auf Softwareseite innerhalb des Browsers heraus. Lange Zeit gingen wir von der Annahme aus, dass es keinen Unterschied machen würde, ob der GPS Empfänger des Endgerätes durch den Browser oder durch eine native Anwendung angesprochen wird.
+
+Es stellte sich heraus, dass es zwischen den Browsern extrem große Unterschiede gibt, die aber noch von den Unterschieden zwischen einer nativen gegenüber einer webbasierten Anwendung übertroffen werden. 
+
+Der Unterschied zwischen den Browsern lässt sich auf zwei Ebenen erklären. Zum einen gibt es Browser, die für mobile Endgeräte optimiert wurden, so dass aus Gründen der Energieökonomie unterschiedliches Verhalten erfolgt. Zum anderen wird Javascript von unterschiedlichen Browsern anders interpretiert. Dies ist insbesondere bei dem übernommenen Javascript der Fall (ein verwendetes Framework funktioniert nur auf Chrome und Safari), wohingegen GWT durchaus Javascript-Code erzeugt, der Browserweichen für alle gängigen Browser enthält.
+
+Der Unterschied zwischen einer nativen Applikation und der Browser basierten Variante lässt sich dadurch charakterisieren, dass die Applikation zumindest auf Android Basis mehr Ressourcen anfordern kann und häufigere GPS Daten erhält.
+
+Wir konnten dieses Problem umgehen, indem wir im Hintergrund eine Applikation laufen lassen, die kontinuierlich GPS Daten abfragt. Dadurch, dass diese Daten vom Betriebssystem vorrätig gehalten werden, kommt es zu dem Effekt, dass auch der Browser aktuellere und damit genauere Daten erhält.
+
+\subsection{Entscheidung für manuelle Suche nach einer geeigneten Örtlichkeit}\label{manuelle-gps-suche}
+
+Bei der Suche nach Fehlern, die für die schlechte Genauigkeit verantwortlich sind, gingen wir der Frage nach, ob die Lokalität das Spielfeldes einen Einfluss auf die Empfangsgenauigkeit haben könnte. Wie in dem vorhergegangenen Kapitel beschrieben, hatten wir uns diesbezüglich fachmännischen Rat eingeholt.
+
+In der Tat konnten wir je nach Ort stark variierende Messgenaugikeiten verzeichnen. Eine entscheidende Erkenntnis war die, dass bei fehlendem GPS-Signal das Handy in einen Modus verfällt, bei dem es über geo-IP den ungefähren Standort anhand des WLAN Netzes ermittelt. Hierdurch entstehen Lokalisisationsunschärfen von 50 Metern bis mehreren Kilometern. Aber auch bei existierendem GPS-Signal konnte der Standort nicht immer unter 10-20 Meter Genauigkeit bestimmt werden. Für ein Spiel, welches auf Interaktion der Spieler im Bereich weniger Meter konzipiert wurde, ist dies unzulänglich.
+
+Bei naiver Betrachtung käme man zu dem Schluss, dass es nun ausreichen würde, einmal mit einer mobilen Applikation denkbare Standorte abzulaufen. Leider liegt hier eine methodische Fehlvorstellung zu Grunde. Denn eine Koordinate, die an einem Tag schlechte Werte liefert, kann an einem anderen Tag wesentlich bessere Werte erbringen. Dies liegt an ungünstiger Wetterbedingungen (Wolkenbildung etc.), ungünstiger Satellitenkonstellation und anderen Faktoren.
+
+Eine Karte mit GPS-Genauigkeit, die Jahresmittelwerte liefern könnte, gibt es unseren Wissens nicht. Daher haben wir uns dafür entschieden, eine Applikation zu programmieren, die GPS-Werte sammeln und zu einer Karte zusammenfügen kann, die Auskunft über das beste Spielfeld bietet. Hierfür Diese Applikation wurde eine Android-Applikation publiziert, auf mehreren Handys von Teammitgliedern verteilt und systematisch ausgewertet. 
+
+Die so gesammelten Daten wurden in eine Datenbank geloggt, um von dort aus mittels eines C\# Projektes zu einer Karte zusammengefügt zu werden.  Da hier die Datenbank eine Programmiersprachenunabhänigkeit ermöglichte, wurde C\# gewählt, da hier eine sehr komfortable Karten-API zur Verfügung steht.
+
+Eine so enstandene Karte sieht man in der Abbildung \ref{fig:GPSmap}:
+
+\begin{figure}[h!]
+	\centering
+		\scalegraphics{pics/gps-map.png}
+	\caption{Beispielkarte aus manuell gesammelten Daten}
+	\label{fig:GPSmap}
+\end{figure}
+
+Die Farben auf der Karte zeigen die Empfangsgenauigkeit wie in der Legende dokumentiert. Weitere Features des Tool:
+
+\begin{enumerate}
+\item Auswahl von Messpunkten mittels Checkboxes
+\item Zoom
+\item Wahl zwischen fest kodierter Datei oder URL als Datenquelle
+\end{enumerate}
+
+\subsection{Zusammenfassung des Prozesses und der Phasenübergänge}
+
+Unsere Arbeit lässt sich in mehrere Etappen einteilen.
+
+Die erste Etappen beginnt bei der ersten Konfrontation mit dem PHP-Code und dem gescheiterten Versuch, diesen zum Laufen zu bringen. Dies dauerte c.a. drei Monate von Dezember 2011 bis Februar 2012.
+
+Die zweite Etappe dauerte von Mai 2012 bis Anfang September 2012. In dieser Zeit haben wir prototypisch den Server neu strukturiert und die GUI mittels eines Template-Frameworks entkoppelt. Außerdem haben wir die Schnittstellen in REST-konformen Javascript-Code konvertiert. Bei ersten Testläufen blieben einige semantische Fragen ungeklärt, so dass unsere bereits bestehende Skepsis gegenüber der Architektur im Allgemeinen zu der bereits beschriebenen Entscheidung führte, das Projekt in Java zu übertragen und dort zu refaktorisieren.
+
+\bigskip
+
+In der zweiten Septemberhälfte haben wir die Portierung nach Java durchgeführt.
+
+\bigskip
+
+Oktober 2012 korrigierten wir anfängliche Trennung der Datenbankschicht gegenüber der Schnittstellenschicht und beseitigten so auch Programmierfehler, die Redundanz g entstanden waren. 
+
+Bereits im Oktober offenbarten sich nach und nach die Probleme bei der webbasierten Lösung. Diese manifestierten sich im November und Dezember 2012, als wir die fertige Applikation zum ersten Mal unter realen Bedingungen getestet haben.
+Wir hatten dieses Projekt mit der Annahme begonnen, die Webbasiertheit sei bezüglich der GPS-Lokalisierung und des Javascripts gründlich durchdacht und gut konzeptualisiert. Gerade in diesem Punkt mussten wir leider aufgrund der realen Umstände einen schwierigen und aufreibenden Lernprozess durchmachen.
+
+Seit Januar 2013 arbeitete maßgeblich Hendrik Geßner an dem Projekt, da Julian Dehne aus Zeitgründen das auf ein halbes Jahr angelegte Projekt nicht mehr gut in sein Studium integrieren konnte. Dies war auch sachlogisch, da die bestehenden Probleme sich meist auf die Timer (Race Conditions), CPU- oder Datenbank-Last bezogen. 
+
+Hendrik Geßner arbeitet seit Anfang Dezember bis Mitte Dezember an dem bereits erwähnten Karten-Tool, welches noch bis Ende Dezember optimiert wurde.
+
+Im Januar 2013 wurden Bugfixes durchgeführt, die Fehler behoben, die durch die genaueren und schnelleren GPS Daten offenkundig wurden. Ende Januar wurde das Spiel mit bis zu 12 Spielern gespielt. Hier wurden bereits bei vier mobilen Knoten Performanzprobleme ersichtlich. 
+
+Im Februar 2013 wurde die Performanz durch eine In-Memory-Datenbank und viele kleine Veränderungen drastisch verbessert. In dieser Zeit entstand auch die Künstliche Intelligenz für mobile Klienten
+
+Im März 2013 wurde eine abgabefertiges Packet der Software erstellt und die Dokumentation finalisiert.
+
+\section{Technische Beschreibung der Software}
+
+\subsection{Spielinhalt aus technischer Sicht}
+
+Das Spiel ist auf das Lernen und Erleben von Routing-Algorithmen ausgelegt. Derzeit wird eine vereinfachte Version des AODV-Algorithmus~\cite{aodvrfc2003} angeboten, in der Knoten nur Batterien und Booster einsammeln können. Die Implementation der AODV-Simulation stammt aus der Vorgängerarbeit~\cite{Moebert.2011A}. Sie weicht an einigen Stellen vom RFC ab.
+
+\subsection{Tests}
+
+Das System wird mit verschiedenen Tests ausgeliefert. Die Tests befindet sich im Source-Ordner \texttt{test}. Da einige Tests auf der von Hibernate generierten Datenbank arbeiten muss jede Testklasse einzeln für sich gestartet werden. Es funktioniert nicht, alle Testklassen gleichzeitig zu starten, da Hibernate in diesem Fall die Datenbank vor einem Test nicht neu aufbaut und somit Artefakte aus den Tests zurückbleiben können.
+
+Zudem wurde testspezifischer Code geschrieben, der sich im Source-Ordner \texttt{src} im Package\linebreak
+\texttt{de.unipotsdam.nexplorer.testing} befindet.
+
+\subsection{Architektur der RouteMe Implementierung}
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics{pics/Architektur.pdf}
+	\caption{Logische Architektur der RouteMe-Implementierung}
+	\label{fig:architektur}
+\end{figure}
+
+Das für das Spiel relevante System unterteilt sich in verschieden logische Blöcke. Abbildung~\ref{fig:architektur} zeigt die logischen Blöcke sowie deren Kommunikationspfade. Eine Linie zwischen Blöcken bedeutet hierbei, dass der den Blöcken zugehörige Java-Code miteinander kommuniziert oder sich gegenseitig einbindet und nutzt. Im Folgenden wird die Zugehörigkeit von Packages und Blöcken angegeben. Um die Übersicht zu erhöhen, wurde auf das Präfix \texttt{de.unipotsdam.nexplorer} verzichtet. Zudem bedeutet die Angabe eines Oberpackage, dass die dazugehörigen Unterpackages ebenfalls gemeint sind.
+
+\begin{itemize}
+	\item DTOs: \texttt{server.shared}, \texttt{server.dto}, \texttt{server.persistence.hibernate.dto}
+	\item Display-Logik: \texttt{client} sowie der Javascript-Code
+	\item Sensoren: Javascript-Code
+	\item Gateway: Package \texttt{server} ohne Unterpackages, \texttt{server.rest}
+	\item Spiel-Logik: \texttt{server.data}, \texttt{server.di}, \texttt{server.persistence} ohne Unterpackages
+	\item Timer: \texttt{server.time}
+	\item Routing-Logik: \texttt{server.aodv}
+	\item Datenbank: \texttt{server.persistence}
+\end{itemize}
+
+Abgesehen von einer Komponente (Timer, Abschnitt~\ref{timer}) ist der Server javaseitig zustandslos aufgebaut. Der Zustand wird nur in der Datenbank gehalten.
+
+Im Folgenden werden die einzelnen logischen Schwerpunkte näher beschrieben.
+
+\subsubsection{Datenbank}\label{datenbank}
+
+Die Datenbank ist größtenteils aus der vorhergehenden Diplomarbeit übernommen. In Abbildung~\ref{fig:db-schema} ist die aktuelle Version dargestellt.
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[angle=90, trim = 0mm 0mm 0mm 11cm, clip, scale=0.7]{pics/db-schema.pdf}
+	\caption{Datenbank-Schema}
+	\label{fig:db-schema}
+\end{figure}
+
+Besonders auffällig sind die fehlenden Fremdschlüsselreferenzen. Obwohl an verschiedenen Stellen auf IDs aus der Players-Tabelle verweisen wird, sind diese nur selten als Fremdschlüssel eingetragen. Dies ist auf die Diplomarbeit zurückzuführen. Da die Datenbank für unsere Arbeiten genügt hat, haben wir diesen Aufbau nicht verändert.
+
+\paragraph{Denormalisierung}
+
+Die Datenbank ist einigen Stellen denormalisiert. Es handelt sich hierbei um Spalten aus der Settings-Tabelle, die in andere Tabellen kopiert wurden. Diese Entscheidung wurde während der Performance-Analysen getroffen, als sich herausstellte, dass der doppelte Zugriff auf die Datenbank (einmal für den eigentlichen Datensatz und einmal für die Settings-Spalte) zu langsam war. Die kopierten Spalten sind in der Tabellen Players zu finden, es handelt sich um base\_node\_range) und item\_collection\_range. Die betroffenen Spalteninhalte werden beim Login eines Spielers, also beim Erstellen eines neuen Players-Eintrages, gesetzt. Daraus ergibt sich, dass alle Veränderungen an der base\_node\_range und item\_collection\_range, die nach dem Login eines Spielers geschehen, sowohl in der Settings- als auch in der Players-Tabelle korrigiert werden müssen.
+
+\paragraph{Logischer Aufbau}
+
+Die Datenbank besteht aus mehreren Untergruppen: Logging, AODV und Spiel. Diese Gruppierungen sind nicht in Schemas aufgeteilt, obwohl eine Einteilung für langfristiges Verständnis und für Wartungsarbeiten sicherlich sinnvoll wären.
+
+\begin{itemize}
+	\item Logging: Hier werden Diagnose-Daten abgelegt, die während der Entwicklung für verschiedene Auswertungen verwendet wurden. Dazu gehören position\_backlog, performance und location\_log.
+	\item AODV: Für das Routing-Protokoll AODV spezifische Informationen werden durch das Tabellen-Präfix aodv\_ gekennzeichnet. Fremdschlüssel-Relationen sind unidirektional. Sie zeigen auf Spiel-Tabellen. Zu den AODV-Tabellen gehören aodv\_routing\_messages, aodv\_node\_data,\linebreak
+	aodv\_data\_packets und aodv\_routing\_table\_entries.
+	\item Spiel: Spiel-bezogene Daten wie Spieler, Punkte und Spieleinstellungen werden hier gespeichert. Zu den Tabellen gehören players, neighbours, items und settings.
+\end{itemize}
+
+In der Entwicklungsphase wird die Datenbank beim Serverstart von Hibernate erstellt. Hibernate verwendet dazu die in \texttt{config/hibernate.cfg.xml} angegebenen DTOs. Diese Einstellung ist für Produktivsysteme nicht geeignet, da Hibernate für die Erstellung der Datenbank-Tabellen Administrator-Rechte benötigt, von denen im Produktivbetrieb aus Sicherheitsgründen abgeraten wird. Um ein Produktiv-Setup zu erreichen sollte daher die Einstellung hibernate.hbm2ddl.auto unter config/hibernate.cfg.xml umgestellt werden und von einer von Hibernate auf einem Entwicklungs-Datenbankserver erstellten Datenbank ein SQL-Export erstellt werden. Dieser SQL-Export kann dann auf der Produktiv-Datenbank manuell als Administrator eingespielt werden, sodass sich Hibernate auf eine korrekte Datenbank verbindet.
+
+Da von der Diplomarbeits-Datenbank ausgegangen wurde, sind viele Altlasten übernommen worden: So existieren ungenutzte Spalten (\texttt{Players.has\_signal\_strength\_booster}), passen Spaltenname und verwendeter Datentyp nicht zusammen (\texttt{Players.has\_signal\_range\_booster} als Integer) und fehlen Fremdschlüsselrelationen (\texttt{Settings} und \texttt{Players}, \texttt{Aodv\_routing\_table\_entries} und \texttt{Players}).
+
+Die DTOs wurden über Reverse Engineering aus der Diplomarbeit-Datenbank erstellt. Änderungen an der Datenbank wurden danach in den DTOs vorgenommen, sodass Hibernate beim Start immer eine aktuelle Datenbank erstellt.
+
+\paragraph{Performance} Wie bereits erwähnt war die Austauschbarkeit der Datenbank eines der Entscheidungskriterien für Hibernate. Um die für den Spielbetrieb geeignetste Datenbank zu finden wurden die folgenden Datenbanksysteme installiert und evaluiert:
+
+\begin{itemize}
+	\item MySQL 5.5.28 für Windows
+	\item H2 1.3.170 für Windows
+	\item PostgreSQL 9.2.3.1 für Windows
+\end{itemize}
+
+PostgreSQL wurde nur kurz betrachtet, da die meisten Webserver auf MySQL setzen oder eine In-Memory-Datenbank wie H2 unterstützen. In den aufgestellten Testszenarien hat PostgreSQL die gleichen Performance-Eigenschaften wie MySQL gezeigt. Um Performance-Daten über den Server zu erlangen wurde die Knoten-KI um eine Performance-Komponente erweitert, die die Zeit zwischen Absenden der Anfrage und Erhalt der Antwort misst. Dabei hat sich gezeigt, dass die Anzahl an Datenbankzugriffen pro Abfrage maßgeblich entscheidend für die Antwortzeit ist. Tabelle~\ref{fig:db-performance-table} gibt einige Mittelwerte gegliedert nach SVN-Revision und Datenbanksystem an. In einigen Zeilen fehlen Werte, was durch einen Strich symbolisiert ist. Das Fehlen der Werte bedeutet, dass der RouteMe-Server die an ihn gestellte Last nicht bearbeiten konnte. Dies äußerte sich durch eine CPU-Auslastung von 100\% und dem Verwerfen von Anfragen in Form von Timeouts. Um den Performance-Engpässen entgegenzuwirken, wurden Ausführungszeiten mit Hilfe der Sampling- und Profiling-Tools von VisualVM~\cite{visualvm} ermittelt. Die größten Zeiteinsparungen ergaben sich durch die Denormalisierung der Datenbank, da die Settings-Tabelle nicht mehr abgefragt werden musste und so Mehrfachanfragen an die Datenbank verhindert wurden.
+
+\begin{figure}[ht!]
+	\begin{center}
+		\begin{tabular}{|lc|r|rrr|}
+			\hline
+			Revision & DBMS & Knoten & readGameStatus & sendLocation & collectItem \\
+			\hline
+			\hline
+			\multirow{4}{*}{7940} & \multirow{4}{*}{mysql} & 2 & 18ms & 36ms & 36ms \\
+			 & & 4 & 14ms & 40ms & 33ms \\
+			 & & 6 & 15ms & 45ms & 28ms \\
+			 & & 8 & - & - & - \\
+			\hline
+			\multirow{2}{*}{7943} & \multirow{2}{*}{mysql} & 6 & 20ms & 44ms & 41ms \\
+			 & & 8 & - & - & - \\
+			\hline
+			\multirow{2}{*}{7945} & \multirow{2}{*}{mysql} & 6 & 16ms & 47ms & 45ms \\
+			 & & 8 & 19ms & 56ms & 50ms \\
+			\hline
+			\multirow{2}{*}{7946} & \multirow{2}{*}{mysql} & 6 & 19ms & 13ms & 25ms \\
+			 & & 8 & 12ms & 14ms & 25ms \\
+			\hline
+			\multirow{2}{*}{7948} & \multirow{2}{*}{mysql} & 8 & 12ms & 17ms & 27ms \\
+			 & & 10 & - & - & - \\
+			\hline
+			\multirow{6}{*}{7969} & \multirow{3}{*}{mysql} & 8 & 14ms & 49ms & 50ms \\
+			 & & 10 & 27ms & 30ms & 42ms \\
+			 & & 12 & 24ms & 24ms & 44ms \\
+			\cline{2-6}
+			 & \multirow{2}{*}{h2} & 10 & 9ms & 24ms & 13ms \\
+			 & & 12 & 13ms & 11ms & 20ms \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Performance-Messungen (schneller ist besser)}%
+	\label{fig:db-performance-table}%
+\end{figure}
+
+Ein weiterer Performance-Gewinn wurde durch die Veränderung der Locking-Strategie erzielt. \textit{Locking} bezeichnet die Blockade einer Tabelle oder eines Datensatzes, um Race-Conditions durch gleichzeitiges Lesen und Schreiben zu verhindern. Dabei sind multiple Lesezugriffe unproblematisch, multiple Schreibzugriffe und gleichzeitige Lese- und Schreibzugriffe müssen jedoch verhindert werden, um inkonsistente Daten zu vermeiden. Hibernate verwendet standardmäßig pessimistisches Locking, was in den meisten Datenbanksystem als Table-Locking umgesetzt wird. Dabei wird eine Tabelle bei einem Schreibzugriff gesperrt, sodass nur der Schreibvorgang Datensätze ändern kann, während alle weiteren Schreib- und Lesezugriffe warten müssen. Bei häufigem und hochfrequenten Wechseln von Lesen- und Schreibzugriffen reduziert diese Strategie die Datenbankperformance erheblich, weshalb in diesen Fällen \textit{optimistisches Locking} empfohlen wird. Dabei werden - sofern es das Datenbanksystem unterstützt - keine Datensätze gesperrt, sodass alle Schreib- und Lesezugriffe ohne Verzögerung parallel weiterarbeiten. Stattdessen findet eine Prüfung auf Veränderung beim Commit statt. Falls ein zu schreibender Datensatz gegenüber seinem zuletzt bekannten Zustand von einem anderen Prozess verändert wurde, wird der Commit zurückgewiesen.
+
+Um optimisches Locking in Hibernate zu aktivieren ist das Hinzufügen einer besonderen Spalte - der Versions-Spalte - erforderlich~\cite{hibernatelocking}. Anhand der \texttt{@Version}-Annotation erkennt und aktiviert Hibernate das Row-Locking. Fast alle DTOs im Projekt besitzen diese Versions-Spalte. Wird ein Datensatz geladen und verändert, so überprüft Hibernate beim Commit, dass der Wert der Versions-Spalte in der Datenbank identisch mit dem des Datensatzes beim Laden aus der Datenbank ist. Bei einem erfolgreichen Commit erhöht Hibernate den Wert in der Versions-Spalte. Diese Spalte darf nicht im DTO verändert werden.
+
+H2 unterstützt kein optimistisches Locking~\cite{h2locking}, ist aber mit der Table-Locking-Strategie schneller als MySQL. Bei MySQL brachte die Einführung des optimistischen Locking einen erheblichen Performance-Gewinn, sodass annähernd die Geschwindigkeit des H2-Datenbanksystemes erreicht wurde.
+
+Für den Testbetrieb hat sich die Nutzung von H2 als vorteilhaft erwiesen, da kein externes Datenbanksystem installiert werden muss und die Datenbank im Vergleich zu anderen Datenbanksystemen sehr schnell ist. Im Produktiveinsatz werden alle Daten in der Datenbank gelöscht, sobald die JVM beendet wird. Allerdings bietet eine dateibasierte Datenbank wie MySQL hier keinen Vorteil, da das ursprüngliche Konzept~\cite{Moebert.2011A} keine Versionierung oder Archivierung von Spieldaten vorsieht.
+
+\subsubsection{Dependency Injection}
+
+Der Begriff \textit{Dependency Injection} wurde 2004 von Martin Fowler geprägt~\cite{dependencyinjection} und zielt auf die Entkopplung von Komponenten. Klassen arbeiten mit Interfaces, deren Implementierung ihnen von außen von einem \textit{Dependency Container} übergeben werden. Auf eine Einführung wird verzichtet.
+
+Der Server verwendet den Dependency Container \textit{Guice}~\cite{googleguice}. Guice findet Implementationen über \textit{Module}. In diesen Modulen werden die Regeln angegeben, nach denen Guice anschließend Instanzen erstellt und mit den zugehörigen Abhängigkeiten befüllt. Generell sollte auf das direkte Ansprechen des Guice-Containers verzichtet werden, da der \texttt{Unit}-Konstruktor bereits alle notwendigen Aufgaben übernimmt. Lediglich Test-Klassen müssen den Container mit eventuell zu mockenden Abhängigkeiten einrichten.
+
+Alle Klassen, die Abhängigkeiten vom Container zugewiesen bekommen, müssen ihren Konstruktor mit der \texttt{@Inject}-Annotation versehen. Diese weißt Guice an, den annotierten Konstruktor für Dependency Injection zu verwenden. Um einen eingerichteten Logger zu erhalten muss eine private Klassenvariable vom Typ \texttt{org.apache.logging.log4j.Logger} angelegt werden, die mit einer \texttt{@InjectLogger}-Annotation versehen ist. Diese Annotation weist Guice an, einen Logger für die entsprechende Klasse zu erstellen, zu initialisieren und anschließend zu setzen.
+
+\subsubsection{Timer}\label{timer}
+
+Von der Zustandslosigkeit ausgenommen sind die Timer in \texttt{server.time}: Um die Abhängigkeit vom Admin-Interface zu lösen mussten regelmäßige Intervalle innerhalb des Servers verarbeitet werden. Regelmäßig durchgeführte Aufgaben sind:
+
+\begin{itemize}
+	\item Neue Items auf dem Spielfeld verteilen
+	\item AODV-Pakete weiterleiten
+	\item Knoten-Batterien aktualisieren
+	\item Nachbarn aktualisieren
+	\item Spieleinstellungen verändern
+\end{itemize}
+
+Die Timer sind größtenteils darauf ausgelegt, dass sie Logik in ihren Implementierungen vermeiden. Stattdessen rufen sie Gateway-Methoden auf, die die Delegierung der Aufgaben übernehmen.
+
+Die Verwendung eines \texttt{TimerCallback} ist im Nachhinein nicht notwendig. Die einzige Klasse, die Gebrauch von diesem Callback macht ist \texttt{SettingsUpdateStarter}, deren Code im \texttt{Timer}-Package fehlplatziert ist. Der Callback-nutzende Code sollte eigentlich im Admin-Servlet stehen. Um keine Instabilität in den Server zu bringen wurde auf kurzfristige Änderungen verzichtet. Langfristig sollte jedoch eine Migration des Codes eingeplant werden.
+
+\subsubsection{Klient}
+
+GWT kompiliert das fertige Projekt in Javascript, welches mit dem HTML zusammen übertragen wird. 
+In dem HTML stehen nur noch Metatags und die übliche Einteilung in HEAD und BODY. Das bedeutet, dass HTML Code, der in GWT geschrieben wird, durch Javascript an die von dem Programmierer gewünscht Stelle eingefügt wird. Es gibt daher drei unterschiedliche logische Ebenen auf denen programmiert wird: HTML, GWT (Java) und Javascript. Dabei geschieht die Verknüpfung von GWT und HTML mittels IDs im HTML. Javascript wird wie bereits erwähnt von GWT per JSNI aufgerufen.
+
+Der klientseitige Code ist sehr schlank, da die meisten Berechnungen serverseitig erfolgen. Seine Komplexität entsteht jedoch durch die verschiedenen Programmierebenen, die zum Teil Altlasten sind und es für spätere Entwickler erschweren, den Code zu verstehen. Um diesem Problem zu begegnen dokumentieren wir den Klient pro \textit{package}.
+
+Zur Orientierung ist es hilfreich zu wissen, dass Javascript und CSS wie in anderen Webprojekten per relativem Pfad in der HTML Datei inkludiert werden. Diese Dateien liegen gemeinsam mit den von GWT kompilierten Skripten im \texttt{war}-Verzeichnis. Die Javascript Dateien liegen in diesem Projekt im den Ordner \texttt{war/js}. Die CSS Dateien liegen in dem Ordner \texttt{war/css}. Die Datei \texttt{war/settings.xml} enthält die Konfiguration für das Spiel
+
+Es gibt drei Klienten. Eine Adminsicht, eine Sicht für die Nachrichtenspieler und eine Sicht für die mobilen Knoten.
+
+\paragraph{Toplevel}
+
+Abbildung \ref{fig:client-toplevel} zeigt das \textit{package} \texttt{de.unipotsdam.nexplorer.client}. AdminService und IndoorService stellen die XML-RPC Schnittstellen zu dem Server dar. Darunter sind die Einstiegspunkte gelistet. 
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{eap/client-toplevel.png}
+	\caption{Toplevel-Klassendiagramm für den Klienten}
+	\label{fig:client-toplevel}
+\end{figure}
+
+\pagebreak
+\paragraph{Adminklient}
+
+Das \textit{package} \texttt{de.unipotsdam.nexplorer.client.admin} enthält die Struktur der \textit{View} für den Adminklient. Diese ist in Abbildung \ref{fig:admin-gwt} zu sehen.
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{eap/admin-gwt.png}
+	\caption{Struktur der Adminviewkomponenten}
+	\label{fig:admin-gwt}
+\end{figure}
+
+Ein dünner Wrapper enthält ein HTML-Panel, in dem das originale HTML enthalten ist. Es ist jedoch funktional untergliedert. MyMapCanvas1 enthält das HTML, welches für die geographische Übersichtskarte mit den Spielerpositionen zuständig ist. GameStatsBinder enthält das HTML für die Anzeige des Spielzustandes. ItemStatsBinder enthält das HTML für die Anzeige der Items (Batterien, Booster etc.) und PlayerStatsBinder enthält das HTML für die Anzeige der Spielerzustände.
+
+Das \textit{package} \texttt{de.unipotsdam.nexplorer.client.admin.viewcontroller} enthält den ViewController für den Adminklienten. Die Aufgaben des ViewController bestehen darin, die GWT-GUI bestehend aus den Bindern (letzter Abschnitt) mit den anderen Programmelementen zu verbinden. 
+
+\begin{figure} [ht!]
+	\centering
+		\scalegraphics{eap/admin-viewmodell.png}
+	\caption{Der Controller für den Adminklienten}
+	\label{fig:admin-viewmodell}
+\end{figure}
+
+Die Updater, die in Abbildung \ref{fig:admin-viewmodell} aufgeführt sind, stellen die Verbindung zu der Serverschnittstelle her:
+
+\begin{enumerate} 
+	\item DefaultValueUpdater sendet die gewählten Spielwerte an den Server
+	\item InitialStatsUpdater lädt die im XML gespeicherten DefaultSpielwerte
+	\item GameStartedHandler verarbeitet die Serverdaten nach dem Spielstart
+	\item GameStatsUpdater verarbeitet den neuen Spielzustand
+	\item ItemStatsUpdater verarbeitet die neuen Itemstatistiken
+	\item PlayerStatsUpdater verarbeitet die neuen Spielerstatistiken		
+\end{enumerate}
+
+Eine Sonderrolle spielen der StatsUpdateTimer und die JSNI-Klasse. Der StatsUpdateTimer reguliert die Frequenz in der die Adminsicht aufgefrischt wird. Hier kann auch speziell adjustiert werden, wenn die Spielparameter zum Spielen nicht geeignet sind. Die JSNI Klasse wurde bereits erwähnt. Sie überträgt den allgemeinen Systemzustand auf das native Javascript.
+
+
+\pagebreak
+Der schematische Ablauf der Aktivitäten lässt sich in der Abbildung \ref{fig:admin-klient-activity} nachvollziehen. Zunächst wird die HTML-Seite angefragt, woraufhin GWT innerhalb des Javascripts aufgerufen wird. Hier wird zunächst der \textit{game configuration screen} gezeigt. Sollte das Spiel schon begonnen haben, wird dieser aus dem HTML gelöscht und durch die Adminsicht während dem Spiel ersetzt. An dieser Stelle wird parallel eine Schleife gestartet, die den aktuellen Zustand vom Server abfragt, wie auch die Adminübersichtskarte auf Javascript aktualisiert.
+
+\begin{figure} [ht!]
+	\centering
+		\scalegraphics{eap/admin-klient-activity.png}
+	\caption{Aktivitätsdiagramm zum Adminklienten}
+	\label{fig:admin-klient-activity}
+\end{figure}
+
+\pagebreak
+\paragraph{Indoorklient}
+
+Das \textit{package} \texttt{de.unipotsdam.nexplorer.client.indoor} enthält den Klienten für die Nachrichtenspieler.
+Abbildung \ref{fig:indoor-gwt} zeigt eine UML-Sicht auf die Klassenstruktur.
+
+\begin{figure} [ht!]
+	\centering
+		\scalegraphics{eap/indoor-gwt.png}
+	\caption{Klassendiagram für den Indoorklienten}
+	\label{fig:indoor-gwt}
+\end{figure}
+
+Wie bei der Adminsicht auch wird die Übersichtskarte von nativem Javascript übernommen. Hier wurde auch ein maßgeblicher Teil des Codes beibhalten und nur marginal angepasst oder korrigiert. Auf GWT- Seite wird die Aktualisierung der Buttons und der dahinterliegenden Funktion durch GWT übernommen. NewRouteRequestBinder steht für den Button, der mit "`Nachricht neu versenden"' betitelt ist. ResetPlayerMessageBinder steht für den Button, der mit "`Vorgang abbrechen"' betitelt ist. NewMessageBinder steht für den Button, mit dem man neue Nachrichten versenden kann. LegendBinder enthält die Komponente, die tabellarisch den aktuellen Zustand anzeigt.
+
+Die einzelnen Binder enthalten intern natives Javascript \textit{inline} im HTML mit Funktionsaufrufen, die die Buttonclicks verarbeiten. Dies ist eine Altlast, die besonders ungünstig ist, da die Funktionsaufrufe hier nicht erwartet würden. Dies war der Preis dafür, 80 Prozent des Originalcodes zu übernehmen. In Retroperspektive sollte dies refaktorisiert werden, indem die Komponente komplett auf GWT umgestellt wird.
+
+Der ViewController besteht nur aus einem einzigen Timer, der analog zu dem StatsUpdater beim Admininterface funktioniert. 
+
+\pagebreak
+
+\paragraph{Mobileklient}
+
+Der Mobile Klient wurde nicht mit GWT ummantelt, da hier bereits von Tobias Moebert eine klare Schnittstelle eingeführt wurde.
+
+Die einzige Aufgabe von GWT besteht hier darin, das HTML und native Javascript auszuliefern. 
+
+Der Ablauf im Javascript lässt sich in seinen groben Zügen in dem folgenden Aktivitätsdiagramm auf Abbildung \ref{fig:mobile-activity} nachvollziehen:
+
+\begin{figure} [ht!]
+	\centering
+		\scalegraphics{eap/mobile-activity.png}
+	\caption{Aktivitätsdiagramm für Mobilklienten}
+	\label{fig:mobile-activity}
+\end{figure}
+
+\subsubsection{Schnittstellen}
+
+Im folgenden beschreiben wir die grundsätzliche Struktur XML-RPC der Schnittstellen im Detail, um weiterführenden Arbeiten die Möglichkeit zu geben, ohne tieferes Studiums des Servers neue Klients zu bauen. Zunächst stellen wir die Schnittstellen dar, um danach die übertragenen Objekte zu erklären
+
+\paragraph{Schnittstellen-Abhängigkeiten}
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[angle=90,scale=0.47]{pics/server-schnittstellen.pdf}
+	\caption{Strukturelle Übersicht über die Schnittstellen}
+	\label{fig:server-schnittstellen}
+\end{figure}
+
+ In Abbildung \ref{fig:server-schnittstellen} sieht man ein Schnittstellendiagram, welches die logischen Packete REST, Java (GWT verwendbar) und den Anknüpfungspunkten auf Klientseite unterteilt ist. Wir betrachten hierbei das REST-\textit{package} \texttt{de.unipotsdam.nexplorer.server.rest} und die XML-RPC-Schnittstelle \texttt{de.unipotsdam.nexplorer.server}. Das REST-\textit{package} liegt eine Hierarchiestufe unter den XML-RPC relevanten Klassen, da es eine spezielle Ausprägung der durch die Java-Interfaces definierten Schnittstelle darstellt.
+
+NexplorerGWT steht für die Adminsicht, die auf diese URL (\texttt{[SERVER-URL]/NexplorerGWT.html}) festgelegt ist. Analog dazu steht IndoorGWT für die Nachrichtensicht und MobileGWT für die Klients der mobilen Knoten.
+
+GameEvents repräsentiert die ursprünglichen Methoden, um von außen den Takt oder andere Spielereignisse anzugeben. Einen Großteil dieser Methode haben wir übernommen und implementiert, aber als \textit{deprecated} markiert, da sie nach unserer Sicht zu einem instabilen System führen.
+
+GameImpl ist der Einstiegspunkt, um von außen grundlegende Spielfunktionen wie Spielstart, oder Spielende zu verwenden. Diese Klasse wird sowohl von der Adminsicht als auch von der Indoorsicht genutzt. 
+
+Beide Klassen, GameEvents und GameImpl rufen innerhalb von Java die Admin-Klasse auf, die die eigentliche Implementierung zur Verfügung stellt. Die Adminklasse wird jedoch auch direkt von GWT innerhalb des Klients genutzt.
+
+Daneben verwendet der Indoorklient noch die Indoor-Klasse im REST-package, welche wiederum die Implementation der Indoor-Funktionen im \textit{server}-package braucht. Diese werden auch über GWT direkt verwendet.
+
+Die Login-Klasse wird sowohl von den Nachrichtenspielern als auch von den mobilen Knotenspielern verwendet, und realisiert den Login.
+
+Die Klasse Mobil im REST-\textit{package} arbeitet analog zu der Klasse Indoor.
+
+\paragraph{Datentransferobjekte}
+
+Im JSON-Format sehen die Datentransferobjekte wie gewöhnliche unbenannte Javascript Objekte aus. Die automatische Konversion durch Jersey geschieht wie folgt:
+
+\begin{enumerate}
+	\item Das Toplevel Objekt ist unbenannt
+	\item Geschachtelte Objekte tragen den Klassennamen der Java-Klasse
+	\item Properties in Form von Primitive Typen oder Strings werden auf einfache JSON-Properties abgebildet
+	\item HashMaps werden auf assoziative Arrays abgebildet
+\end{enumerate}
+
+Die Konversion ist in dem Jersey-Framework mit dem Adaptor-Pattern umgesetzt. Da wir keine Performanzprobleme durch falsche Datentypen erwarten, wie im Kapitel zu den theoretischen Vorüberlegungen beschrieben, haben wir einen abstrakten Adaptor eingeführt, der das Serialisieren und Deserialisieren generisch macht. Alle Klassen, die auf diese Art und Weise übertragen, müssen von der JSONable-Klasse erben. Die Datentypen werden damit nicht optimiert. Sollten hier irgendwann Probleme auftauchen, kann der Adaptor für den Einzelfall implementiert werden.
+
+
+\pagebreak
+Die Abbildung \ref{fig:schnittstelle_server_1} zeigt die erste von drei Graphiken, die die Struktur der serialisierten Datentransferobjekte (JSON) in Java-Notation abbildet.
+% Graphik
+
+\begin{figure} [ht!]
+	\centering
+		\scalegraphics{pics/schnittstelle_server_1.png}
+	\caption{Erste Graphik zu den Datentransferobjekten}
+	\label{fig:schnittstelle_server_1}
+\end{figure}
+
+MarkersJSON liefert die notwendigen Daten für die Indoorspieler. Zum einen benötigen diese die Position der mobilen Spieler abhängig von deren ID, zum anderen eine Liste von Datenpacketen und die "`locatable"', also auf einer Karte verortbar, sind. Eine weitere Anforderung besteht darin, dass die Datenpackete den ursprünglichen Auftrag (von-nach) und ihren Auftraggeber kennen, da dies für die Anzeige der Flaggen notwendig ist.
+
+NodeMap ist eine Klasse, welche die Spieler ihren IDs zuordnet.
+
+Die Abbildung \ref{fig:schnittstelle_server_2} zeigt die zweite von drei Graphiken. Sie knüpft rechts an Abbildung \ref{fig:schnittstelle_server_1} an.
+
+\begin{figure} [ht!]
+	\centering
+		\scalegraphics{pics/schnittstelle_server_2.png}
+	\caption{Zweite Graphik zu den Datentransferobjekten}
+	\label{fig:schnittstelle_server_2}
+\end{figure}
+
+Als zentrale Objekte werden hier die Player Klasse und die Itemklasse dargestellt. Die Playerklasse enthält die Spielerdaten. Die Itemklasse enthält die Spielitems, namentlich Booster und Batterien. Auch die Items werden mit IDs als assoziative Arrays nach JSON serialisiert.
+
+Sie zeigt den Zusammenhang zwischen der GameStats und der Settings Klasse. Beide halten die wichtigsten Informationen zu dem Spielzustand und den gewählten Einstellungen. Spielzustand und Einstellungen sollten eigentlich unterschiedliche Objekte sein, werden aber als Altlast strukturell von uns übernommen.
+
+In der Tat wurden in dem Originalprojekt sehr viele ungünstige Datentypen verwendet, welche sich in der Datenbank zeigen, (Long für semantische Booleans, int für semantische Booleans, long für Datestamps etc.). Diese Fehlgriffe führen zu überflüssigem Code bei der Auswertung im Klienten. Damit diese Probleme sich nicht innerhalb des GWT-Code fortpflanzen, haben wir die GameStats Klasse als Mantel für die Settingsklasse geschaffen, die die gleichen Properties, aber als höherwertige Datentypen bereitstellt. Damit es hier keine Coderedundanz gibt, enthält diese GameStats-Klasse die Settings-Klasse als Datenhalter.
+
+\subsection{Architektur der Tools}
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{pics/applikationen_und_tools.pdf}
+		\caption{Übersicht der ausführbaren Bestandteile}
+	\label{fig:applikationen_und_tools}
+\end{figure}
+
+Im Rahmen des Projektes sind neben dem Routing-Spiel verschiedene Werkzeuge entstanden. Eine Übersicht ist in Abbildung~\ref{fig:applikationen_und_tools} gegeben. Die meisten Bestandteile sind Java-Programme, die über eine \texttt{main}-Methode in einem \textit{Unterpackage} von \texttt{de.unipotsdam.nexplorer} gestartet werden.
+
+Eine Ausnahme bildet \texttt{accuracy.logger}. Es handelt sich hierbei um eine Android-App, die zusammen mit \texttt{tools.location} und \texttt{GpsMap} zum GPS-Scouting verwendet wurde. Diese Werkzeuge werden in Abschnitt~\ref{gps-scouting} näher beleuchtet.
+
+Die mobile KI unter \texttt{tools.dummyplayer} kann Mobile-Spieler simulieren. Sie wird in Abschnitt~\ref{mobile-ai} vorgestellt.
+
+Um Performance-Daten zu analysieren, loggt der Server alle benötigten Zeiten innerhalb der Servlets in ein Performance-Log. Dieses Log wird von \texttt{tools.performance} gelesen und die darin enthaltenen Informationen in eine Datenbank geschrieben, um später weiterverarbeitet zu werden. Die Funktionsweise des Lesevorganges ist in Abschnitt~\ref{performance-parser} dokumentiert.
+
+Werte wie die Sendereichweite der mobilen Knoten werden zu Spielbeginn festgelegt und sind nicht mehr über die Adminschnittstelle änderbar. Um eine optimale Abstimmung zu finden lassen sich ausgewählte Einstellungen mit Hilfe von \texttt{tools.manipulation}, welches in Abschnitt~\ref{settings-manipulator} beschrieben ist, auch im laufenden Spiel ändern.
+
+Alle Werkzeuge benötigen einen laufenden Server, um Daten abzurufen oder zu senden. Darüber hinaus greifen einige Werkzeuge direkt auf die lokal in der \texttt{hibernate.cf.xml} eingestellte Datenbank zu, auch wenn der laufende Server eine andere Konfiguration hat.
+
+\subsubsection{GPS-Scouting}\label{gps-scouting}
+
+Wie in Abschnitt~\ref{manuelle-gps-suche} dargelegt wurden mit Hilfe der Android-Applikation GPS-Daten gesammelt
+
+\paragraph{Accuracy App}
+
+Die Android-App ist im Play Store~\cite{googleplay} unter dem Namen UP Accuracy Logger zu finden. Sie kann nur von Geräten gefunden werden, die mindestens API-Level 15 (Android 4.0.3) haben. Die App verlangt folgende Rechte:
+\begin{itemize}
+	\item Den GPS-Standort, um Daten zu sammeln
+	\item Netzwerkzugriff, um die gesammelten Daten an den Server zu senden
+	\item Standby-Modus deaktivieren, um auch dann noch GPS-Daten zu sammeln, wenn das Smartphone schon in den Standby-Betrieb wechseln würde
+\end{itemize}
+
+Im Folgenden ist die Arbeitsweise mit der App beschrieben. Ein Screenshot ist in Abbildung~\ref{fig:accuracy-logger-screenshot} zu sehen.
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{pics/accuracy-logger-screenshot.png}
+		\caption{Screenshot der Accuracy App und der App-Einstellungen}
+	\label{fig:accuracy-logger-screenshot}
+\end{figure}
+
+Der Vorgang des Datensammelns wird über \textit{Start service} begonnen. Mit \textit{Stop service} wird der Vorgang beendet. Nach dem Start des Vorgangs kann einige Zeit vergehen, bevor die ersten Daten empfangen werden. Die Anzahl der gespeicherten Datensätze kann jederzeit über \textit{Update data count} abgerufen werden. Um die Daten an den Server zu senden sind die Adresse des Servers sowie sein Port anzugeben (zum Beispiel \textit{141.89.53.181:8080}). Die App informiert über den Abschluss des Sendens, zusätzlich dazu wird auch auf dem Server eine Log-Nachricht ausgegeben.
+
+Die App sammelt Daten von zwei Provider: GPS und NETWORK. Die gesammelten Daten werden nach dem Senden nicht vom Smartphone gelöscht. Bei wiederholten Sendevorgängen werden bereits gesendete Datensätze erneut übermittelt. Der Server hat keine Möglichkeit, doppelte Datensätze zu identifizieren. Um gesammelte Daten zu löschen muss in den Android-Einstellungen die App-Übersicht des Accuracy Logger aufgerufen werden, welche in Abbildung~\ref{fig:accuracy-logger-screenshot} zu sehen ist. Die Option \textit{Daten löschen} entfernt die gesammelten Datensätze. Dieser aufwändige Weg wurde bewusst gewählt, um zu verhindern, dass beauftragte Datensammler (siehe Abschnitt~\ref{manuelle-gps-suche}), die mit dem Umgang der Smartphones nicht versiert sind, versehentlich Einträge löschen.
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{pics/klassendiagramm-app.pdf}
+		\caption{Klassendiagramm der Accuracy App}
+	\label{fig:klassendiagramm-app}
+\end{figure}
+
+Wie im Klassendiagramm in Abbildung~\ref{fig:klassendiagramm-app} zu sehen ist besteht die App aus nur einer Activity und einem Service. Der Service koordiniert den Empfang von Positionsdaten, die sowohl aus Netzwerk- als auch aus GPS-Daten stammen. Die Daten werden von der Klasse GpsReceiver empfangen und an den GpsDatabaseConnector weitergegeben, wo sie in eine interne Datenbank geschrieben werden. Die Activity MainActivity stellt die graphische Benutzeroberfläche bereit, über der sich der GpsService starten und stoppen lässt.
+
+Wird über die Benutzeroberfläche der Befehl zum Übertragen der Daten an den Server ausgelöst, so liest der GpsService mit Hilfe des GpsDatabaseConnector alle Datensätze aus der Datenbank, serialisiert sie nach JSON und sendet sie an den angegebenen Server, der über \texttt{new URL(\"http://\" + host + \"/rest/accuracy/saveObject\")} addressiert wird. Die Serialisierung der Daten erfolgt über flexjson~\cite{flexjson}.
+
+\paragraph{Accuracy Server}
+
+Auf dem Accuracy Server werden die gesammelten GPS-Daten gesichert und können von der GPS-Map abgerufen werden.
+
+Der Accuracy Server ist Teil des RouteMe-Servers und schreibt seine Daten in die gleiche Datenbank. Falls Hibernate so eingestellt ist, dass die Datenbank beim ersten Zugriff gelöscht wird, so werden damit auch alle in der Datenbank vorhandenen GPS-Daten gelöscht. Als Backup-Mechanismus dient das \textit{Location log}, welches über den \textit{Location Parser} ausgelesen wird.
+
+\pagebreak
+Der Accuracy Server bietet nur wenige Methoden über REST an. Eine grafische Repräsentation ist in Abbildung~\ref{fig:rest-accuracy-server} gegeben.
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{pics/rest-accuracy-schnittstelle.pdf}
+		\caption{Übersicht der Schnittstellen des Accuracy Servers}
+	\label{fig:rest-accuracy-server}
+\end{figure}
+
+\begin{enumerate}
+	\item \textit{save}, das von der ersten App-Version genutzt wird. Diese Methode ist fehleranfällig. Außerdem werden klientseitig falsch codierte Daten als Serverfehler interpretiert. Sie ist als \texttt{deprecated} markiert. Ihr Nachfolger ist \textit{saveObject}. Sie ruft intern \textit{saveWithSession} auf.
+	\item \textit{saveObject}, das als Ersetzung für \textit{save} gedacht ist. Eingehende Daten werden mit einer zufälligen Session-UUID versehen und gespeichert. Sie ruft intern \textit{saveWithSession} auf und ist für neue App-Versionen gedacht.
+	\item \textit{saveWithSession}, das die gegebene Session-UUID übernimmt und die eingehenden Daten speichert. Diese Methode wird vom Location Parser genutzt.
+	\item \textit{read}, das alle gespeicherten Daten eines gegebenen Providers (\textit{gps} oder \textit{network}) liest und zurückgibt.
+\end{enumerate}
+
+Alle in \textit{saveWithSession} eingehenden Daten (also auch über \textit{save} und \textit{saveObject} eingehende Daten) werden unter \texttt{logs/accuracy.log} im CSV-Format gesichert. CSV ist besonders leicht zu lesen und zu schreiben, bietet aber im Gegensatz zu XML nur flache Strukturen. Ein Auszug aus einem Log ist in Abbildung~\ref{fig:accuracy-log} zu sehen. Zu Beginn jedes Datensatzes steht eine Kopfzeile. Da alle Datensätze in die gleiche Datei geschrieben werden, existieren Header zwischen den Daten.
+
+\lstset{language=XML}
+\begin{figure}[!ht]
+	\lstinputlisting{listedcode/locations.csv}
+	\caption{Auszug aus einer accuracy.log-Datei}
+	\label{fig:accuracy-log}
+\end{figure}
+
+Es hat sich als sinnvoll erwiesen, die Log-Datei in ein separates Verzeichnis (\texttt{location-logs}) zu verschieben, um alle Daten zu einem späteren Zeitpunkt mit Hilfe des Location Parser erneut einlesen zu können.
+
+\paragraph{Location Parser}
+
+Um die in der Log-Datei gesicherten Daten möglichst komfortabel in den Server zurückzuspielen existiert der Location Parser. Nach dem Start werden die zu lesenden Dateien ausgewählt (Mehrfachselektion ist möglich), die anschließend an eine lokale Instanz des Accuracy Servers (\textit{http://127.0.0.1:8080/rest/accuracy/saveWithSession}) gesendet werden. Dabei werden die vorgegebenen Session-UUIDs beachtet und Header-Zeilen gegebenenfalls übersprungen.
+
+\paragraph{GPS-Map}
+
+Um die gesammelten Daten möglichst intuitiv darzustellen zeigt GPS-Map die Analyseergebnisse auf einer übersichtlichen Karte. Ein Screenshot der Anwendung findet sich in Abbildung~\ref{fig:GPSmap}.
+
+Die Anwendung ist in C\# als WPF-Projekt mit Bing-Maps geschrieben. Die Entscheidung für C\# fiel auf Grund der leicht einzubindenden Karte. Die Daten werden entweder von einem lokalen Accuracy Server über REST oder aus einer Datei gelesen. Die dem Projekt beigefügte Datei enthält einen Zwischenstand der gesammelten Daten vom 26.12.2012. Das Format der Datei ergibt sich aus dem Format der Serverausgabe, da die JSON-serialisierten Daten des Servers aus einer Datei gelesen werden.
+
+\begin{figure}[ht!]
+	\centering
+		\scalegraphics{pics/gps-map-accuracy.pdf}
+		\caption{Analyse-Prozess der GPS-Map}
+	\label{fig:gps-map-accuracy}
+\end{figure}
+
+Die gelesenen Dateien werden analysiert und auf der Karte dargestellt. Im Detail-Modus werden die gesammelten Datenpunkte ihrer Genauigeiten entsprechend mit grün, gelb oder rot gezeichnet. Der Analyse-Vorgang im Übersichts-Modus ist in Abbildung~\ref{fig:gps-map-accuracy} abgebildet. Anfangs werden die verfügbaren Datenpunkte gefiltert, da der Nutzer Daten nach Datum gruppiert abwählen kann. Anschließend werden die benötigten Kacheln ermittelt. Dabei hat sich eine Kachelgröße 0.000125 Grad als praktisch erwiesen. In Kombination mit der Definition von Längen- und Breitengraden entstehen so rechteckige Flächen. Diese Struktur bildete einen guten Kompromiss zwischen Darstellung und Programmierung.
+
+Das Projekt ist in drei Namespaces aufgeteilt: Models, Views und ViewModels. Diese Dreiteilung heißt MVVM~\cite{mvvm} und ist typisch für WPF-basierte Anwendungen. Die Bindung zwischen Views und ViewModels übernimmt Caliburn Micro~\cite{caliburnmicro}. Caliburn Micro setzt auf das Paradigma \textit{Convention over Configuration}, was bedeutet, dass sich das Framework an den Klassen- und Variablennamen orientiert, um Zugehörigkeiten zu erkennen.
+
+\subsubsection{Dummy-Player}\label{mobile-ai}
+
+Da sich das Testen mit realen Spielerknoten als zu aufwendig erwiesen hat, ist während des Projektes ein oberflächenloser Klient entstanden, der mit einer rudimentären KI ausgestattet wurde. Außerdem werden Performance-Daten auf der Konsole ausgegeben, um eine Übersicht über die Server-Performance zu erlangen. Gestartet wird sie über die Klasse \texttt{PlayerDummy} oder \texttt{DummyBatchStarter}. \texttt{DummyBatchStarter} startet dabei mehrere \texttt{PlayerDummy}-Instanzen und nimmt zu diesem Zweck auch Kommandozeilen-Parameter für Serveradresse und Anzahl an Instanzen entgegen. Ein Aufruf ohne Parameter entspricht dem Aufruf \texttt{DummyBatchStarter 127.0.0.1:8080 5}.
+
+\paragraph{Lebenszyklus einer Instanz}
+
+Die KI meldet sich am Server an. Aus den empfangenen Spielfelddaten werden eine zufällige Startposition und Startausrichtung ermittelt und ausgehend von dieser zufällige Bewegungen generiert, die an den Server übertragen werden. Falls sich ein Gegenstand in der Nähe befindet wird die serverseitige Einsammeln-Methode \texttt{collectItem} aufgerufen. Mit Beenden des Spieles beendet sich die Instanz.
+
+\paragraph{Bewegungsmuster}
+
+Um ein möglichst relaistisches Bewegungsmuster durch die KI zu erreichen sind Beobachtungen aus Testspielen mit realen Spielern in den Entwurf des Bewegungsalgorithmus' eingeflossen. So war zu beobachten, dass Spieler relativ gleichmäßige Bewegungen im Schritttempo bevorzugen und ihre Laufrichtung beibehalten, wobei sie Kurskorrekturen von etwa 45 Grad nach rechts oder links vornahmen. Bei erreichen des Spielfeldrandes blieben sie kurz stehen, richteten sich neu zum Spielfeld aus und setzten ihr Bewegungsverhalten fort.
+
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[scale=2]{pics/Bewegungsmuster.pdf}
+		\caption{Visualierung der Bewegungsstrategie}
+	\label{fig:Bewegungsmuster}
+\end{figure}
+
+In Abbildung~\ref{fig:Bewegungsmuster} ist die Bewegungsstrategie visualisiert: Ausgehen von einem aktuellen Punkt und einer aktuellen Ausrichtung wird der Folgepunkt einem einem Schwenkradius von 45 Grad nach recht oder links und einer Distanz zwischen null und zwei Metern auf Zufallsbasis ermittelt. Das bedeutet, dass der Folgepunkt innerhalb des blauen Viertelkreises liegt. Falls der Folgepunkt außerhalb des Spielfeldes liegt wird ein neuer Punkt ermittelt, für den zwar die Distanz zwischen null und zwei Metern gilt, der Schwenkradius allerdings auf 360 Grad erweitert ist.
+
+Zwei Meter pro Sekunde sind umgerechnet etwa sieben Kilometer pro Stunde. Eine solche Geschwindigkeit entspricht einem Gehen, ohne zu rennen, was in Bezug auf die beobachteten Spielerbewegungen die Höchstgeschwindigkeit darstellt.
+
+\paragraph{Einsammel-Verhalten}
+
+Auch das Einsammel-Verhalten ist auf Basis intensiver Spielerbeobachtung entstanden. Dabei war auffällig, dass Spieler bei Sichtung eines Gegenstandes die \textit{Gegenstand-einsammeln}-Schaltfläche in kurzem Abstand oft nacheinander gedrückt haben (\textit{button spamming}). Dieses Verhalten wird von der KI simuliert, indem bei Sichtung eines Gegenstandes die Einsammeln-Methode \texttt{collectItem} fünfmal pro Sekunde aufgerufen wird.
+
+\subsubsection{Performance Parser}\label{performance-parser}
+
+Der Performance-Parser liest die in \texttt{logs/performance.log} gespeicherten Daten zur benötigten Ausführungszeit von Methoden aus und schreibt sie über eine REST-Schnittstelle in die Datenbank. Dort können sie abgefragt und ausgewertet werden. Das Tool wurde in der Endphase des Projektes durch die Performance-Messungen (siehe Abschnitt~\ref{datenbank}) der Knoten-KI (siehe Abschnitt~\ref{mobile-ai}) abgelöst.
+
+\subsubsection{Settings Manipulator}\label{settings-manipulator}
+
+Um optimale Parameter für das Spielen mit Studierenden zu finden, sollte es möglich sein, Parameter wie die Sendereichweite eines Knotens in einem laufenden Spiel anzupassen. Zu diesem Zweck wurde der Settings Manipulator geschrieben. Er spricht eine REST-Schnittstelle im Server an, in der übergebene Werte in der Settings-Datenbank verändert werden. Der Settings Manipulator wurde nie produktiv eingesetzt und auch nicht an die Denormalisierung der Datenbank angepasst.
+
+\subsection{Installationsanleitung}
+
+\subsubsection{Entwicklungsumgebung}
+
+Im Folgenden wird beschrieben, welche Schritte zum Erhalt einer Entwicklungsumgebung erforderlich sind. Diese Anleitung ist bei der Einrichtung eines neuen Rechners entstanden und verwendet den damaligen Versionsstand. Es kann sein, dass zu einem späteren Zeitpunkt einige Versionen nicht mehr verfügbar sind. Neuere Versionen erfordern möglicherweise ein anderes Vorgehen.
+
+Es ist wichtig, die hier aufgeführte Reihenfolge einzuhalten und Installationen sequentiell durchzuführen, da es andernfalls zu Problemen kommen kann.
+
+\paragraph{Tortoise SVN}
+
+Version 1.7.11 ist erhältlich unter http://tortoisesvn.net/. Während der Installation werden die Standardvorgaben des Wizards verwendet.
+
+\paragraph{Eclipse IDE}
+
+Version 4.2 (Juno) in der Edition Eclipse IDE for Java EE Developers ist erhältlich unter http://www.eclipse.org/. Die IDE wird nicht installiert, sondern an einen geeigneten Ort entzippt.
+
+\paragraph{Android SDK}\label{AndroidSDK}
+
+Version 21.1 ist erhältlich unter http://developer.android.com/sdk/index.html. Hierbei wird nicht das ADT Bundle, sondern das SDK (verfügbar unter Use an existing IDE) verwendet. Während der Installation werden die Standardvorgaben des Wizards verwendet.
+
+Über den SDK-Manager, der am Ende der Installation gestartet wird, sind folgende Optionen auszuwählen und zu installieren:
+
+\begin{itemize}
+	\item Android SDK Platform-tools (Version 16.0.1)
+	\item Android 4.2 (API 17)
+	\item Android 4.0.3 (API 15)
+	\item Android Support Library (unter Extras)
+	\item Google USB Driver (unter Extras)
+\end{itemize}
+
+\paragraph{Android SDK unter Eclipse einrichten}
+
+Die Anleitung ist angelehnt an\linebreak
+http://developer.android.com/sdk/installing/index.html.
+
+Eclipse starten. Unter Help -> Install New Software -> Add das Repository\linebreak
+https://dl-ssl.google.com/android/eclipse/ mit dem Namen ADT Plugin hinzufügen. In der geladenen Liste Developer Tools auswählen und installieren. Anschließend Eclipse neustarten.
+
+Falls das SDK nicht automatisch gefunden wird, ist folgendermaßen vorzugehen: Android SDK Manager starten, SDK Path notieren und Android SDK Manager schließen. Eclipse starten, unter Windows -> Preferences -> Android den notierten SDK Path einfügen. Falls der Pfad korrekt eingefügt wurde, erscheinen die zuvor installierten APIs (siehe \ref{AndroidSDK}) in einer Tabelle.
+
+\paragraph{GWT unter Eclipse einrichten}
+
+Version 2.5.0 ist erhältlich unter https://developers.google.com/web-toolkit/download.
+
+Eclipse starten. Unter Help -> Install New Software -> Add das Repository\linebreak
+http://dl.google.com/eclipse/plugin/4.2 mit dem Namen GWT Plugin hinzufügen. In der geladenen Liste folgende Optionen auswählen und installieren:
+
+\begin{itemize}
+	\item Google Plugin for Eclipse
+	\item GWT Designer for GPE
+	\item Google Web Woolkit SDK 2.5.0
+\end{itemize}
+
+Anschließend Eclipse neustarten.
+
+\paragraph{Visual Studio}
+
+Visual Studio wird nur benötigt, wenn Änderungen an der GPS-Karte notwendig sind.
+
+Visual Studio 2010 Ultimate ist nicht frei verfügbar. Im Folgenden wird eine installierte Version mit C\#-Voreinstellungen vorausgesetzt. Studenten und Mitarbeiter der Informatik haben im Allgemeinen Zugang zu einem MANIAC-Server, über den Visual Studio 2010 Ultimate bezogen werden kann.
+
+Visual Studio starten. Unter Tools -> Extension Manager -> Online Gallery den NuGet Package Manager suchen und installieren. Visual Studio neustarten. Unter Tools -> Options -> Package Manager -> Package Restore die Option \textit{Allow NuGet to download missing packages during build} auswählen und mit \textit{OK} bestätigen.
+
+\subsection{Deployment}
+
+Der System wird als WAR-Datei ausgeliefert, die auf ein geeignetes Containersystem installiert werden kann. In der Testphase wurde der von GWT mitgelieferte Jetty-Server genutzt.
+
+\section{Notwendige Verbesserungen und Erweiterungen}
+
+Im Laufe des Projektes haben sich viele Veränderungen gezeigt, die notwendig wären, aus Zeitgründen jedoch nicht durchgeführt werden konnten. Zu Dokumentationszwecken werden diese im Folgenden notiert.
+
+So ist eine vollständige Portierung der Admin- und Indoor-Oberfläche sinnvoll, um die vollen Kapazitäten von GWT auszunutzen und Fehler durch Wechsel der Programmierebene zu vermeiden.
+
+Außerdem ist die Portierung der Mobile-Oberfläche auf eine native App empfehlenswert, um von der verbesserten Unterstützung nativer Applikationen zu profitieren und auf lokale Ressourcen zugreifen zu können.
+
+Viele Einstellungen, die derzeit im Code stehen, sollten flexibilisiert und über die Admin-Oberfläche eingestellbar werden. Dazu gehören Punktevergabekriterien, Timer-Raten und Einstellungen bezüglich der GPS-Genauigkeit.
+
+Performance-Analysen wurden bisher nur auf Basis der Mobilknoten vorgenommen, da für diese eine KI existiert. Es ist jedoch sinnvoll, eine Indoor-KI zu entwickeln und zu implementieren, um die Performance-Eigenschaften der Indoor-Oberfläche zu ermitteln und gegebenenfalls zu korrigieren.
+
+Die Rest-Schnittstelle ist aus dem Vorgängerprojekt übernommen und wird an vielen Stellen als JSON-RPC eingesetzt. Hier sollten die Standards von Rest-Schnittstellen herausgearbeitet und eingehalten werden, um Rest-spezifische Vorteile zu nutzen.
+
+\section{Ausblick}
+
+Im universitären Kontext haben wir uns der Herausforderung gestellt, ein Softwareprojekt von einem anderen Studenten zu übernehmen, welches nicht für längerfristige Entwicklung, sondern für einen \textit{Proof-Of-Konzept} ausgelegt war. 
+
+Dieses Projekt hat sich zur Aufgabe gestellt, den bestehenden Code für eine längerfristige Entwicklung reif zu machen. Aber auch hier besteht noch ein großer Arbeitsbedarf. Um den Logik-Teil nach außen zu modellieren, käme eine Prozessengine wie \textit{Activity}~\cite{activiti} in Frage. Diese könnte die Hürde der vollständigen Dokumentation des Quellcodes senken. Insbesondere die Dokumentation ist im universitären Kontext problematisch, da studentische Projekte für die Studenten gedanklich mit dem Erwerb der Credits enden. Die Prozessengine würde die wichtigsten Teile der Serverlogik transparent machen. Alternativ wäre es plausibel, die Serverlogik auf eine funktionale Sprache wie Scala umzustellen, was gleich zwei Vorteile hätte: Der Quellcode wäre kürzer und besser lesbar und bei vielen Spielern könnte die Serverlast verteilt werden, da Scala zustandslose Programmierung fördert und damit Clustering vereinfacht.
+
+Eine andere sinnvolle Erweiterung bestände darin, die Kommunikation der mobilen Knoten untereinander von dem Server zu entkoppeln. Hier könnten auf Javascript basierende Pushframeworks wie "`Push-Fork"' helfen, die Serverlast zu drosseln und die Programmierung von Spielelementen zwischen einzelnen Knoten zu verbessern.
+
+Es fehlen nach wie vor Spielkonzepte. Bei unseren Testläufen haben die Testspieler angemerkt, dass die derzeitige GUI den Ablauf des Algorithmus, der gelernt werden soll, nicht verständlich darstellt. Hier sollten Schnittstellen entwickelt werden, die es erlauben, Spielelemente und Lerninhalte hinzuzufügen, ohne den Kern der Architektur zu berühren. 
+
+Die Bachelorarbeit von Hendrik Geßner wird sich mit der Portierung der Knotenschnittstelle auf nativen Androidquellcode befassen, wodurch es einfacher wird, eine interaktive und ansprechende GUI zu entwickeln. Desweiteren werden die Spielelemente ausgebaut.
+
+%%% Literaturverzeichnis
+\pagebreak
+%\bibliography{polaritatsprofil,elearning,ddi}
+\bibliography{literatur,innerlinks}
+\bibliographystyle{lnig}
+
+%%% Abbildungsverzeichnis
+\pagebreak
+\listoffigures
+
+
+%%% Glossar
+\pagebreak
+\glsaddall
+\printglossaries
+\pagebreak
+
+\pagebreak
+
+\end{document}
+
+%% TODO: Binder und pagebreaks
