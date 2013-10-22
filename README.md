@@ -22,5 +22,5 @@ Learn more about the [idea of the game][routeme-paper].
 
 The documentation is written in LaTeX. The sources are located under docs/Dokumentation and docs/BA.
 
-   [documentation]: 01 Dokumentation RouteME.pdf
-   [ba]: 02 Dokumentation Bachelorarbeit.pdf
+   [documentation]: 01%20Dokumentation%20RouteME.pdf
+   [ba]: 02%20Dokumentation%20Bachelorarbeit.pdf
