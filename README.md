@@ -16,7 +16,7 @@ Detailed setup instructions are given in the [documentation][] on page 46. Some 
 
 ### For teaching staff ###
 
-Learn more about the [idea of the game][routeme-paper].
+Learn more about the [idea of the game][routeme-paper]. You may want to scan the [slides][], as they are a quick high level view of the technical documentation.
 
 ### For collaborators ###
 
@@ -24,3 +24,4 @@ The documentation is written in LaTeX. The sources are located under docs/Dokume
 
    [documentation]: 01%20Dokumentation%20RouteME.pdf
    [ba]: 02%20Dokumentation%20Bachelorarbeit.pdf
+   [slides]: 03%20Vortrag%20Forschungsseminar.pdf
