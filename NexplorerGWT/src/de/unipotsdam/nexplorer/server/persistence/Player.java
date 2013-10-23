@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.server.persistence;
 import static com.google.common.collect.Collections2.filter;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.google.inject.assistedinject.Assisted;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.shared.Locatable;
@@ -287,5 +289,9 @@ public class Player implements Locatable {
 				routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()));
 			}
 		}
+	}
+
+	public Collection<AodvDataPackets> getCurrentDataPackets() {
+		return Collections.unmodifiableSet(inner.getAodvDataPacketsesForCurrentNodeId());
 	}
 }

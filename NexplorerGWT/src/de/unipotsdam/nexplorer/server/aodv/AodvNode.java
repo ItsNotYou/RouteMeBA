@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,6 +10,9 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.gwt.dev.util.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -18,6 +24,7 @@ import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRouteRequestBufferEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 import de.unipotsdam.nexplorer.shared.Aodv;
@@ -54,7 +61,7 @@ public class AodvNode implements NeighbourAction {
 		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
 
 		// ältestes Paket zuerst bearbeiten
-		DataPacketQueue packets = new DataPacketQueue(dbAccess.getAllDataPacketsSortedByDate(theNode));
+		DataPacketQueue packets = new DataPacketQueue(getAllDataPacketsSortedByDate(currentDataProcessingRound));
 
 		// Nur das erste Paket bearbeiten und alle anderen in Wartestellung setzen
 		packets.poll().process(currentDataProcessingRound, this);
@@ -63,6 +70,50 @@ public class AodvNode implements NeighbourAction {
 		for (ProcessableDataPacket packet : packets) {
 			logger.trace("Datenpaket mit sourceId " + packet.getSource().getId() + " und destinationId " + packet.getDestination().getId() + " in Wartestellung setzen.");
 		}
+	}
+
+	/**
+	 * Criteria for the returned data packets:<br/>
+	 * - the packet status is NOT arrived<br/>
+	 * - the packet status is NOT cancelled<br/>
+	 * - the packet processing round is equal to the given<br/>
+	 * - the packet is currently at this node
+	 * 
+	 * @return The resulting list sorted by ascending id
+	 */
+	private List<? extends ProcessableDataPacket> getAllDataPacketsSortedByDate(final long currentDataRount) {
+		Collection<AodvDataPackets> packetses = this.theNode.getCurrentDataPackets();
+		packetses = filter(packetses, new Predicate<AodvDataPackets>() {
+
+			@Override
+			public boolean apply(AodvDataPackets arg0) {
+				if (arg0.getStatus() != null) {
+					if (arg0.getStatus() == Aodv.DATA_PACKET_STATUS_ARRIVED || arg0.getStatus() == Aodv.DATA_PACKET_STATUS_CANCELLED) {
+						return false;
+					}
+				}
+				return true;
+			}
+		});
+		packetses = filter(packetses, new Predicate<AodvDataPackets>() {
+
+			@Override
+			public boolean apply(AodvDataPackets arg0) {
+				if (arg0.getProcessingRound() != null && arg0.getProcessingRound() == currentDataRount) {
+					return true;
+				}
+				return false;
+			}
+		});
+		Collection<AodvDataPacket> packets = transform(packetses, new Function<AodvDataPackets, AodvDataPacket>() {
+
+			@Override
+			public AodvDataPacket apply(AodvDataPackets arg0) {
+				return factory.create(arg0);
+			}
+		});
+
+		return Lists.create(packets);
 	}
 
 	void aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm) {
@@ -75,9 +126,9 @@ public class AodvNode implements NeighbourAction {
 		List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
 		for (AodvRoutingMessage theRERR : nodeRERRs) {
 			// Prüfen ob Einträge in meiner Routingtabelle betroffen sind
-			Player destination = dbAccess.getPlayerById(theRERR.inner().getDestinationId());
-			if (table.hasRouteTo(destination.getId())) {
-				AodvNode nextHop = table.getNextHop(destination.getId());
+			Long destinationId = theRERR.inner().getDestinationId();
+			if (table.hasRouteTo(destinationId)) {
+				AodvNode nextHop = table.getNextHop(destinationId);
 				logger.trace("RERR mit sourceId " + theRERR.inner().getSourceId() + " und destinationId " + theRERR.inner().getDestinationId() + " betrifft Routingtabelleneintrag mit nextHopId " + nextHop.getId() + ".");
 
 				// RRER an Nachbarn weitersenden
@@ -89,7 +140,7 @@ public class AodvNode implements NeighbourAction {
 
 				// Routingtabelleneintrag löschen
 				logger.trace("Lösche Routingtabelleneintrag mit nextHopId " + nextHop.getId() + " und destinationId " + theRERR.inner().getDestinationId() + ".");
-				table.deleteRouteTo(destination.getId());
+				table.deleteRouteTo(destinationId);
 
 				logger.trace("RERR mit sourceId " + theRERR.inner().getSourceId() + " und destinationId " + theRERR.inner().getDestinationId() + " löschen, weil er fertig bearbeitet ist.");
 			} else {

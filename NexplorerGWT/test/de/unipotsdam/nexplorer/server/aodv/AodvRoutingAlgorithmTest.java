@@ -16,6 +16,7 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
@@ -289,7 +290,7 @@ public class AodvRoutingAlgorithmTest {
 		packets.setProcessingRound(0l);
 		AodvDataPacket packet = factory.create(packets);
 
-		when(dbAccess.getAllDataPacketsSortedByDate(src)).thenReturn(Arrays.asList(packet));
+		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
 		when(dbAccess.getRouteRequestCount(packet)).thenReturn(1);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
