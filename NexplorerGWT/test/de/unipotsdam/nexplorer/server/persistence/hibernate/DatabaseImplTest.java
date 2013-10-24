@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
 import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingMessage;
 import de.unipotsdam.nexplorer.server.data.Unit;
@@ -83,8 +82,7 @@ public class DatabaseImplTest {
 		inner.getPlayersBySourceId().setId(1l);
 		inner.setPlayersByDestinationId(new Players());
 		inner.getPlayersByDestinationId().setId(2l);
-		AodvDataPacket thePacket = aodv.create(inner);
-		dbAccess.getRouteRequestCount(thePacket);
+		dbAccess.getRouteRequestCount(inner);
 	}
 
 	@Test

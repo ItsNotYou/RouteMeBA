@@ -92,8 +92,8 @@ public class DatabaseImpl {
 		return result;
 	}
 
-	public int getRouteRequestCount(AodvDataPacket thePacket) {
-		List<AodvRoutingMessages> messages = session.createCriteria(AodvRoutingMessages.class).add(eq("type", Aodv.ROUTING_MESSAGE_TYPE_RREQ)).add(eq("sourceId", thePacket.inner().getPlayersBySourceId().getId())).add(eq("destinationId", thePacket.inner().getPlayersByDestinationId().getId())).list();
+	public int getRouteRequestCount(AodvDataPackets thePacket) {
+		List<AodvRoutingMessages> messages = session.createCriteria(AodvRoutingMessages.class).add(eq("type", Aodv.ROUTING_MESSAGE_TYPE_RREQ)).add(eq("sourceId", thePacket.getPlayersBySourceId().getId())).add(eq("destinationId", thePacket.getPlayersByDestinationId().getId())).list();
 		return messages.size();
 	}
 

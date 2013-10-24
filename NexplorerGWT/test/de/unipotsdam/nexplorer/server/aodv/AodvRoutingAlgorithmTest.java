@@ -287,11 +287,10 @@ public class AodvRoutingAlgorithmTest {
 		packets.setPlayersByDestinationId(destPlayer);
 		packets.setPlayersByOwnerId(ownerPlayer);
 		packets.setPlayersBySourceId(srcPlayer);
-		packets.setProcessingRound(0l);
-		AodvDataPacket packet = factory.create(packets);
+		packets.setProcessingRound(5l);
 
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
-		when(dbAccess.getRouteRequestCount(packet)).thenReturn(1);
+		when(dbAccess.getRouteRequestCount(packets)).thenReturn(1);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		sut.aodvProcessDataPackets();
@@ -327,8 +326,7 @@ public class AodvRoutingAlgorithmTest {
 		packets.setPlayersByDestinationId(destPlayer);
 		packets.setPlayersByOwnerId(ownerPlayer);
 		packets.setPlayersBySourceId(srcPlayer);
-		packets.setProcessingRound(0l);
-		AodvDataPacket packet = factory.create(packets);
+		packets.setProcessingRound(5l);
 
 		AodvRoutingTableEntries routings = new AodvRoutingTableEntries();
 		routings.setDestinationId(destPlayer.getId());
@@ -340,8 +338,8 @@ public class AodvRoutingAlgorithmTest {
 		routings.setTimestamp(new Date().getTime());
 		AodvRoutingTableEntry routingEntry = factory.create(routings);
 
-		when(dbAccess.getAllDataPacketsSortedByDate(src)).thenReturn(Arrays.asList(packet));
-		when(dbAccess.getRouteRequestCount(packet)).thenReturn(1);
+		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
+		when(dbAccess.getRouteRequestCount(packets)).thenReturn(1);
 		when(dbAccess.getRouteToDestination(destPlayer.getId(), srcPlayer.getId())).thenReturn(routingEntry);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
@@ -379,7 +377,7 @@ public class AodvRoutingAlgorithmTest {
 		packets.setPlayersBySourceId(srcPlayer);
 		packets.setProcessingRound(3l);
 		packets.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
-		when(dbAccess.getAllDataPacketsSortedByDate(src)).thenReturn(Arrays.asList(factory.create(packets)));
+		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
 
 		AodvRoutingTableEntries fromSrcToOther = new AodvRoutingTableEntries();
 		fromSrcToOther.setDestinationId(destPlayer.getId());
@@ -644,8 +642,7 @@ public class AodvRoutingAlgorithmTest {
 		packet.setPlayersBySourceId(srcPlayer);
 		packet.setProcessingRound(currentDataRound);
 		packet.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
-		AodvDataPacket dataPacket = factory.create(packet);
-		when(dbAccess.getAllDataPacketsSortedByDate(src)).thenReturn(Arrays.asList(dataPacket));
+		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packet));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		sut.aodvProcessDataPackets();

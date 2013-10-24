@@ -92,7 +92,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 
 			delete();
 		} else {
-			int RREQCount = dbAccess.getRouteRequestCount(this);
+			int RREQCount = dbAccess.getRouteRequestCount(inner);
 			if (RREQCount == 0) {
 				inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
 			} else {
@@ -112,14 +112,14 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			// Packet weitersenden
 			Link conn = factory.create(aodvNode, table.getNextHop(dest));
 			conn.transmit(this);
-			
+
 			// Packet löschen
 			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
 			delete();
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
 			aodvNode.sendRERRToNeighbours(destination);
-			
+
 			logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da keine Route bekannt", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId());
 			inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
 			save();
