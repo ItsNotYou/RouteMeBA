@@ -216,9 +216,9 @@ public class AodvRoutingAlgorithmTest {
 		AodvRouteRequestBufferEntries bufferEntry = new AodvRouteRequestBufferEntries(src.getId(), src.getId(), srcPlayer.getSequenceNumber());
 
 		verify(dbAccess).persist(srcPlayer);
-		verify(dbAccess).persist(refEq(bufferEntry));
 		verify(dbAccess).persist(refEq(RREQ));
 		assertTrue(result.contains(dataPacket));
+		assertTrue(result.contains(bufferEntry));
 	}
 
 	@Test

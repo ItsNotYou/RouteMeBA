@@ -116,9 +116,13 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 		try {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			Player owner = dbAccess.getPlayerById(playerId);
+			Setting settings = dbAccess.getSettings();
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			aodv.aodvResendRouteRequest(owner);
+			Collection<Object> persistables = aodv.aodvResendRouteRequest(owner, settings);
+			for (Object persistable : persistables) {
+				dbAccess.persistObject(persistable);
+			}
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);

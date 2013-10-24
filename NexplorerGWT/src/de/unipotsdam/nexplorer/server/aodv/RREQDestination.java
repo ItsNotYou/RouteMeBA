@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
@@ -29,7 +32,8 @@ public class RREQDestination {
 		this.factory = factory;
 	}
 
-	public void toNeighbours() {
+	public Collection<Object> toNeighbours() {
+		Collection<Object> persistables = new ArrayList<Object>(100);
 		Setting gameSettings = dbAccess.getSettings();
 
 		logger.info("RREQ an alle Nachbarn für Route zum Knoten mit ID {} senden.", destId);
@@ -40,7 +44,10 @@ public class RREQDestination {
 
 			AodvNode next = factory.create(theNeighbour);
 			Link link = factory.create(theNode, next);
-			link.transmit(factory.create(newRREQ));
+			Collection<Object> result = link.transmit(factory.create(newRREQ));
+			persistables.addAll(result);
 		}
+
+		return persistables;
 	}
 }

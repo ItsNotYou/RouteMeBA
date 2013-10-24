@@ -76,8 +76,51 @@ public class AodvRouteRequestBufferEntries implements java.io.Serializable {
 	public Integer getVersion() {
 		return this.version;
 	}
-	
+
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@Override
+	public int hashCode() {
+		Long id = getId();
+		if (id != null) {
+			if (id > Integer.MAX_VALUE) {
+				return Integer.MAX_VALUE;
+			} else if (id < Integer.MIN_VALUE) {
+				return Integer.MIN_VALUE;
+			} else {
+				long tmp = id;
+				return (int) tmp;
+			}
+		} else {
+			return 1;
+		}
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+
+		AodvRouteRequestBufferEntries other = (AodvRouteRequestBufferEntries) obj;
+		if (other.id != id) {
+			return false;
+		}
+		if (other.nodeId != nodeId) {
+			return false;
+		}
+		if (other.sequenceNumber != sequenceNumber) {
+			return false;
+		}
+		if (other.sourceId != sourceId) {
+			return false;
+		}
+		if (other.version != version) {
+			return false;
+		}
+
+		return true;
 	}
 }

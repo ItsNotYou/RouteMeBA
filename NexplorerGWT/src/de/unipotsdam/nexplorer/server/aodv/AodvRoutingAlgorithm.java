@@ -1,7 +1,9 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import org.apache.logging.log4j.Logger;
@@ -46,20 +48,22 @@ public class AodvRoutingAlgorithm {
 		return factory.create(src).enqueMessage(newMessage);
 	}
 
-	public void aodvResendRouteRequest(Player owner) {
+	public Collection<Object> aodvResendRouteRequest(Player owner, Setting gameSettings) {
 		AodvDataPacket thePacket = dbAccess.getDataPacketByOwnerId(owner);
 		if (thePacket == null) {
 			logger.warn("Trying to resend route request, but no data packet found (owner {})", owner.getId());
-			return;
+			return Collections.emptyList();
 		}
 
 		AodvNode src = thePacket.getSource();
 		AodvNode dest = thePacket.getDestination();
 
 		logger.trace("Resend route request from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
-		thePacket.getSource().sendRREQToNeighbours(dest.player());
+		Collection<Object> persistables = thePacket.getSource().sendRREQToNeighbours(dest.player(), gameSettings);
 		thePacket.inner().setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 		thePacket.save();
+
+		return persistables;
 	}
 
 	public void aodvResetPlayerMessage(Player player) {
@@ -82,16 +86,21 @@ public class AodvRoutingAlgorithm {
 		gameSettings.save();
 	}
 
-	public void aodvProcessRoutingMessages() {
+	public Collection<Object> aodvProcessRoutingMessages() {
 		Setting gameSettings = getGameSettings();
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingMessages Runde " + gameSettings.getCurrentDataRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
+
+		Collection<Object> persistables = new ArrayList<Object>(100);
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
-			factory.create(theNode).aodvProcessRoutingMessages(this);
+			Collection<Object> result = factory.create(theNode).aodvProcessRoutingMessages(this);
+			persistables.addAll(result);
 		}
 
 		gameSettings.incCurrentRoutingRound();
 		gameSettings.save();
+
+		return persistables;
 	}
 
 	/**

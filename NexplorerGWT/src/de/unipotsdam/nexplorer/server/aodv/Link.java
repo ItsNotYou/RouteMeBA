@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
@@ -87,13 +90,15 @@ public class Link {
 		}
 	}
 
-	public void transmit(AodvRoutingMessage theRequest) {
+	public Collection<Object> transmit(AodvRoutingMessage theRequest) {
+		Collection<Object> persistables = new ArrayList<Object>();
 		Setting gameSettings = dbAccess.getSettings();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
 			// RREQ in Buffer eintragen
-			src.addRouteRequestToBuffer(theRequest);
+			Collection<Object> result = src.addRouteRequestToBuffer(theRequest);
+			persistables.addAll(result);
 
 			logger.trace("RREQ mit sourceId " + theRequest.inner().getSourceId() + " und sequenceNumber " + theRequest.inner().getSequenceNumber() + " an Nachbarn mit ID " + dest.player().getId() + " senden.\n");
 
@@ -111,5 +116,7 @@ public class Link {
 		} else {
 			logger.trace("RREQ mit sourceId " + theRequest.inner().getSourceId() + " und sequenceNumber " + theRequest.inner().getSequenceNumber() + " konnte nicht an Nachbarn mit ID " + dest.player().getId() + " gesenden werden.\n");
 		}
+
+		return persistables;
 	}
 }
