@@ -118,8 +118,8 @@ public class AodvNode implements NeighbourAction {
 		return Lists.create(packets);
 	}
 
-	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs) {
-		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm);
+	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound) {
+		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound);
 		processRERRs(aodvRoutingAlgorithm, nodeRERRs);
 
 		return persistables;
@@ -155,11 +155,11 @@ public class AodvNode implements NeighbourAction {
 		}
 	}
 
-	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv) {
+	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound) {
 		logger.trace("***RREQs bei Knoten " + theNode.getId() + "***");
 
 		Collection<Object> persistables = new ArrayList<Object>(100);
-		for (AodvRoutingMessage theRREQ : dbAccess.getRouteRequestsByNodeAndRound(theNode)) {
+		for (AodvRoutingMessage theRREQ : routeRequestsByNodeAndRound) {
 			Collection<Object> result = processRREQ(aodv, theRREQ);
 			persistables.addAll(result);
 		}
