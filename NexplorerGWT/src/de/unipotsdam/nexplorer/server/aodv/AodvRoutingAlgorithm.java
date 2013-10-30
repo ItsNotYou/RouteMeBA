@@ -96,7 +96,8 @@ public class AodvRoutingAlgorithm {
 
 		Collection<Object> persistables = new ArrayList<Object>(100);
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
-			Collection<Object> result = factory.create(theNode).aodvProcessRoutingMessages(this);
+			List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
+			Collection<Object> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs);
 			persistables.addAll(result);
 		}
 

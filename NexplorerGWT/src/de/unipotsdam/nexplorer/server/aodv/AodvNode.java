@@ -118,16 +118,15 @@ public class AodvNode implements NeighbourAction {
 		return Lists.create(packets);
 	}
 
-	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm) {
+	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs) {
 		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm);
-		processRERRs(aodvRoutingAlgorithm);
+		processRERRs(aodvRoutingAlgorithm, nodeRERRs);
 
 		return persistables;
 	}
 
-	private void processRERRs(AodvRoutingAlgorithm aodvRoutingAlgorithm) {
+	private void processRERRs(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs) {
 		logger.trace("***RERRs bei Knoten " + theNode.getId() + "***");
-		List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
 		for (AodvRoutingMessage theRERR : nodeRERRs) {
 			// Prüfen ob Einträge in meiner Routingtabelle betroffen sind
 			Long destinationId = theRERR.inner().getDestinationId();
