@@ -108,7 +108,7 @@ public class Player implements Locatable {
 		}
 	}
 
-	public void updateNeighbourhood(NeighbourAction routing) {
+	public void updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours) {
 		Collection<Player> knownNeighbours = getNeighbours();
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 
@@ -137,7 +137,7 @@ public class Player implements Locatable {
 
 		for (Player lostNeighbour : lostNeighbours) {
 			getNeighbours().remove(lostNeighbour);
-			routing.aodvNeighbourLost(lostNeighbour);
+			routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours);
 
 			logger.info("Node {} deleted neighbour {}", getId(), lostNeighbour.getId());
 		}
@@ -271,7 +271,7 @@ public class Player implements Locatable {
 		}
 	}
 
-	public synchronized void removeOutdatedNeighbours(NeighbourAction routing) {
+	public synchronized void removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours) {
 		int allowedHelloLosses = 8;
 		long tooOld = new Date().getTime() - allowedHelloLosses * inner.getPingDuration();
 
@@ -286,7 +286,7 @@ public class Player implements Locatable {
 				dbAccess.persist(inner);
 				dbAccess.delete(neighbour);
 
-				routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()));
+				routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours);
 			}
 		}
 	}

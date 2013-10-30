@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +15,7 @@ import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
+import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
@@ -79,7 +81,8 @@ public class AodvRoutingAlgorithm {
 		Setting gameSettings = getGameSettings();
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
-			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound());
+			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
+			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours);
 		}
 
 		gameSettings.incCurrentDataRound();
@@ -111,9 +114,11 @@ public class AodvRoutingAlgorithm {
 	public void updateNeighbourhood(Player player) {
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
-			player.updateNeighbourhood(routing);
+			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
+			player.updateNeighbourhood(routing, allKnownNeighbours);
 		} else if (player.getDifficulty() == 2) {
-			player.removeOutdatedNeighbours(routing);
+			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
+			player.removeOutdatedNeighbours(routing, allKnownNeighbours);
 		}
 	}
 

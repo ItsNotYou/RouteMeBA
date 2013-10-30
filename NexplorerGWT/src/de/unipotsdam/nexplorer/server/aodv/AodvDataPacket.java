@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
@@ -8,6 +10,7 @@ import com.google.inject.assistedinject.Assisted;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DataFactory;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
+import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
@@ -63,13 +66,13 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	@Override
-	public void process(long currentDataProcessingRound, AodvNode aodvNode) {
+	public void process(long currentDataProcessingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
 		Byte status = inner.getStatus();
 		switch (status) {
 		case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 		case Aodv.DATA_PACKET_STATUS_NODE_BUSY:
 			// Pakete ist unterwegs oder wartet darauf versendet zu werden
-			forwardPacket(aodvNode);
+			forwardPacket(aodvNode, allKnownNeighbours);
 			break;
 		case Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE:
 		case Aodv.DATA_PACKET_STATUS_ERROR:
@@ -103,7 +106,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		}
 	}
 
-	void forwardPacket(AodvNode aodvNode) {
+	void forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
 		// prüfen ob Route zum Ziel bekannt
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
@@ -118,7 +121,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			delete();
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
-			aodvNode.sendRERRToNeighbours(destination);
+			aodvNode.sendRERRToNeighbours(destination, allKnownNeighbours);
 
 			logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da keine Route bekannt", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId());
 			inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);

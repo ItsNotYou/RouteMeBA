@@ -593,11 +593,16 @@ public class AodvRoutingAlgorithmTest {
 		neighbour.setId(1l);
 		neighbour.setNode(srcPlayer);
 		neighbour.setNeighbour(destPlayer);
+
+		Neighbours otherNeighbour = new Neighbours();
+		otherNeighbour.setId(2l);
+		otherNeighbour.setNode(srcPlayer);
+		otherNeighbour.setNeighbour(otherPlayer);
+
 		when(dbAccess.getNeighbour(dest.getId(), src.getId())).thenReturn(data.create(neighbour));
-		when(dbAccess.getAllNeighboursExcept(refEq(other), refEq(src))).thenReturn(Arrays.asList(data.create(neighbour)));
 
 		AodvNode sut = injector.getInstance(AodvFactory.class).create(src);
-		sut.updateNeighbourhood();
+		sut.updateNeighbourhood(Arrays.asList(data.create(neighbour), data.create(otherNeighbour)));
 
 		AodvRoutingMessages rerr = new AodvRoutingMessages();
 		rerr.setCurrentNodeId(dest.getId());

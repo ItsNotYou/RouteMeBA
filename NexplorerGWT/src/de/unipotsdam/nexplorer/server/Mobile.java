@@ -22,6 +22,7 @@ import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.data.Unit;
 import de.unipotsdam.nexplorer.server.di.LogWrapper;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
+import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.PositionBacklog;
@@ -133,7 +134,8 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 
 			// Wenn leichtester Schwierigkeitsgrad, Nachbarschaft aktualisieren
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
-				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood();
+				List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(thePlayer);
+				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours);
 			}
 		} catch (Exception e) {
 			unit.cancel();

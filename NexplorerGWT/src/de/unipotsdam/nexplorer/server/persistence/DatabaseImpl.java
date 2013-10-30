@@ -290,8 +290,34 @@ public class DatabaseImpl {
 		return entries.isEmpty() ? null : factory.create(entries.get(0));
 	}
 
+	/**
+	 * Returns all neighbours of a center player except the given
+	 * 
+	 * @deprecated Use {@link #getAllNeighbours(Player)} and filter the {@code except} parameter yourself
+	 * @param except
+	 *            The player to be filtered out
+	 * @param center
+	 *            The player which neighbours should be retreived
+	 * @return
+	 */
 	public List<Neighbour> getAllNeighboursExcept(Player except, Player center) {
 		List<Neighbours> neighbours = session.createCriteria(Neighbours.class).createAlias("node", "n").createAlias("neighbour", "neigh").add(eq("n.id", center.getId())).add(not(eq("neigh.id", except.getId()))).list();
+		List<Neighbour> result = new LinkedList<Neighbour>();
+		for (Neighbours neighbour : neighbours) {
+			result.add(data.create(neighbour));
+		}
+		return result;
+	}
+
+	/**
+	 * Returns all neighbours of a center player. Same as {@link #getAllNeighboursExcept(Player, Player)} but without the filter
+	 * 
+	 * @param center
+	 *            The player which neighbours should be retreived
+	 * @return
+	 */
+	public List<Neighbour> getAllNeighbours(Player center) {
+		List<Neighbours> neighbours = session.createCriteria(Neighbours.class).createAlias("node", "n").createAlias("neighbour", "neigh").add(eq("n.id", center.getId())).list();
 		List<Neighbour> result = new LinkedList<Neighbour>();
 		for (Neighbours neighbour : neighbours) {
 			result.add(data.create(neighbour));

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.gwt.dev.util.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -58,14 +59,14 @@ public class AodvNode implements NeighbourAction {
 		return theNode.hasBattery();
 	}
 
-	void aodvProcessDataPackets(long currentDataProcessingRound) {
+	void aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours) {
 		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
 
 		// ältestes Paket zuerst bearbeiten
 		DataPacketQueue packets = new DataPacketQueue(getAllDataPacketsSortedByDate(currentDataProcessingRound));
 
 		// Nur das erste Paket bearbeiten und alle anderen in Wartestellung setzen
-		packets.poll().process(currentDataProcessingRound, this);
+		packets.poll().process(currentDataProcessingRound, this, allKnownNeighbours);
 		packets.placeContentOnHoldUntil(currentDataProcessingRound + 1);
 
 		for (ProcessableDataPacket packet : packets) {
@@ -215,10 +216,10 @@ public class AodvNode implements NeighbourAction {
 		return Arrays.asList((Object) newBufferEntry);
 	}
 
-	public void sendRERRToNeighbours(Player errorPlayer) {
+	public void sendRERRToNeighbours(Player errorPlayer, List<Neighbour> allKnownNeighbours) {
 		Setting gameSettings = dbAccess.getSettings();
 
-		List<Neighbour> neighbours = dbAccess.getAllNeighboursExcept(errorPlayer, theNode);
+		List<Neighbour> neighbours = getAllNeighboursExcept(errorPlayer, allKnownNeighbours);
 		for (Neighbour theNeighbour : neighbours) {
 			AodvRoutingMessages newRERR = new AodvRoutingMessages();
 			newRERR.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
@@ -234,6 +235,17 @@ public class AodvNode implements NeighbourAction {
 
 			theNode.save();
 		}
+	}
+
+	private List<Neighbour> getAllNeighboursExcept(final Player errorPlayer, List<Neighbour> allKnownNeighbours) {
+		Collection<Neighbour> result = Collections2.filter(allKnownNeighbours, new Predicate<Neighbour>() {
+
+			@Override
+			public boolean apply(Neighbour arg0) {
+				return arg0.getNeighbour().getId() != errorPlayer.getId();
+			}
+		});
+		return new ArrayList<Neighbour>(result);
 	}
 
 	Collection<Object> createRouteForRREQ(AodvRoutingMessage theRequest, Long hopCountModifier) {
@@ -289,8 +301,8 @@ public class AodvNode implements NeighbourAction {
 		destination.save();
 	}
 
-	public void aodvNeighbourLost(Player exNeighbour) {
-		sendRERRToNeighbours(exNeighbour);
+	public void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours) {
+		sendRERRToNeighbours(exNeighbour, allKnownNeighbours);
 		table.deleteRouteTo(exNeighbour.getId());
 	}
 
@@ -327,8 +339,8 @@ public class AodvNode implements NeighbourAction {
 		newMessage.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 	}
 
-	public void updateNeighbourhood() {
-		theNode.updateNeighbourhood(this);
+	public void updateNeighbourhood(List<Neighbour> allKnownNeighbours) {
+		theNode.updateNeighbourhood(this, allKnownNeighbours);
 	}
 
 	public void pingNeighbourhood() {
