@@ -170,10 +170,9 @@ public class AodvNode implements NeighbourAction {
 	private Collection<Object> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ) {
 		Collection<Object> persistables = new ArrayList<Object>();
 		long destination = theRREQ.inner().getDestinationId();
-		Player dest = dbAccess.getPlayerById(destination);
 		if (!theRREQ.isExpired() && !hasRREQInBuffer(theRREQ)) {
-			if (this.isDestinationOf(theRREQ) || table.hasRouteTo(factory.create(dest))) {
-				Collection<Object> result = createRouteForRREQ(theRREQ, table.getHopCountTo(factory.create(dest)));
+			if (this.isDestinationOf(theRREQ) || table.hasRouteTo(destination)) {
+				Collection<Object> result = createRouteForRREQ(theRREQ, table.getHopCountTo(destination));
 				persistables.addAll(result);
 			} else {
 				// RREQ an Nachbarn weitersenden
@@ -264,10 +263,7 @@ public class AodvNode implements NeighbourAction {
 			long dest = theRequest.inner().getDestinationId();
 			long sequenceNumber = theRequest.inner().getSequenceNumber();
 
-			Player player = dbAccess.getPlayerById(theNodeId);
-			AodvNode node = factory.create(player);
-			RoutingTable table = new RoutingTable(node, dbAccess);
-			table.addRoute(lastNodeId, dest, hopCount, sequenceNumber);
+			RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, dbAccess);
 
 			lastNodeId = theNodeId;
 			hopCount++;
