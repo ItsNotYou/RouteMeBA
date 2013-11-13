@@ -20,6 +20,7 @@ import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRouteRequestBufferEntries;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.Aodv;
 
 public class AodvRoutingAlgorithm {
@@ -100,7 +101,8 @@ public class AodvRoutingAlgorithm {
 			List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
 			List<AodvRoutingMessage> routeRequestsByNodeAndRound = dbAccess.getRouteRequestsByNodeAndRound(theNode);
 			List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
-			Collection<Object> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries);
+			List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
+			Collection<Object> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
 			persistables.addAll(result);
 		}
 

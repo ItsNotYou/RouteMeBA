@@ -29,6 +29,7 @@ import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRouteRequestBufferEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.Aodv;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
@@ -118,8 +119,8 @@ public class AodvNode implements NeighbourAction {
 		return Lists.create(packets);
 	}
 
-	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
-		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries);
+	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
 		processRERRs(aodvRoutingAlgorithm, nodeRERRs);
 
 		return persistables;
@@ -155,24 +156,24 @@ public class AodvNode implements NeighbourAction {
 		}
 	}
 
-	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
+	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
 		logger.trace("***RREQs bei Knoten " + theNode.getId() + "***");
 
 		Collection<Object> persistables = new ArrayList<Object>(100);
 		for (AodvRoutingMessage theRREQ : routeRequestsByNodeAndRound) {
-			Collection<Object> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries);
+			Collection<Object> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries, allRoutingTableEntries);
 			persistables.addAll(result);
 		}
 
 		return persistables;
 	}
 
-	private Collection<Object> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
+	private Collection<Object> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
 		Collection<Object> persistables = new ArrayList<Object>();
 		long destination = theRREQ.inner().getDestinationId();
 		if (!theRREQ.isExpired() && !hasRREQInBuffer(theRREQ, allRouteRequestBufferEntries)) {
 			if (this.isDestinationOf(theRREQ) || table.hasRouteTo(destination)) {
-				Collection<Object> result = createRouteForRREQ(theRREQ, table.getHopCountTo(destination));
+				Collection<Object> result = createRouteForRREQ(theRREQ, table.getHopCountTo(destination), allRoutingTableEntries);
 				persistables.addAll(result);
 			} else {
 				// RREQ an Nachbarn weitersenden
@@ -262,7 +263,7 @@ public class AodvNode implements NeighbourAction {
 		return new ArrayList<Neighbour>(result);
 	}
 
-	Collection<Object> createRouteForRREQ(AodvRoutingMessage theRequest, Long hopCountModifier) {
+	Collection<Object> createRouteForRREQ(AodvRoutingMessage theRequest, Long hopCountModifier, List<AodvRoutingTableEntries> allRoutingTableEntries) {
 		// RREQ in Buffer eintragen
 		Collection<Object> persistables = addRouteRequestToBuffer(theRequest);
 
@@ -279,7 +280,7 @@ public class AodvNode implements NeighbourAction {
 			long dest = theRequest.inner().getDestinationId();
 			long sequenceNumber = theRequest.inner().getSequenceNumber();
 
-			RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, dbAccess);
+			RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, dbAccess, allRoutingTableEntries);
 
 			lastNodeId = theNodeId;
 			hopCount++;

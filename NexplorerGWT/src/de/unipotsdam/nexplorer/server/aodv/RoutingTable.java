@@ -1,9 +1,14 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.Collection;
 import java.util.List;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 
 public class RoutingTable {
 
@@ -70,19 +75,19 @@ public class RoutingTable {
 		route.persist(src, dbAccess);
 	}
 
-	public static void addRoute(long src, long nextHop, long dest, long hopCount, long sequenceNumber, DatabaseImpl dbAccess) {
+	public static void addRoute(long src, long nextHop, long dest, long hopCount, long sequenceNumber, DatabaseImpl dbAccess, List<AodvRoutingTableEntries> allRoutingTableEntries) {
 		boolean useRoute = false;
 		// alte Routen zum Ziel betrachten
-		List<AodvRoutingTableEntry> oldRoutes = dbAccess.getRoutingTableEntries(src, dest);
+		Collection<AodvRoutingTableEntries> oldRoutes = getRoutingTableEntries(src, dest, allRoutingTableEntries);
 		if (oldRoutes.isEmpty()) {
 			System.out.println("Keine alten Routen für Knoten " + src + " gefunden. Neue Route zu Knoten " + dest + " wurde eingetragen.\n");
 			add(new Route(nextHop, dest, sequenceNumber, hopCount), src, dbAccess);
 		} else {
-			for (AodvRoutingTableEntry theOldRoute : oldRoutes) {
+			for (AodvRoutingTableEntries theOldRoute : oldRoutes) {
 				if (theOldRoute.getDestinationSequenceNumber() < sequenceNumber) {
 					System.out.println("Lösche veraltete Route (alte Seq " + theOldRoute.getDestinationSequenceNumber() + " < neue Seq " + sequenceNumber + ") von Knoten " + src + " zu Knoten " + dest + ".\n");
 
-					theOldRoute.delete();
+					dbAccess.delete(theOldRoute);
 					useRoute = true;
 				}
 			}
@@ -92,5 +97,22 @@ public class RoutingTable {
 				add(new Route(nextHop, dest, sequenceNumber, hopCount), src, dbAccess);
 			}
 		}
+	}
+
+	private static Collection<AodvRoutingTableEntries> getRoutingTableEntries(final long src, final long dest, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+		return Collections2.filter(allRoutingTableEntries, new Predicate<AodvRoutingTableEntries>() {
+
+			@Override
+			public boolean apply(AodvRoutingTableEntries entry) {
+				if (entry.getNodeId() != src) {
+					return false;
+				}
+				if (entry.getDestinationId() != dest) {
+					return false;
+				}
+
+				return true;
+			}
+		});
 	}
 }
