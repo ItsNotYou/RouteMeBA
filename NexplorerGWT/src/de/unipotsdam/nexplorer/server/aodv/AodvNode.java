@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +20,7 @@ import com.google.gwt.dev.util.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.NeighbourRoute;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
@@ -119,8 +122,8 @@ public class AodvNode implements NeighbourAction {
 		return Lists.create(packets);
 	}
 
-	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
-		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
+	Map<Object, PojoAction> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+		Map<Object, PojoAction> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
 		processRERRs(aodvRoutingAlgorithm, nodeRERRs);
 
 		return persistables;
@@ -156,32 +159,34 @@ public class AodvNode implements NeighbourAction {
 		}
 	}
 
-	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+	private Map<Object, PojoAction> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
 		logger.trace("***RREQs bei Knoten " + theNode.getId() + "***");
 
-		Collection<Object> persistables = new ArrayList<Object>(100);
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>(100);
 		for (AodvRoutingMessage theRREQ : routeRequestsByNodeAndRound) {
-			Collection<Object> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries, allRoutingTableEntries);
-			persistables.addAll(result);
+			Map<Object, PojoAction> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries, allRoutingTableEntries);
+			persistables.putAll(result);
 		}
 
 		return persistables;
 	}
 
-	private Collection<Object> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
-		Collection<Object> persistables = new ArrayList<Object>();
+	private Map<Object, PojoAction> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		long destination = theRREQ.inner().getDestinationId();
 		if (!theRREQ.isExpired() && !hasRREQInBuffer(theRREQ, allRouteRequestBufferEntries)) {
 			if (this.isDestinationOf(theRREQ) || table.hasRouteTo(destination)) {
-				Collection<Object> result = createRouteForRREQ(theRREQ, table.getHopCountTo(destination), allRoutingTableEntries);
-				persistables.addAll(result);
+				Map<Object, PojoAction> result = createRouteForRREQ(theRREQ, table.getHopCountTo(destination), allRoutingTableEntries);
+				persistables.putAll(result);
 			} else {
 				// RREQ an Nachbarn weitersenden
 				for (Player neigh : theNode.getNeighbours()) {
 					AodvNode next = factory.create(neigh);
 					Link link = factory.create(this, next);
 					Collection<Object> result = link.transmit(theRREQ);
-					persistables.addAll(result);
+					for (Object r : result) {
+						persistables.put(r, PojoAction.SAVE);
+					}
 				}
 			}
 		}
@@ -263,7 +268,9 @@ public class AodvNode implements NeighbourAction {
 		return new ArrayList<Neighbour>(result);
 	}
 
-	Collection<Object> createRouteForRREQ(AodvRoutingMessage theRequest, Long hopCountModifier, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+	Map<Object, PojoAction> createRouteForRREQ(AodvRoutingMessage theRequest, Long hopCountModifier, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+		Map<Object, PojoAction> result = new HashMap<Object, PojoAction>();
+
 		// RREQ in Buffer eintragen
 		Collection<Object> persistables = addRouteRequestToBuffer(theRequest);
 
@@ -280,13 +287,14 @@ public class AodvNode implements NeighbourAction {
 			long dest = theRequest.inner().getDestinationId();
 			long sequenceNumber = theRequest.inner().getSequenceNumber();
 
-			RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, dbAccess, allRoutingTableEntries);
+			Map<Object, PojoAction> persistable = RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, allRoutingTableEntries);
+			result.putAll(persistable);
 
 			lastNodeId = theNodeId;
 			hopCount++;
 		}
 
-		return persistables;
+		return result;
 	}
 
 	Collection<Object> sendRREQToNeighbours(Player dest, Setting gameSettings) {

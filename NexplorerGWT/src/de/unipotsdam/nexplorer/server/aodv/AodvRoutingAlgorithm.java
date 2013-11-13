@@ -1,16 +1,18 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
@@ -91,19 +93,19 @@ public class AodvRoutingAlgorithm {
 		gameSettings.save();
 	}
 
-	public Collection<Object> aodvProcessRoutingMessages() {
+	public Map<Object, PojoAction> aodvProcessRoutingMessages() {
 		Setting gameSettings = getGameSettings();
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingMessages Runde " + gameSettings.getCurrentDataRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
 
-		Collection<Object> persistables = new ArrayList<Object>(100);
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>(100);
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
 			List<AodvRoutingMessage> routeRequestsByNodeAndRound = dbAccess.getRouteRequestsByNodeAndRound(theNode);
 			List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
 			List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
-			Collection<Object> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
-			persistables.addAll(result);
+			Map<Object, PojoAction> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
+			persistables.putAll(result);
 		}
 
 		gameSettings.incCurrentRoutingRound();

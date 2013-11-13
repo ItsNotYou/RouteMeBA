@@ -1,8 +1,9 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
-import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 
 public class Route {
@@ -35,7 +36,7 @@ public class Route {
 		return hopCount;
 	}
 
-	void persist(long src, DatabaseImpl dbAccess) {
+	Collection<Object> persist(long src) {
 		AodvRoutingTableEntries entry = new AodvRoutingTableEntries();
 		entry.setDestinationId(dest);
 		entry.setDestinationSequenceNumber(sequenceNumber);
@@ -43,7 +44,6 @@ public class Route {
 		entry.setNextHopId(nextHop);
 		entry.setNodeId(src);
 		entry.setTimestamp(new Date().getTime());
-
-		dbAccess.persist(entry);
+		return Arrays.asList((Object) entry);
 	}
 }

@@ -417,7 +417,7 @@ public class DatabaseImpl {
 		return result;
 	}
 
-	private void deleteObject(Object data) {
+	public void deleteObject(Object data) {
 		// session.flush();
 		session.delete(data);
 	}

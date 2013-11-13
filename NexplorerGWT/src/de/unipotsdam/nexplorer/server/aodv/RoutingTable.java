@@ -1,11 +1,14 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
@@ -68,35 +71,49 @@ public class RoutingTable {
 	}
 
 	public void add(Route route) {
-		route.persist(node.getId(), dbAccess);
+		Collection<Object> persistables = route.persist(node.getId());
+		for (Object persistable : persistables) {
+			dbAccess.persistObject(persistable);
+		}
 	}
 
-	private static void add(Route route, long src, DatabaseImpl dbAccess) {
-		route.persist(src, dbAccess);
+	private static Map<Object, PojoAction> add(Route route, long src) {
+		Map<Object, PojoAction> result = new HashMap<Object, PojoAction>();
+		Collection<Object> persistables = route.persist(src);
+		for (Object persistable : persistables) {
+			result.put(persistable, PojoAction.SAVE);
+		}
+		return result;
 	}
 
-	public static void addRoute(long src, long nextHop, long dest, long hopCount, long sequenceNumber, DatabaseImpl dbAccess, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+	public static Map<Object, PojoAction> addRoute(long src, long nextHop, long dest, long hopCount, long sequenceNumber, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		boolean useRoute = false;
 		// alte Routen zum Ziel betrachten
 		Collection<AodvRoutingTableEntries> oldRoutes = getRoutingTableEntries(src, dest, allRoutingTableEntries);
 		if (oldRoutes.isEmpty()) {
 			System.out.println("Keine alten Routen für Knoten " + src + " gefunden. Neue Route zu Knoten " + dest + " wurde eingetragen.\n");
-			add(new Route(nextHop, dest, sequenceNumber, hopCount), src, dbAccess);
+			Map<Object, PojoAction> result = add(new Route(nextHop, dest, sequenceNumber, hopCount), src);
+			persistables.putAll(result);
 		} else {
 			for (AodvRoutingTableEntries theOldRoute : oldRoutes) {
 				if (theOldRoute.getDestinationSequenceNumber() < sequenceNumber) {
 					System.out.println("Lösche veraltete Route (alte Seq " + theOldRoute.getDestinationSequenceNumber() + " < neue Seq " + sequenceNumber + ") von Knoten " + src + " zu Knoten " + dest + ".\n");
 
-					dbAccess.delete(theOldRoute);
+					persistables.put(theOldRoute, PojoAction.DELETE);
 					useRoute = true;
 				}
 			}
 
 			if (useRoute) {
 				System.out.println("Neue Route von Knoten " + src + " zu Knoten " + dest + " wurde eingetragen.\n");
-				add(new Route(nextHop, dest, sequenceNumber, hopCount), src, dbAccess);
+				Map<Object, PojoAction> result = add(new Route(nextHop, dest, sequenceNumber, hopCount), src);
+				persistables.putAll(result);
 			}
 		}
+
+		return persistables;
 	}
 
 	private static Collection<AodvRoutingTableEntries> getRoutingTableEntries(final long src, final long dest, List<AodvRoutingTableEntries> allRoutingTableEntries) {

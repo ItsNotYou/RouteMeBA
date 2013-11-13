@@ -8,10 +8,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -284,9 +284,15 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		try {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
-			Collection<Object> result = aodv.aodvProcessRoutingMessages();
-			for (Object persistable : result) {
-				dbAccess.persistObject(persistable);
+			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages();
+			for (Map.Entry<Object, PojoAction> persistable : result.entrySet()) {
+				switch (persistable.getValue()) {
+				case DELETE:
+					dbAccess.deleteObject(persistable);
+				case SAVE:
+				default:
+					dbAccess.persistObject(persistable);
+				}
 			}
 		} catch (Exception e) {
 			unit.cancel();
