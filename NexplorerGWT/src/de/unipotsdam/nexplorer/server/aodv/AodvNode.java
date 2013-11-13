@@ -59,14 +59,14 @@ public class AodvNode implements NeighbourAction {
 		return theNode.hasBattery();
 	}
 
-	void aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours) {
+	void aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
 		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
 
 		// ältestes Paket zuerst bearbeiten
 		DataPacketQueue packets = new DataPacketQueue(getAllDataPacketsSortedByDate(currentDataProcessingRound));
 
 		// Nur das erste Paket bearbeiten und alle anderen in Wartestellung setzen
-		packets.poll().process(currentDataProcessingRound, this, allKnownNeighbours);
+		packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours);
 		packets.placeContentOnHoldUntil(currentDataProcessingRound + 1);
 
 		for (ProcessableDataPacket packet : packets) {
@@ -214,9 +214,7 @@ public class AodvNode implements NeighbourAction {
 		return Arrays.asList((Object) newBufferEntry);
 	}
 
-	public void sendRERRToNeighbours(Player errorPlayer, List<Neighbour> allKnownNeighbours) {
-		Setting gameSettings = dbAccess.getSettings();
-
+	public void sendRERRToNeighbours(Player errorPlayer, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
 		List<Neighbour> neighbours = getAllNeighboursExcept(errorPlayer, allKnownNeighbours);
 		for (Neighbour theNeighbour : neighbours) {
 			AodvRoutingMessages newRERR = new AodvRoutingMessages();
@@ -225,7 +223,7 @@ public class AodvNode implements NeighbourAction {
 			newRERR.setSourceId(getId());
 			newRERR.setCurrentNodeId(theNeighbour.getNeighbour().getId());
 			newRERR.setSequenceNumber(theNode.incSequenceNumber());
-			newRERR.setProcessingRound(gameSettings.getCurrentRoutingRound() + 1);
+			newRERR.setProcessingRound(currentRoutingRound + 1);
 
 			AodvNode next = factory.create(theNeighbour.getNeighbour());
 			Link link = factory.create(this, next);
@@ -296,8 +294,8 @@ public class AodvNode implements NeighbourAction {
 		destination.save();
 	}
 
-	public void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours) {
-		sendRERRToNeighbours(exNeighbour, allKnownNeighbours);
+	public void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+		sendRERRToNeighbours(exNeighbour, allKnownNeighbours, currentRoutingRound);
 		table.deleteRouteTo(exNeighbour.getId());
 	}
 
@@ -334,8 +332,8 @@ public class AodvNode implements NeighbourAction {
 		newMessage.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 	}
 
-	public void updateNeighbourhood(List<Neighbour> allKnownNeighbours) {
-		theNode.updateNeighbourhood(this, allKnownNeighbours);
+	public void updateNeighbourhood(List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+		theNode.updateNeighbourhood(this, allKnownNeighbours, currentRoutingRound);
 	}
 
 	public void pingNeighbourhood() {

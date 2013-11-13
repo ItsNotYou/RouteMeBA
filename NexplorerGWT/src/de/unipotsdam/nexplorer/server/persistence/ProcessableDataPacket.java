@@ -7,7 +7,7 @@ import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public interface ProcessableDataPacket {
 
-	public abstract void process(long currentDataProcessingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours);
+	public abstract void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours);
 
 	public abstract void setOnHoldUntil(long dataProcessingRound);
 

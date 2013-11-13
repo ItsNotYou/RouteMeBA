@@ -24,6 +24,7 @@ import de.unipotsdam.nexplorer.server.di.LogWrapper;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
+import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.PositionBacklog;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
@@ -85,7 +86,8 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			// ist ein nice to have
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Player player = dbAccess.getPlayerById(playerId);
-			aodv.updateNeighbourhood(player);
+			Setting setting = dbAccess.getSettings();
+			aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound());
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);
@@ -118,6 +120,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Player thePlayer = dbAccess.getPlayerById(location.getPlayerId());
+			Setting setting = dbAccess.getSettings();
 
 			thePlayer.setLocation(location);
 			thePlayer.save();
@@ -135,7 +138,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			// Wenn leichtester Schwierigkeitsgrad, Nachbarschaft aktualisieren
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
 				List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(thePlayer);
-				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours);
+				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound());
 			}
 		} catch (Exception e) {
 			unit.cancel();

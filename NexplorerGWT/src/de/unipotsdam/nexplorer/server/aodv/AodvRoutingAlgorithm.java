@@ -82,7 +82,7 @@ public class AodvRoutingAlgorithm {
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
-			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours);
+			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound());
 		}
 
 		gameSettings.incCurrentDataRound();
@@ -113,14 +113,14 @@ public class AodvRoutingAlgorithm {
 	 * 
 	 * @param player
 	 */
-	public void updateNeighbourhood(Player player) {
+	public void updateNeighbourhood(Player player, long currentRoutingRound) {
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			player.updateNeighbourhood(routing, allKnownNeighbours);
+			player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound);
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			player.removeOutdatedNeighbours(routing, allKnownNeighbours);
+			player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound);
 		}
 	}
 

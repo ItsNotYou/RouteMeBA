@@ -9,7 +9,7 @@ import de.unipotsdam.nexplorer.shared.DataPacket;
 public class NullPacket implements ProcessableDataPacket {
 
 	@Override
-	public void process(long currentDataProcessingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
+	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
 	}
 
 	@Override

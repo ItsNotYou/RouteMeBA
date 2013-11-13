@@ -14,8 +14,10 @@ public interface NeighbourAction {
 	 *            The lost neighbour
 	 * @param allKnownNeighbours
 	 *            All currently known neighbours. The recently lost <code>exNeighbour</code> may be part of the list.
+	 * @param currentRoutingRound
+	 *            The currently executing round of message routing (not data routing).
 	 */
-	void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours);
+	void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound);
 
 	void aodvNeighbourFound(Player thePlayer);
 }

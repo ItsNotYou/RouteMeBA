@@ -66,13 +66,13 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	@Override
-	public void process(long currentDataProcessingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
+	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
 		Byte status = inner.getStatus();
 		switch (status) {
 		case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 		case Aodv.DATA_PACKET_STATUS_NODE_BUSY:
 			// Pakete ist unterwegs oder wartet darauf versendet zu werden
-			forwardPacket(aodvNode, allKnownNeighbours);
+			forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound);
 			break;
 		case Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE:
 		case Aodv.DATA_PACKET_STATUS_ERROR:
@@ -106,7 +106,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		}
 	}
 
-	void forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
+	void forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
 		// prüfen ob Route zum Ziel bekannt
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
@@ -121,7 +121,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			delete();
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
-			aodvNode.sendRERRToNeighbours(destination, allKnownNeighbours);
+			aodvNode.sendRERRToNeighbours(destination, allKnownNeighbours, currentRoutingRound);
 
 			logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da keine Route bekannt", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId());
 			inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
