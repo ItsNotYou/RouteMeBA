@@ -118,8 +118,8 @@ public class AodvNode implements NeighbourAction {
 		return Lists.create(packets);
 	}
 
-	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound) {
-		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound);
+	Collection<Object> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
+		Collection<Object> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries);
 		processRERRs(aodvRoutingAlgorithm, nodeRERRs);
 
 		return persistables;
@@ -155,22 +155,22 @@ public class AodvNode implements NeighbourAction {
 		}
 	}
 
-	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound) {
+	private Collection<Object> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
 		logger.trace("***RREQs bei Knoten " + theNode.getId() + "***");
 
 		Collection<Object> persistables = new ArrayList<Object>(100);
 		for (AodvRoutingMessage theRREQ : routeRequestsByNodeAndRound) {
-			Collection<Object> result = processRREQ(aodv, theRREQ);
+			Collection<Object> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries);
 			persistables.addAll(result);
 		}
 
 		return persistables;
 	}
 
-	private Collection<Object> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ) {
+	private Collection<Object> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
 		Collection<Object> persistables = new ArrayList<Object>();
 		long destination = theRREQ.inner().getDestinationId();
-		if (!theRREQ.isExpired() && !hasRREQInBuffer(theRREQ)) {
+		if (!theRREQ.isExpired() && !hasRREQInBuffer(theRREQ, allRouteRequestBufferEntries)) {
 			if (this.isDestinationOf(theRREQ) || table.hasRouteTo(destination)) {
 				Collection<Object> result = createRouteForRREQ(theRREQ, table.getHopCountTo(destination));
 				persistables.addAll(result);
@@ -199,9 +199,27 @@ public class AodvNode implements NeighbourAction {
 		return theNode;
 	}
 
-	private boolean hasRREQInBuffer(AodvRoutingMessage theRREQ) {
-		AodvRouteRequestBufferEntry RREQBufferEntry = dbAccess.getAODVRouteRequestBufferEntry(theNode, theRREQ);
-		return RREQBufferEntry != null;
+	private boolean hasRREQInBuffer(final AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries) {
+		final Player theNode = this.theNode;
+		Collection<AodvRouteRequestBufferEntries> entries = Collections2.filter(allRouteRequestBufferEntries, new Predicate<AodvRouteRequestBufferEntries>() {
+
+			@Override
+			public boolean apply(AodvRouteRequestBufferEntries entry) {
+				if (entry.getNodeId() != theNode.getId()) {
+					return false;
+				}
+				if (entry.getSourceId() != theRREQ.inner().getSourceId()) {
+					return false;
+				}
+				if (entry.getSequenceNumber() != theRREQ.inner().getSequenceNumber()) {
+					return false;
+				}
+
+				return true;
+			}
+		});
+
+		return entries.isEmpty() ? false : true;
 	}
 
 	Collection<Object> addRouteRequestToBuffer(AodvRoutingMessage theRequest) {

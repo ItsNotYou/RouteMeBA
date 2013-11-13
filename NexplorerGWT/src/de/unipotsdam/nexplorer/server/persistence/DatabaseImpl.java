@@ -123,6 +123,10 @@ public class DatabaseImpl {
 		return entries.isEmpty() ? null : factory.create(entries.get(0));
 	}
 
+	public List<AodvRouteRequestBufferEntries> getAllRouteRequestBufferEntries() {
+		return session.createCriteria(AodvRouteRequestBufferEntries.class).list();
+	}
+
 	public AodvRoutingTableEntry getRouteToDestination(Long destinationId, Long nodeId) {
 		List<AodvRoutingTableEntries> entries = session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", nodeId)).add(eq("destinationId", destinationId)).addOrder(Order.asc("hopCount")).list();
 
