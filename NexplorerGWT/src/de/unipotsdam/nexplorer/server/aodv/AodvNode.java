@@ -4,7 +4,6 @@ import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -183,10 +182,8 @@ public class AodvNode implements NeighbourAction {
 				for (Player neigh : theNode.getNeighbours()) {
 					AodvNode next = factory.create(neigh);
 					Link link = factory.create(this, next);
-					Collection<Object> result = link.transmit(theRREQ);
-					for (Object r : result) {
-						persistables.put(r, PojoAction.SAVE);
-					}
+					Map<Object, PojoAction> result = link.transmit(theRREQ);
+					persistables.putAll(result);
 				}
 			}
 		}
@@ -228,14 +225,17 @@ public class AodvNode implements NeighbourAction {
 		return entries.isEmpty() ? false : true;
 	}
 
-	Collection<Object> addRouteRequestToBuffer(AodvRoutingMessage theRequest) {
+	Map<Object, PojoAction> addRouteRequestToBuffer(AodvRoutingMessage theRequest) {
+		HashMap<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		logger.trace("RREQ mit sourceId " + theRequest.inner().getSourceId() + " und sequenceNumber " + theRequest.inner().getSequenceNumber() + " zum Puffer hinzufügen.\n");
 
 		AodvRouteRequestBufferEntries newBufferEntry = new AodvRouteRequestBufferEntries();
 		newBufferEntry.setNodeId(getId());
 		newBufferEntry.setSourceId(theRequest.inner().getSourceId());
 		newBufferEntry.setSequenceNumber(theRequest.inner().getSequenceNumber());
-		return Arrays.asList((Object) newBufferEntry);
+		persistables.put(newBufferEntry, PojoAction.SAVE);
+
+		return persistables;
 	}
 
 	public void sendRERRToNeighbours(Player errorPlayer, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
@@ -272,7 +272,8 @@ public class AodvNode implements NeighbourAction {
 		Map<Object, PojoAction> result = new HashMap<Object, PojoAction>();
 
 		// RREQ in Buffer eintragen
-		Collection<Object> persistables = addRouteRequestToBuffer(theRequest);
+		Map<Object, PojoAction> persistables = addRouteRequestToBuffer(theRequest);
+		result.putAll(persistables);
 
 		logger.trace("Route für RREQ mit sourceId " + theRequest.inner().getSourceId() + " und sequenceNumber " + theRequest.inner().getSequenceNumber() + " erstellen.\n");
 
@@ -287,8 +288,8 @@ public class AodvNode implements NeighbourAction {
 			long dest = theRequest.inner().getDestinationId();
 			long sequenceNumber = theRequest.inner().getSequenceNumber();
 
-			Map<Object, PojoAction> persistable = RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, allRoutingTableEntries);
-			result.putAll(persistable);
+			persistables = RoutingTable.addRoute(theNodeId, lastNodeId, dest, hopCount, sequenceNumber, allRoutingTableEntries);
+			result.putAll(persistables);
 
 			lastNodeId = theNodeId;
 			hopCount++;
@@ -297,8 +298,8 @@ public class AodvNode implements NeighbourAction {
 		return result;
 	}
 
-	Collection<Object> sendRREQToNeighbours(Player dest, Setting gameSettings) {
-		Collection<Object> persistables = new ArrayList<Object>();
+	Map<Object, PojoAction> sendRREQToNeighbours(Player dest, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		logger.trace("RREQ an alle Nachbarn für Route zum Knoten mit ID " + dest.getId() + " senden.\n");
 
@@ -308,8 +309,8 @@ public class AodvNode implements NeighbourAction {
 
 			AodvNode next = factory.create(theNeighbour);
 			Link link = factory.create(this, next);
-			Collection<Object> result = link.transmit(factory.create(newRREQ));
-			persistables.addAll(result);
+			Map<Object, PojoAction> result = link.transmit(factory.create(newRREQ));
+			persistables.putAll(result);
 		}
 
 		return persistables;
@@ -332,23 +333,23 @@ public class AodvNode implements NeighbourAction {
 		table.deleteRouteTo(exNeighbour.getId());
 	}
 
-	Collection<Object> enqueMessage(DataPacket message) {
+	Map<Object, PojoAction> enqueMessage(DataPacket message) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		long destination = message.getMessageDescription().getDestinationNodeId();
-		Collection<Object> persistables = new ArrayList<Object>();
 
 		if (!theNode.hasBattery()) {
-			return Collections.emptyList();
+			return new HashMap<Object, PojoAction>();
 		}
 
 		if (table.hasRouteTo(destination)) {
 			send(message).toDestination();
 		} else {
 			pause(message);
-			Collection<Object> result = sendRREQFor(destination).toNeighbours();
-			persistables.addAll(result);
+			Map<Object, PojoAction> result = sendRREQFor(destination).toNeighbours();
+			persistables.putAll(result);
 		}
 
-		persistables.add(message);
+		persistables.put(message, PojoAction.SAVE);
 		return persistables;
 	}
 

@@ -1,13 +1,14 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.Referee;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
@@ -90,15 +91,15 @@ public class Link {
 		}
 	}
 
-	public Collection<Object> transmit(AodvRoutingMessage theRequest) {
-		Collection<Object> persistables = new ArrayList<Object>();
+	public Map<Object, PojoAction> transmit(AodvRoutingMessage theRequest) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		Setting gameSettings = dbAccess.getSettings();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
 			// RREQ in Buffer eintragen
-			Collection<Object> result = src.addRouteRequestToBuffer(theRequest);
-			persistables.addAll(result);
+			Map<Object, PojoAction> result = src.addRouteRequestToBuffer(theRequest);
+			persistables.putAll(result);
 
 			logger.trace("RREQ mit sourceId " + theRequest.inner().getSourceId() + " und sequenceNumber " + theRequest.inner().getSequenceNumber() + " an Nachbarn mit ID " + dest.player().getId() + " senden.\n");
 

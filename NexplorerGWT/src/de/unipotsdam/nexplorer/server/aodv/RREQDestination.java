@@ -1,13 +1,14 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
@@ -32,8 +33,8 @@ public class RREQDestination {
 		this.factory = factory;
 	}
 
-	public Collection<Object> toNeighbours() {
-		Collection<Object> persistables = new ArrayList<Object>(100);
+	public Map<Object, PojoAction> toNeighbours() {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		Setting gameSettings = dbAccess.getSettings();
 
 		logger.info("RREQ an alle Nachbarn für Route zum Knoten mit ID {} senden.", destId);
@@ -44,8 +45,8 @@ public class RREQDestination {
 
 			AodvNode next = factory.create(theNeighbour);
 			Link link = factory.create(theNode, next);
-			Collection<Object> result = link.transmit(factory.create(newRREQ));
-			persistables.addAll(result);
+			Map<Object, PojoAction> result = link.transmit(factory.create(newRREQ));
+			persistables.putAll(result);
 		}
 
 		return persistables;

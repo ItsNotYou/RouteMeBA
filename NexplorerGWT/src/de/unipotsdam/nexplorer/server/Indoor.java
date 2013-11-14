@@ -1,9 +1,10 @@
 package de.unipotsdam.nexplorer.server;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,9 +90,14 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			try {
-				Collection<Object> persistables = aodv.aodvInsertNewMessage(src, dest, owner);
-				for (Object persistable : persistables) {
-					dbAccess.persistObject(persistable);
+				Map<Object, PojoAction> persistables = aodv.aodvInsertNewMessage(src, dest, owner);
+				for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
+					Object subject = persistable.getKey();
+					if (persistable.getValue() == PojoAction.DELETE) {
+						dbAccess.deleteObject(subject);
+					} else {
+						dbAccess.persistObject(subject);
+					}
 				}
 			} catch (PlayerDoesNotExistException e) {
 				throw new PlayerNotFoundException(e);
@@ -119,9 +125,14 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 			Setting settings = dbAccess.getSettings();
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			Collection<Object> persistables = aodv.aodvResendRouteRequest(owner, settings);
-			for (Object persistable : persistables) {
-				dbAccess.persistObject(persistable);
+			Map<Object, PojoAction> persistables = aodv.aodvResendRouteRequest(owner, settings);
+			for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
+				Object subject = persistable.getKey();
+				if (persistable.getValue() == PojoAction.DELETE) {
+					dbAccess.deleteObject(subject);
+				} else {
+					dbAccess.persistObject(subject);
+				}
 			}
 		} catch (Exception e) {
 			unit.cancel();

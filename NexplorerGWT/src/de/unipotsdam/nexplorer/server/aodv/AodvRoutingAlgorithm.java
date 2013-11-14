@@ -1,8 +1,6 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +38,7 @@ public class AodvRoutingAlgorithm {
 		this.settings = null;
 	}
 
-	public Collection<Object> aodvInsertNewMessage(Player src, Player dest, Player owner) throws PlayerDoesNotExistException {
+	public Map<Object, PojoAction> aodvInsertNewMessage(Player src, Player dest, Player owner) throws PlayerDoesNotExistException {
 		Setting gameSettings = getGameSettings();
 		logger.trace("Insert new message from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
 		AodvDataPackets newMessage = new AodvDataPackets();
@@ -54,18 +52,18 @@ public class AodvRoutingAlgorithm {
 		return factory.create(src).enqueMessage(newMessage);
 	}
 
-	public Collection<Object> aodvResendRouteRequest(Player owner, Setting gameSettings) {
+	public Map<Object, PojoAction> aodvResendRouteRequest(Player owner, Setting gameSettings) {
 		AodvDataPacket thePacket = dbAccess.getDataPacketByOwnerId(owner);
 		if (thePacket == null) {
 			logger.warn("Trying to resend route request, but no data packet found (owner {})", owner.getId());
-			return Collections.emptyList();
+			return new HashMap<Object, PojoAction>();
 		}
 
 		AodvNode src = thePacket.getSource();
 		AodvNode dest = thePacket.getDestination();
 
 		logger.trace("Resend route request from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
-		Collection<Object> persistables = thePacket.getSource().sendRREQToNeighbours(dest.player(), gameSettings);
+		Map<Object, PojoAction> persistables = thePacket.getSource().sendRREQToNeighbours(dest.player(), gameSettings);
 		thePacket.inner().setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 		thePacket.save();
 
