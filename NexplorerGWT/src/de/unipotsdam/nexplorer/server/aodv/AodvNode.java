@@ -40,7 +40,6 @@ public class AodvNode implements NeighbourAction {
 	@InjectLogger
 	private Logger logger;
 	final Player theNode;
-	final DatabaseImpl dbAccess;
 	private final RoutingTable table;
 	private final AodvFactory factory;
 	private RREQFactory rreq;
@@ -48,7 +47,6 @@ public class AodvNode implements NeighbourAction {
 	@Inject
 	public AodvNode(@Assisted Player theNode, DatabaseImpl dbAccess, AodvFactory factory, RREQFactory rreq) {
 		this.theNode = theNode;
-		this.dbAccess = dbAccess;
 		this.table = new RoutingTable(this, dbAccess);
 		this.factory = factory;
 		this.rreq = rreq;
@@ -122,20 +120,27 @@ public class AodvNode implements NeighbourAction {
 	}
 
 	Map<Object, PojoAction> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
-		Map<Object, PojoAction> persistables = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
-		processRERRs(aodvRoutingAlgorithm, nodeRERRs);
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
+		Map<Object, PojoAction> result = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
+		persistables.putAll(result);
+
+		result = processRERRs(aodvRoutingAlgorithm, nodeRERRs);
+		persistables.putAll(result);
 
 		return persistables;
 	}
 
-	private void processRERRs(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs) {
+	private Map<Object, PojoAction> processRERRs(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		logger.trace("***RERRs bei Knoten " + theNode.getId() + "***");
 		for (AodvRoutingMessage theRERR : nodeRERRs) {
 			// Prüfen ob Einträge in meiner Routingtabelle betroffen sind
 			Long destinationId = theRERR.inner().getDestinationId();
 			if (table.hasRouteTo(destinationId)) {
-				AodvNode nextHop = table.getNextHop(destinationId);
-				logger.trace("RERR mit sourceId " + theRERR.inner().getSourceId() + " und destinationId " + theRERR.inner().getDestinationId() + " betrifft Routingtabelleneintrag mit nextHopId " + nextHop.getId() + ".");
+				long nextHopId = table.getNextHop(destinationId);
+				logger.trace("RERR mit sourceId " + theRERR.inner().getSourceId() + " und destinationId " + theRERR.inner().getDestinationId() + " betrifft Routingtabelleneintrag mit nextHopId " + nextHopId + ".");
 
 				// RRER an Nachbarn weitersenden
 				for (Player neigh : theNode.getNeighbours()) {
@@ -145,8 +150,9 @@ public class AodvNode implements NeighbourAction {
 				}
 
 				// Routingtabelleneintrag löschen
-				logger.trace("Lösche Routingtabelleneintrag mit nextHopId " + nextHop.getId() + " und destinationId " + theRERR.inner().getDestinationId() + ".");
-				table.deleteRouteTo(destinationId);
+				logger.trace("Lösche Routingtabelleneintrag mit nextHopId " + nextHopId + " und destinationId " + theRERR.inner().getDestinationId() + ".");
+				Map<Object, PojoAction> result = table.deleteRouteTo(destinationId);
+				persistables.putAll(result);
 
 				logger.trace("RERR mit sourceId " + theRERR.inner().getSourceId() + " und destinationId " + theRERR.inner().getDestinationId() + " löschen, weil er fertig bearbeitet ist.");
 			} else {
@@ -156,6 +162,8 @@ public class AodvNode implements NeighbourAction {
 			// RERR löschen
 			theRERR.delete();
 		}
+
+		return persistables;
 	}
 
 	private Map<Object, PojoAction> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
@@ -328,9 +336,10 @@ public class AodvNode implements NeighbourAction {
 		return persistables;
 	}
 
-	public void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	@Override
+	public Map<Object, PojoAction> aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
 		sendRERRToNeighbours(exNeighbour, allKnownNeighbours, currentRoutingRound);
-		table.deleteRouteTo(exNeighbour.getId());
+		return table.deleteRouteTo(exNeighbour.getId());
 	}
 
 	Map<Object, PojoAction> enqueMessage(DataPacket message) {

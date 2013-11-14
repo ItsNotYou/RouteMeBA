@@ -127,7 +127,8 @@ public class AodvRoutingAlgorithm {
 			persistables.putAll(result);
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound);
+			persistables.putAll(result);
 		}
 		return persistables;
 	}

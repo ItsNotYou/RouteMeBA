@@ -142,7 +142,8 @@ public class Player implements Locatable {
 
 		for (Player lostNeighbour : lostNeighbours) {
 			getNeighbours().remove(lostNeighbour);
-			routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours, currentRoutingRound);
+			persistables.putAll(result);
 
 			logger.info("Node {} deleted neighbour {}", getId(), lostNeighbour.getId());
 		}
@@ -279,7 +280,9 @@ public class Player implements Locatable {
 		}
 	}
 
-	public synchronized void removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	public synchronized Map<Object, PojoAction> removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		int allowedHelloLosses = 8;
 		long tooOld = new Date().getTime() - allowedHelloLosses * inner.getPingDuration();
 
@@ -294,9 +297,12 @@ public class Player implements Locatable {
 				dbAccess.persist(inner);
 				dbAccess.delete(neighbour);
 
-				routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours, currentRoutingRound);
+				Map<Object, PojoAction> result = routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours, currentRoutingRound);
+				persistables.putAll(result);
 			}
 		}
+
+		return persistables;
 	}
 
 	public Collection<AodvDataPackets> getCurrentDataPackets() {

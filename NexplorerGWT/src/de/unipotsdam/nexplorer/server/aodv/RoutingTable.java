@@ -1,6 +1,9 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +20,59 @@ public class RoutingTable {
 
 	private AodvNode node;
 	private DatabaseImpl dbAccess;
+	private List<AodvRoutingTableEntries> allRoutingTableEntries;
 
 	public RoutingTable(AodvNode player, DatabaseImpl dbAccess) {
 		this.node = player;
 		this.dbAccess = dbAccess;
+
+		this.allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
+	}
+
+	private AodvRoutingTableEntries getRouteToDestination(final Long destinationId, final Long nodeId) {
+		Collection<AodvRoutingTableEntries> filtered = Collections2.filter(allRoutingTableEntries, new Predicate<AodvRoutingTableEntries>() {
+
+			@Override
+			public boolean apply(AodvRoutingTableEntries arg0) {
+				if (arg0.getNodeId() != nodeId) {
+					return false;
+				}
+				if (arg0.getDestinationId() != destinationId) {
+					return false;
+				}
+				return true;
+			}
+		});
+
+		List<AodvRoutingTableEntries> sortable = new ArrayList<AodvRoutingTableEntries>(filtered);
+		Collections.sort(sortable, new Comparator<AodvRoutingTableEntries>() {
+
+			@Override
+			public int compare(AodvRoutingTableEntries o1, AodvRoutingTableEntries o2) {
+				if (o1 == null && o2 == null) {
+					return 0;
+				} else if (o1 == null && o2 != null) {
+					return -1;
+				} else if (o1 != null && o2 == null) {
+					return 1;
+				}
+
+				Long hop1 = o1.getHopCount();
+				Long hop2 = o2.getHopCount();
+
+				if (hop1 == null && hop2 == null) {
+					return 0;
+				} else if (hop1 == null && hop2 != null) {
+					return -1;
+				} else if (hop1 != null && hop2 == null) {
+					return 1;
+				}
+
+				return (int) (hop1 - hop2);
+			}
+		});
+
+		return sortable.isEmpty() ? null : sortable.get(0);
 	}
 
 	public boolean hasRouteTo(AodvNode destination) {
@@ -32,7 +84,7 @@ public class RoutingTable {
 	}
 
 	public boolean hasRouteTo(long destination) {
-		AodvRoutingTableEntry theRoute = dbAccess.getRouteToDestination(destination, node.getId());
+		AodvRoutingTableEntries theRoute = getRouteToDestination(destination, node.getId());
 		return theRoute != null;
 	}
 
@@ -44,30 +96,30 @@ public class RoutingTable {
 		if (destination == node.getId()) {
 			return 0;
 		} else {
-			AodvRoutingTableEntry theRoute = dbAccess.getRouteToDestination(destination, node.getId());
+			AodvRoutingTableEntries theRoute = getRouteToDestination(destination, node.getId());
 			return theRoute.getHopCount();
 		}
 	}
 
-	public AodvNode getNextHop(AodvNode destination) {
+	public long getNextHop(AodvNode destination) {
 		return getNextHop(destination.getId());
 	}
 
-	public AodvNode getNextHop(long destination) {
-		AodvRoutingTableEntry theRoute = dbAccess.getRouteToDestination(destination, node.getId());
-		return theRoute.getNextHop();
+	public long getNextHop(long destination) {
+		AodvRoutingTableEntries theRoute = getRouteToDestination(destination, node.getId());
+		return theRoute.getNextHopId();
 	}
 
-	public void deleteRouteTo(AodvNode destination) {
-		deleteRouteTo(destination.getId());
-	}
+	public Map<Object, PojoAction> deleteRouteTo(long destination) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
-	public void deleteRouteTo(long destination) {
 		dbAccess.removeRoutingEntries(node.getId(), destination);
-		AodvRoutingTableEntry theRoute = dbAccess.getRouteToDestination(destination, node.getId());
+		AodvRoutingTableEntries theRoute = getRouteToDestination(destination, node.getId());
 		if (theRoute != null) {
-			theRoute.delete();
+			persistables.put(theRoute, PojoAction.DELETE);
 		}
+
+		return persistables;
 	}
 
 	public Map<Object, PojoAction> add(Route route) {

@@ -19,7 +19,7 @@ public interface NeighbourAction {
 	 * @param currentRoutingRound
 	 *            The currently executing round of message routing (not data routing).
 	 */
-	void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound);
+	Map<Object, PojoAction> aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound);
 
 	Map<Object, PojoAction> aodvNeighbourFound(Player thePlayer);
 }
