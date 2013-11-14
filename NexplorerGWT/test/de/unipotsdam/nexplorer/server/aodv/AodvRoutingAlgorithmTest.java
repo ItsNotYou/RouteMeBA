@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import static de.unipotsdam.nexplorer.testing.RefWalker.refEq;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -12,6 +13,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +22,7 @@ import org.junit.Test;
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.data.Referee;
 import de.unipotsdam.nexplorer.server.di.GuiceFactory;
@@ -36,6 +40,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 import de.unipotsdam.nexplorer.shared.Aodv;
+import de.unipotsdam.nexplorer.testing.RefWalker;
 
 public class AodvRoutingAlgorithmTest {
 
@@ -499,17 +504,20 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getRouteRequestsByNodeAndRound(dest)).thenReturn(Arrays.asList(factory.create(rreq)));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessRoutingMessages();
+		Map<Object, PojoAction> result = sut.aodvProcessRoutingMessages();
 
-		AodvRoutingTableEntries result = new AodvRoutingTableEntries();
-		result.setDestinationId(dest.getId());
-		result.setDestinationSequenceNumber(12l);
-		result.setHopCount(1l);
-		result.setId(null);
-		result.setNextHopId(dest.getId());
-		result.setNodeId(src.getId());
+		AodvRoutingTableEntries expected = new AodvRoutingTableEntries();
+		expected.setDestinationId(dest.getId());
+		expected.setDestinationSequenceNumber(12l);
+		expected.setHopCount(1l);
+		expected.setId(null);
+		expected.setNextHopId(dest.getId());
+		expected.setNodeId(src.getId());
 
-		verify(dbAccess).persist(refEq(result, "timestamp"));
+		assertEquals(1, result.size());
+		Entry<Object, PojoAction> firstResult = result.entrySet().iterator().next();
+		assertTrue("Key doesn't match", new RefWalker(expected, "timestamp").matches(firstResult.getKey()));
+		assertEquals(PojoAction.SAVE, firstResult.getValue());
 	}
 
 	@Test

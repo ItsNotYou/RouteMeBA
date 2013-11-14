@@ -118,16 +118,20 @@ public class AodvRoutingAlgorithm {
 	 * Be careful, possible race conditions ahead (if you're not careful enough)!
 	 * 
 	 * @param player
+	 * @return
 	 */
-	public void updateNeighbourhood(Player player, long currentRoutingRound) {
+	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound);
+			persistables.putAll(result);
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
 			player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound);
 		}
+		return persistables;
 	}
 
 	private Setting getGameSettings() {

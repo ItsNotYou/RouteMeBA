@@ -2,6 +2,8 @@ package de.unipotsdam.nexplorer.server;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ws.rs.WebApplicationException;
 
@@ -87,7 +89,15 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Player player = dbAccess.getPlayerById(playerId);
 			Setting setting = dbAccess.getSettings();
-			aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound());
+			Map<Object, PojoAction> persistables = aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound());
+			for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
+				Object subject = persistable.getKey();
+				if (persistable.getValue() == PojoAction.DELETE) {
+					dbAccess.deleteObject(subject);
+				} else {
+					dbAccess.persistObject(subject);
+				}
+			}
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);
@@ -138,7 +148,15 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			// Wenn leichtester Schwierigkeitsgrad, Nachbarschaft aktualisieren
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
 				List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(thePlayer);
-				unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound());
+				Map<Object, PojoAction> persistables = unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound());
+				for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
+					Object subject = persistable.getKey();
+					if (persistable.getValue() == PojoAction.DELETE) {
+						dbAccess.deleteObject(subject);
+					} else {
+						dbAccess.persistObject(subject);
+					}
+				}
 			}
 		} catch (Exception e) {
 			unit.cancel();

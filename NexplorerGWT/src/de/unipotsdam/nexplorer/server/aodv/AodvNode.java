@@ -315,10 +315,16 @@ public class AodvNode implements NeighbourAction {
 		return persistables;
 	}
 
-	public void aodvNeighbourFound(Player destination) {
-		table.add(new NeighbourRoute(destination));
+	@Override
+	public Map<Object, PojoAction> aodvNeighbourFound(Player destination) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
+		Map<Object, PojoAction> result = table.add(new NeighbourRoute(destination));
+		persistables.putAll(result);
 		theNode.save();
 		destination.save();
+
+		return persistables;
 	}
 
 	public void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
@@ -359,8 +365,8 @@ public class AodvNode implements NeighbourAction {
 		newMessage.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 	}
 
-	public void updateNeighbourhood(List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
-		theNode.updateNeighbourhood(this, allKnownNeighbours, currentRoutingRound);
+	public Map<Object, PojoAction> updateNeighbourhood(List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+		return theNode.updateNeighbourhood(this, allKnownNeighbours, currentRoutingRound);
 	}
 
 	public void pingNeighbourhood() {

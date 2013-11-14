@@ -5,8 +5,10 @@ import static com.google.common.collect.Collections2.filter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
@@ -16,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
@@ -108,7 +111,9 @@ public class Player implements Locatable {
 		}
 	}
 
-	public void updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	public Map<Object, PojoAction> updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		Collection<Player> knownNeighbours = getNeighbours();
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 
@@ -144,13 +149,16 @@ public class Player implements Locatable {
 
 		for (Player newNeighbour : newNeighbours) {
 			getNeighbours().add(newNeighbour);
-			routing.aodvNeighbourFound(newNeighbour);
+			Map<Object, PojoAction> result = routing.aodvNeighbourFound(newNeighbour);
+			persistables.putAll(result);
 
 			logger.trace("Node {} added neighbour {}", getId(), newNeighbour.getId());
 		}
 
 		save();
 		logger.trace("Node {} hat seine Nachbarschaft aktualisiert", getId());
+
+		return persistables;
 	}
 
 	private Predicate<? super Player> isNotIn(Collection<Player> elements) {

@@ -1,7 +1,9 @@
 package de.unipotsdam.nexplorer.server.data;
 
 import java.util.List;
+import java.util.Map;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 
@@ -19,5 +21,5 @@ public interface NeighbourAction {
 	 */
 	void aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound);
 
-	void aodvNeighbourFound(Player thePlayer);
+	Map<Object, PojoAction> aodvNeighbourFound(Player thePlayer);
 }

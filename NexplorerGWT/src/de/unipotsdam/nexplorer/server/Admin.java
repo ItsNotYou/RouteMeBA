@@ -286,12 +286,11 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages();
 			for (Map.Entry<Object, PojoAction> persistable : result.entrySet()) {
-				switch (persistable.getValue()) {
-				case DELETE:
-					dbAccess.deleteObject(persistable);
-				case SAVE:
-				default:
-					dbAccess.persistObject(persistable);
+				Object subject = persistable.getKey();
+				if (persistable.getValue() == PojoAction.DELETE) {
+					dbAccess.deleteObject(subject);
+				} else {
+					dbAccess.persistObject(subject);
 				}
 			}
 		} catch (Exception e) {

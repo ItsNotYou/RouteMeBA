@@ -70,11 +70,15 @@ public class RoutingTable {
 		}
 	}
 
-	public void add(Route route) {
-		Collection<Object> persistables = route.persist(node.getId());
-		for (Object persistable : persistables) {
-			dbAccess.persistObject(persistable);
+	public Map<Object, PojoAction> add(Route route) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
+		Collection<Object> result = route.persist(node.getId());
+		for (Object persistable : result) {
+			persistables.put(persistable, PojoAction.SAVE);
 		}
+
+		return persistables;
 	}
 
 	private static Map<Object, PojoAction> add(Route route, long src) {
