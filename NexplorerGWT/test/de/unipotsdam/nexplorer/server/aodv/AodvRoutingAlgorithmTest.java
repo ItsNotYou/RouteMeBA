@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import static de.unipotsdam.nexplorer.testing.RefWalker.refEq;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -450,7 +451,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getRouteRequestsByNodeAndRound(src)).thenReturn(Arrays.asList(factory.create(rreq)));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessRoutingMessages();
+		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages();
 
 		AodvRoutingMessages result = new AodvRoutingMessages();
 		result.setCurrentNodeId(other.getId());
@@ -465,7 +466,17 @@ public class AodvRoutingAlgorithmTest {
 		result.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
 
 		verify(dbAccess).persist(refEq(result));
-		verify(dbAccess).delete(rreq);
+
+		boolean hasMatched = false;
+		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
+			if (tmp.getKey().getClass() == rreq.getClass()) {
+				if (new RefWalker<AodvRoutingMessages>(rreq).matches(tmp.getKey())) {
+					assertEquals(PojoAction.DELETE, tmp.getValue());
+					hasMatched = true;
+				}
+			}
+		}
+		assertTrue(hasMatched);
 	}
 
 	@Test
@@ -553,7 +564,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getRoutingErrors(src)).thenReturn(Arrays.asList(factory.create(rerr)));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessRoutingMessages();
+		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages();
 
 		AodvRoutingMessages result = new AodvRoutingMessages();
 		result.setCurrentNodeId(other.getId());
@@ -568,7 +579,17 @@ public class AodvRoutingAlgorithmTest {
 		result.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
 
 		verify(dbAccess).persist(refEq(result));
-		verify(dbAccess).delete(rerr);
+
+		boolean hasMatched = false;
+		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
+			if (rerr.getClass() == tmp.getKey().getClass()) {
+				if (new RefWalker<AodvRoutingMessages>(rerr).matches(tmp.getKey())) {
+					assertEquals(PojoAction.DELETE, tmp.getValue());
+					hasMatched = true;
+				}
+			}
+		}
+		assertTrue(hasMatched);
 	}
 
 	@Test

@@ -161,7 +161,8 @@ public class AodvNode implements NeighbourAction {
 			}
 
 			// RERR löschen
-			theRERR.delete();
+			Map<Object, PojoAction> result = theRERR.delete();
+			persistables.putAll(result);
 		}
 
 		return persistables;
@@ -198,7 +199,8 @@ public class AodvNode implements NeighbourAction {
 		}
 
 		// RREQ entfernen
-		theRREQ.delete();
+		Map<Object, PojoAction> result = theRREQ.delete();
+		persistables.putAll(result);
 
 		return persistables;
 	}
