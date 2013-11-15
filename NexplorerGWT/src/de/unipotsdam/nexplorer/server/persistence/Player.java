@@ -23,6 +23,7 @@ import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.shared.Locatable;
@@ -111,7 +112,7 @@ public class Player implements Locatable {
 		}
 	}
 
-	public Map<Object, PojoAction> updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	public Map<Object, PojoAction> updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		Collection<Player> knownNeighbours = getNeighbours();
@@ -142,7 +143,7 @@ public class Player implements Locatable {
 
 		for (Player lostNeighbour : lostNeighbours) {
 			getNeighbours().remove(lostNeighbour);
-			Map<Object, PojoAction> result = routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours, currentRoutingRound, routingTable);
 			persistables.putAll(result);
 
 			logger.info("Node {} deleted neighbour {}", getId(), lostNeighbour.getId());
@@ -150,7 +151,7 @@ public class Player implements Locatable {
 
 		for (Player newNeighbour : newNeighbours) {
 			getNeighbours().add(newNeighbour);
-			Map<Object, PojoAction> result = routing.aodvNeighbourFound(newNeighbour);
+			Map<Object, PojoAction> result = routing.aodvNeighbourFound(newNeighbour, routingTable);
 			persistables.putAll(result);
 
 			logger.trace("Node {} added neighbour {}", getId(), newNeighbour.getId());
@@ -280,7 +281,7 @@ public class Player implements Locatable {
 		}
 	}
 
-	public synchronized Map<Object, PojoAction> removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	public synchronized Map<Object, PojoAction> removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		int allowedHelloLosses = 8;
@@ -297,7 +298,7 @@ public class Player implements Locatable {
 				dbAccess.persist(inner);
 				dbAccess.delete(neighbour);
 
-				Map<Object, PojoAction> result = routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours, currentRoutingRound);
+				Map<Object, PojoAction> result = routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours, currentRoutingRound, routingTable);
 				persistables.putAll(result);
 			}
 		}

@@ -27,6 +27,7 @@ import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.PositionBacklog;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
@@ -89,7 +90,8 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Player player = dbAccess.getPlayerById(playerId);
 			Setting setting = dbAccess.getSettings();
-			Map<Object, PojoAction> persistables = aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound());
+			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+			Map<Object, PojoAction> persistables = aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound(), routingTable);
 			for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
 				Object subject = persistable.getKey();
 				if (persistable.getValue() == PojoAction.DELETE) {
@@ -148,7 +150,8 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			// Wenn leichtester Schwierigkeitsgrad, Nachbarschaft aktualisieren
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
 				List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(thePlayer);
-				Map<Object, PojoAction> persistables = unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound());
+				List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+				Map<Object, PojoAction> persistables = unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound(), routingTable);
 				for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
 					Object subject = persistable.getKey();
 					if (persistable.getValue() == PojoAction.DELETE) {

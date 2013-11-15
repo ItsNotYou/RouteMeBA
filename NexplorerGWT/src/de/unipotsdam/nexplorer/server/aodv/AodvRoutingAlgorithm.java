@@ -49,7 +49,9 @@ public class AodvRoutingAlgorithm {
 		newMessage.setProcessingRound(gameSettings.getCurrentDataRound() + 1);
 		newMessage.setHopsDone((short) 0);
 		newMessage.setDidReachBonusGoal((byte) 0);
-		return factory.create(src).enqueMessage(newMessage);
+
+		List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+		return factory.create(src).enqueMessage(newMessage, routingTable);
 	}
 
 	public Map<Object, PojoAction> aodvResendRouteRequest(Player owner, Setting gameSettings) {
@@ -117,18 +119,19 @@ public class AodvRoutingAlgorithm {
 	 * Be careful, possible race conditions ahead (if you're not careful enough)!
 	 * 
 	 * @param player
+	 * @param routingTable
 	 * @return
 	 */
-	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound) {
+	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			Map<Object, PojoAction> result = player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable);
 			persistables.putAll(result);
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			Map<Object, PojoAction> result = player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable);
 			persistables.putAll(result);
 		}
 		return persistables;

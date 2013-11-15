@@ -6,6 +6,7 @@ import java.util.Map;
 import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 
 public interface NeighbourAction {
 
@@ -19,7 +20,7 @@ public interface NeighbourAction {
 	 * @param currentRoutingRound
 	 *            The currently executing round of message routing (not data routing).
 	 */
-	Map<Object, PojoAction> aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound);
+	Map<Object, PojoAction> aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable);
 
-	Map<Object, PojoAction> aodvNeighbourFound(Player thePlayer);
+	Map<Object, PojoAction> aodvNeighbourFound(Player thePlayer, List<AodvRoutingTableEntries> routingTable);
 }

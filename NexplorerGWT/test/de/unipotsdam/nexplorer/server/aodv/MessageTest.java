@@ -1,9 +1,12 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -52,6 +55,6 @@ public class MessageTest {
 
 		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer);
 
-		verify(srcNode).enqueMessage(argThat(hasHopCount));
+		verify(srcNode).enqueMessage(argThat(hasHopCount), any(List.class));
 	}
 }

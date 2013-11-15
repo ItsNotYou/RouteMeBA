@@ -434,7 +434,7 @@ public class AodvRoutingAlgorithmTest {
 		entry.setNextHopId(other.getId());
 		entry.setNodeId(src.getId());
 		entry.setTimestamp(new Date().getTime());
-		when(dbAccess.getRouteToDestination(other.getId(), src.getId())).thenReturn(factory.create(entry));
+		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(entry));
 
 		AodvRoutingMessages rreq = new AodvRoutingMessages();
 		rreq.setCurrentNodeId(src.getId());
@@ -484,7 +484,7 @@ public class AodvRoutingAlgorithmTest {
 		entry.setNextHopId(src.getId());
 		entry.setNodeId(dest.getId());
 		entry.setTimestamp(new Date().getTime());
-		when(dbAccess.getRouteToDestination(src.getId(), dest.getId())).thenReturn(factory.create(entry));
+		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(entry));
 
 		AodvRoutingMessages rreq = new AodvRoutingMessages();
 		rreq.setCurrentNodeId(dest.getId());
@@ -595,7 +595,6 @@ public class AodvRoutingAlgorithmTest {
 		fromSrcToDest.setNextHopId(destPlayer.getId());
 		fromSrcToDest.setNodeId(srcPlayer.getId());
 		fromSrcToDest.setTimestamp(new Date().getTime());
-		when(dbAccess.getRouteToDestination(dest.getId(), src.getId())).thenReturn(factory.create(fromSrcToDest));
 
 		Neighbours neighbour = new Neighbours();
 		neighbour.setId(1l);
@@ -610,7 +609,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getNeighbour(dest.getId(), src.getId())).thenReturn(data.create(neighbour));
 
 		AodvNode sut = injector.getInstance(AodvFactory.class).create(src);
-		sut.updateNeighbourhood(Arrays.asList(data.create(neighbour), data.create(otherNeighbour)), currentRoutingRound);
+		sut.updateNeighbourhood(Arrays.asList(data.create(neighbour), data.create(otherNeighbour)), currentRoutingRound, Arrays.asList(fromSrcToDest));
 
 		AodvRoutingMessages rerr = new AodvRoutingMessages();
 		rerr.setCurrentNodeId(dest.getId());
