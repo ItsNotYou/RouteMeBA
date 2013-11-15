@@ -19,12 +19,10 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTable
 public class RoutingTable {
 
 	private AodvNode node;
-	private DatabaseImpl dbAccess;
 	private List<AodvRoutingTableEntries> allRoutingTableEntries;
 
 	public RoutingTable(AodvNode player, DatabaseImpl dbAccess) {
 		this.node = player;
-		this.dbAccess = dbAccess;
 
 		this.allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
 	}
@@ -111,12 +109,37 @@ public class RoutingTable {
 	}
 
 	public Map<Object, PojoAction> deleteRouteTo(long destination) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = removeRoutingEntries(node.getId(), destination);
 
-		dbAccess.removeRoutingEntries(node.getId(), destination);
 		AodvRoutingTableEntries theRoute = getRouteToDestination(destination, node.getId());
 		if (theRoute != null) {
 			persistables.put(theRoute, PojoAction.DELETE);
+		}
+
+		return persistables;
+	}
+
+	private Map<Object, PojoAction> removeRoutingEntries(final long nodeId, final long nextHop) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
+		Collection<AodvRoutingTableEntries> toDelete = Collections2.filter(allRoutingTableEntries, new Predicate<AodvRoutingTableEntries>() {
+
+			@Override
+			public boolean apply(AodvRoutingTableEntries arg0) {
+				if (arg0.getNodeId() != nodeId) {
+					return false;
+				}
+				if (arg0.getNextHopId() != nextHop) {
+					return false;
+				}
+
+				return true;
+			}
+		});
+
+		for (AodvRoutingTableEntries entry : toDelete) {
+			persistables.put(entry, PojoAction.DELETE);
+			allRoutingTableEntries.remove(entry);
 		}
 
 		return persistables;
