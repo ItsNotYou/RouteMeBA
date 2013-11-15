@@ -47,7 +47,7 @@ public class AodvNode implements NeighbourAction {
 	@Inject
 	public AodvNode(@Assisted Player theNode, DatabaseImpl dbAccess, AodvFactory factory, RREQFactory rreq) {
 		this.theNode = theNode;
-		this.table = new RoutingTable(this, dbAccess);
+		this.table = new RoutingTable(this, dbAccess.getAllRoutingTableEntries());
 		this.factory = factory;
 		this.rreq = rreq;
 	}
@@ -60,14 +60,14 @@ public class AodvNode implements NeighbourAction {
 		return theNode.hasBattery();
 	}
 
-	void aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	void aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
 		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
 
 		// ältestes Paket zuerst bearbeiten
 		DataPacketQueue packets = new DataPacketQueue(getAllDataPacketsSortedByDate(currentDataProcessingRound));
 
 		// Nur das erste Paket bearbeiten und alle anderen in Wartestellung setzen
-		packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours);
+		packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours, routingTable);
 		packets.placeContentOnHoldUntil(currentDataProcessingRound + 1);
 
 		for (ProcessableDataPacket packet : packets) {

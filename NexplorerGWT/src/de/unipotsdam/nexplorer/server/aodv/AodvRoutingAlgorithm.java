@@ -84,7 +84,8 @@ public class AodvRoutingAlgorithm {
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
-			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound());
+			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable);
 		}
 
 		gameSettings.incCurrentDataRound();

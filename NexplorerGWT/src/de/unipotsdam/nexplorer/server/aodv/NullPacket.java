@@ -4,12 +4,13 @@ import java.util.List;
 
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public class NullPacket implements ProcessableDataPacket {
 
 	@Override
-	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
+	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable) {
 	}
 
 	@Override

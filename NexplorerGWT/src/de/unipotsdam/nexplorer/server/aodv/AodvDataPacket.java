@@ -14,6 +14,7 @@ import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.Aodv;
 
 public class AodvDataPacket implements ProcessableDataPacket {
@@ -66,26 +67,26 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	@Override
-	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours) {
+	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable) {
 		Byte status = inner.getStatus();
 		switch (status) {
 		case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 		case Aodv.DATA_PACKET_STATUS_NODE_BUSY:
 			// Pakete ist unterwegs oder wartet darauf versendet zu werden
-			forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound);
+			forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound, routingTable);
 			break;
 		case Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE:
 		case Aodv.DATA_PACKET_STATUS_ERROR:
 			// Paket ist in Wartestellung (Route war anf�nglich unbekannt)
-			checkAndForward(currentDataProcessingRound, aodvNode);
+			checkAndForward(currentDataProcessingRound, aodvNode, routingTable);
 			break;
 		}
 	}
 
-	void checkAndForward(long currentDataProcessingRound, AodvNode aodvNode) {
+	void checkAndForward(long currentDataProcessingRound, AodvNode aodvNode, List<AodvRoutingTableEntries> routingTable) {
 		// prüfen ob mittlerweile Route zum Ziel bekannt
 		AodvNode dest = factory.create(data.create(inner.getPlayersByDestinationId()));
-		RoutingTable table = new RoutingTable(aodvNode, dbAccess);
+		RoutingTable table = new RoutingTable(aodvNode, routingTable);
 		if (table.hasRouteTo(dest)) {
 			// Packet weitersenden
 			AodvNode nextHop = factory.create(dbAccess.getPlayerById(table.getNextHop(dest)));
@@ -107,11 +108,11 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		}
 	}
 
-	void forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	void forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
 		// prüfen ob Route zum Ziel bekannt
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
-		RoutingTable table = new RoutingTable(aodvNode, dbAccess);
+		RoutingTable table = new RoutingTable(aodvNode, routingTable);
 		if (table.hasRouteTo(dest)) {
 			// Packet weitersenden
 			AodvNode nextHop = factory.create(dbAccess.getPlayerById(table.getNextHop(dest)));

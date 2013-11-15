@@ -12,7 +12,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
-import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 
@@ -21,10 +20,9 @@ public class RoutingTable {
 	private AodvNode node;
 	private List<AodvRoutingTableEntries> allRoutingTableEntries;
 
-	public RoutingTable(AodvNode player, DatabaseImpl dbAccess) {
+	public RoutingTable(AodvNode player, List<AodvRoutingTableEntries> allRoutingTableEntries) {
 		this.node = player;
-
-		this.allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
+		this.allRoutingTableEntries = allRoutingTableEntries;
 	}
 
 	private AodvRoutingTableEntries getRouteToDestination(final Long destinationId, final Long nodeId) {

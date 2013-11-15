@@ -3,11 +3,12 @@ package de.unipotsdam.nexplorer.server.persistence;
 import java.util.List;
 
 import de.unipotsdam.nexplorer.server.aodv.AodvNode;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public interface ProcessableDataPacket {
 
-	public abstract void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours);
+	public abstract void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable);
 
 	public abstract void setOnHoldUntil(long dataProcessingRound);
 
