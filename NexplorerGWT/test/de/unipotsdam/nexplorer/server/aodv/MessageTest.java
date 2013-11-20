@@ -55,6 +55,6 @@ public class MessageTest {
 
 		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer);
 
-		verify(srcNode).enqueMessage(argThat(hasHopCount), any(List.class));
+		verify(srcNode).enqueMessage(argThat(hasHopCount), any(List.class), any(Setting.class));
 	}
 }

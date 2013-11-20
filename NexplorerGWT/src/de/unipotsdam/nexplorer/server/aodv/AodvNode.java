@@ -359,7 +359,7 @@ public class AodvNode implements NeighbourAction {
 		return persistables;
 	}
 
-	Map<Object, PojoAction> enqueMessage(DataPacket message, List<AodvRoutingTableEntries> routingTable) {
+	Map<Object, PojoAction> enqueMessage(DataPacket message, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		long destination = message.getMessageDescription().getDestinationNodeId();
 
@@ -371,7 +371,7 @@ public class AodvNode implements NeighbourAction {
 			send(message).toDestination();
 		} else {
 			pause(message);
-			Map<Object, PojoAction> result = sendRREQFor(destination).toNeighbours();
+			Map<Object, PojoAction> result = sendRREQFor(destination).toNeighbours(gameSettings);
 			persistables.putAll(result);
 		}
 

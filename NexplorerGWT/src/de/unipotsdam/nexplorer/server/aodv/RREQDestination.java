@@ -10,7 +10,6 @@ import com.google.inject.assistedinject.Assisted;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
-import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
@@ -22,20 +21,17 @@ public class RREQDestination {
 	private Logger logger;
 	private long destId;
 	private AodvNode theNode;
-	private DatabaseImpl dbAccess;
 	private AodvFactory factory;
 
 	@Inject
-	public RREQDestination(@Assisted AodvNode node, @Assisted long destinationId, DatabaseImpl dbAccess, AodvFactory factory) {
+	public RREQDestination(@Assisted AodvNode node, @Assisted long destinationId, AodvFactory factory) {
 		this.destId = destinationId;
 		this.theNode = node;
-		this.dbAccess = dbAccess;
 		this.factory = factory;
 	}
 
-	public Map<Object, PojoAction> toNeighbours() {
+	public Map<Object, PojoAction> toNeighbours(Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
-		Setting gameSettings = dbAccess.getSettings();
 
 		logger.info("RREQ an alle Nachbarn für Route zum Knoten mit ID {} senden.", destId);
 

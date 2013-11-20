@@ -51,7 +51,7 @@ public class AodvRoutingAlgorithm {
 		newMessage.setDidReachBonusGoal((byte) 0);
 
 		List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-		return factory.create(src).enqueMessage(newMessage, routingTable);
+		return factory.create(src).enqueMessage(newMessage, routingTable, gameSettings);
 	}
 
 	public Map<Object, PojoAction> aodvResendRouteRequest(Player owner, Setting gameSettings) {
