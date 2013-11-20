@@ -111,11 +111,6 @@ public class DatabaseImplTest {
 	}
 
 	@Test
-	public void testGetRouteToDestination() {
-		dbAccess.getRouteToDestination(1l, 2l);
-	}
-
-	@Test
 	public void testGetRoutingErrors() {
 		Players inner = new Players();
 		inner.setId(1l);
@@ -170,22 +165,12 @@ public class DatabaseImplTest {
 	}
 
 	@Test
-	public void testGetRoutingTableEntry() {
-		dbAccess.getRoutingTableEntries(1l, 2l);
-	}
-
-	@Test
 	public void testGetAllNeighboursExcept() {
 		Players except = new Players();
 		except.setId(2l);
 		Players center = new Players();
 		center.setId(1l);
 		dbAccess.getAllNeighboursExcept(data.create(except), data.create(center));
-	}
-
-	@Test
-	public void testGetRoutingTableEntries() {
-		dbAccess.getRoutingTableEntries(1l, 2l);
 	}
 
 	@Test

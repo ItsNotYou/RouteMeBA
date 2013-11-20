@@ -1,6 +1,5 @@
 package de.unipotsdam.nexplorer.server.persistence;
 
-import static org.hibernate.criterion.Order.asc;
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Restrictions.gt;
 import static org.hibernate.criterion.Restrictions.not;
@@ -22,7 +21,6 @@ import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
 import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
 import de.unipotsdam.nexplorer.server.aodv.AodvRouteRequestBufferEntry;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingMessage;
-import de.unipotsdam.nexplorer.server.aodv.AodvRoutingTableEntry;
 import de.unipotsdam.nexplorer.server.aodv.Locator;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
@@ -125,12 +123,6 @@ public class DatabaseImpl {
 
 	public List<AodvRouteRequestBufferEntries> getAllRouteRequestBufferEntries() {
 		return session.createCriteria(AodvRouteRequestBufferEntries.class).list();
-	}
-
-	public AodvRoutingTableEntry getRouteToDestination(Long destinationId, Long nodeId) {
-		List<AodvRoutingTableEntries> entries = session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", nodeId)).add(eq("destinationId", destinationId)).addOrder(Order.asc("hopCount")).list();
-
-		return entries.isEmpty() ? null : factory.create(entries.get(0));
 	}
 
 	public List<AodvRoutingMessage> getRoutingErrors(Player theNode) {
@@ -289,11 +281,6 @@ public class DatabaseImpl {
 		return packets == null ? null : factory.create(packets);
 	}
 
-	private AodvRoutingTableEntry getRoutingTableEntry(long source, long destination) {
-		List<AodvRoutingTableEntries> entries = session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", source)).add(eq("destinationId", destination)).addOrder(asc("hopCount")).list();
-		return entries.isEmpty() ? null : factory.create(entries.get(0));
-	}
-
 	/**
 	 * Returns all neighbours of a center player except the given
 	 * 
@@ -325,17 +312,6 @@ public class DatabaseImpl {
 		List<Neighbour> result = new LinkedList<Neighbour>();
 		for (Neighbours neighbour : neighbours) {
 			result.add(data.create(neighbour));
-		}
-		return result;
-	}
-
-	public List<AodvRoutingTableEntry> getRoutingTableEntries(long nodeId, Long destinationId) {
-		// Doctrine_Query::create().from("AODVRoutingTableEntry").where("nodeId = ? AND destinationId = ?",
-		// array(theNodeId, theRequest.destinationId)).execute();
-		List<AodvRoutingTableEntries> entries = session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", nodeId)).add(eq("destinationId", destinationId)).list();
-		List<AodvRoutingTableEntry> result = new LinkedList<AodvRoutingTableEntry>();
-		for (AodvRoutingTableEntries entry : entries) {
-			result.add(factory.create(entry));
 		}
 		return result;
 	}
