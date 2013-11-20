@@ -55,8 +55,10 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		return factory.create(source);
 	}
 
-	public void delete() {
-		dbAccess.delete(inner);
+	public Map<Object, PojoAction> delete() {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		persistables.put(inner, PojoAction.DELETE);
+		return persistables;
 	}
 
 	@Override
@@ -108,7 +110,8 @@ public class AodvDataPacket implements ProcessableDataPacket {
 
 			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " l�schen, weil fertig bearbeitet.");
 
-			delete();
+			result = delete();
+			persistables.putAll(result);
 		} else {
 			int RREQCount = dbAccess.getRouteRequestCount(inner);
 			if (RREQCount == 0) {
@@ -139,7 +142,9 @@ public class AodvDataPacket implements ProcessableDataPacket {
 
 			// Packet löschen
 			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
-			delete();
+
+			result = delete();
+			persistables.putAll(result);
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
 			Map<Object, PojoAction> result = aodvNode.sendRERRToNeighbours(destination, allKnownNeighbours, currentRoutingRound, gameSettings);
