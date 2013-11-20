@@ -1,6 +1,5 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
@@ -9,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
+import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.data.Referee;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
@@ -36,7 +36,7 @@ public class Link {
 	}
 
 	public Map<Object, PojoAction> transmit(AodvDataPacket thePacket, Setting gameSettings) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = Maps.empty();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
@@ -67,7 +67,7 @@ public class Link {
 	}
 
 	public Map<Object, PojoAction> transmit(AodvRoutingMessages theError, Setting gameSettings) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = Maps.empty();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
@@ -93,7 +93,7 @@ public class Link {
 	}
 
 	public Map<Object, PojoAction> transmit(AodvRoutingMessage theRequest, Setting gameSettings) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = Maps.empty();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {

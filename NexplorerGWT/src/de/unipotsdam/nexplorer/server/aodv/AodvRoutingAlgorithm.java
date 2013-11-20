@@ -2,7 +2,6 @@ package de.unipotsdam.nexplorer.server.aodv;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.inject.Inject;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
+import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
@@ -58,7 +58,7 @@ public class AodvRoutingAlgorithm {
 		AodvDataPacket thePacket = dbAccess.getDataPacketByOwnerId(owner);
 		if (thePacket == null) {
 			logger.warn("Trying to resend route request, but no data packet found (owner {})", owner.getId());
-			return new HashMap<Object, PojoAction>();
+			return Maps.empty();
 		}
 
 		AodvNode src = thePacket.getSource();
@@ -82,15 +82,14 @@ public class AodvRoutingAlgorithm {
 	}
 
 	public Map<Object, PojoAction> aodvProcessDataPackets() {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = Maps.empty();
 
 		Setting gameSettings = getGameSettings();
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-			Map<Object, PojoAction> result = factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings);
-			persistables.putAll(result);
+			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings));
 		}
 
 		gameSettings.incCurrentDataRound();
@@ -104,14 +103,13 @@ public class AodvRoutingAlgorithm {
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingMessages Runde " + gameSettings.getCurrentDataRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
 
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>(100);
+		Map<Object, PojoAction> persistables = Maps.empty();
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
 			List<AodvRoutingMessage> routeRequestsByNodeAndRound = dbAccess.getRouteRequestsByNodeAndRound(theNode);
 			List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
 			List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
-			Map<Object, PojoAction> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings);
-			persistables.putAll(result);
+			persistables.putAll(factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings));
 		}
 
 		gameSettings.incCurrentRoutingRound();
@@ -128,16 +126,14 @@ public class AodvRoutingAlgorithm {
 	 * @return
 	 */
 	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = Maps.empty();
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			Map<Object, PojoAction> result = player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings());
-			persistables.putAll(result);
+			persistables.putAll(player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings()));
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			Map<Object, PojoAction> result = player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings());
-			persistables.putAll(result);
+			persistables.putAll(player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings()));
 		}
 		return persistables;
 	}

@@ -1,9 +1,10 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
+import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 
 public class Route {
@@ -36,7 +37,7 @@ public class Route {
 		return hopCount;
 	}
 
-	Collection<Object> persist(long src) {
+	Map<Object, PojoAction> persist(long src) {
 		AodvRoutingTableEntries entry = new AodvRoutingTableEntries();
 		entry.setDestinationId(dest);
 		entry.setDestinationSequenceNumber(sequenceNumber);
@@ -44,6 +45,6 @@ public class Route {
 		entry.setNextHopId(nextHop);
 		entry.setNodeId(src);
 		entry.setTimestamp(new Date().getTime());
-		return Arrays.asList((Object) entry);
+		return Maps.create(entry, PojoAction.SAVE);
 	}
 }

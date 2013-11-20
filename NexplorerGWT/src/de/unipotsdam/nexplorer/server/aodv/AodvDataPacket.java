@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
+import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DataFactory;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
@@ -56,14 +57,12 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	public Map<Object, PojoAction> delete() {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
-		persistables.put(inner, PojoAction.DELETE);
-		return persistables;
+		return Maps.create(inner, PojoAction.DELETE);
 	}
 
 	@Override
-	public void save() {
-		dbAccess.persist(inner);
+	public Map<Object, PojoAction> save() {
+		return Maps.create(inner, PojoAction.SAVE);
 	}
 
 	@Override
@@ -73,8 +72,8 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	@Override
-	public HashMap<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
-		HashMap<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = Maps.empty();
 
 		Byte status = inner.getStatus();
 		switch (status) {
@@ -96,7 +95,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	Map<Object, PojoAction> checkAndForward(long currentDataProcessingRound, AodvNode aodvNode, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> persistables = Maps.empty();
 
 		// prüfen ob mittlerweile Route zum Ziel bekannt
 		AodvNode dest = factory.create(data.create(inner.getPlayersByDestinationId()));

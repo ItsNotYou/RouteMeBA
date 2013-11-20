@@ -1,12 +1,12 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
+import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 
 public class AodvRoutingMessage {
@@ -23,9 +23,7 @@ public class AodvRoutingMessage {
 	}
 
 	public Map<Object, PojoAction> delete() {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
-		persistables.put(inner, PojoAction.DELETE);
-		return persistables;
+		return Maps.create(inner, PojoAction.DELETE);
 	}
 
 	public boolean isExpired() {

@@ -144,23 +144,11 @@ public class RoutingTable {
 	}
 
 	public Map<Object, PojoAction> add(Route route) {
-		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
-
-		Collection<Object> result = route.persist(node.getId());
-		for (Object persistable : result) {
-			persistables.put(persistable, PojoAction.SAVE);
-		}
-
-		return persistables;
+		return route.persist(node.getId());
 	}
 
 	private static Map<Object, PojoAction> add(Route route, long src) {
-		Map<Object, PojoAction> result = new HashMap<Object, PojoAction>();
-		Collection<Object> persistables = route.persist(src);
-		for (Object persistable : persistables) {
-			result.put(persistable, PojoAction.SAVE);
-		}
-		return result;
+		return route.persist(src);
 	}
 
 	public static Map<Object, PojoAction> addRoute(long src, long nextHop, long dest, long hopCount, long sequenceNumber, List<AodvRoutingTableEntries> allRoutingTableEntries) {
