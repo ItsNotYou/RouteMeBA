@@ -30,6 +30,7 @@ import de.unipotsdam.nexplorer.server.persistence.Item;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.HibernateSessions;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
@@ -264,8 +265,12 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 
 		Unit unit = new Unit();
 		try {
+			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
+			List<Player> allActiveNodesInRandomOrder = dbAccess.getAllActiveNodesInRandomOrder();
+			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets();
+			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets(allActiveNodesInRandomOrder, routingTable);
 			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();

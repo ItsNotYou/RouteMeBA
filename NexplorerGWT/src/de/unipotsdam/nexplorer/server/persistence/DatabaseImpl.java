@@ -318,6 +318,15 @@ public class DatabaseImpl {
 		return result;
 	}
 
+	public List<Neighbour> getAllNeighbours() {
+		List<Neighbours> neighbours = session.createCriteria(Neighbours.class).list();
+		List<Neighbour> result = new LinkedList<Neighbour>();
+		for (Neighbours neighbour : neighbours) {
+			result.add(data.create(neighbour));
+		}
+		return result;
+	}
+
 	public List<AodvRoutingTableEntries> getAllRoutingTableEntries() {
 		return session.createCriteria(AodvRoutingTableEntries.class).list();
 	}

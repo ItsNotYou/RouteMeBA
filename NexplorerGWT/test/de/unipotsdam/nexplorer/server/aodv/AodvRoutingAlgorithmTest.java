@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -276,7 +277,7 @@ public class AodvRoutingAlgorithmTest {
 
 	@Test
 	public void testProcessDataPacketsWithPacketWaitingForRoute() {
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(src);
 
 		settings.setCurrentDataPacketProcessingRound(5l);
 		settings.setCurrentRoutingMessageProcessingRound(1l);
@@ -301,7 +302,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getAllRoutingMessages()).thenReturn(Arrays.asList(message));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets(allActiveNodesInRandomOrder, new LinkedList<AodvRoutingTableEntries>());
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
@@ -319,7 +320,7 @@ public class AodvRoutingAlgorithmTest {
 
 	@Test
 	public void testProcessDataPacketWithNewRoute() {
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(src);
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		settings.setCurrentDataPacketProcessingRound(5l);
@@ -352,10 +353,10 @@ public class AodvRoutingAlgorithmTest {
 
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
 		when(dbAccess.getAllRoutingMessages()).thenReturn(Arrays.asList(message));
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(routings));
+		List<AodvRoutingTableEntries> allRoutingTableEntries = Arrays.asList(routings);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets(allActiveNodesInRandomOrder, allRoutingTableEntries);
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
@@ -374,7 +375,7 @@ public class AodvRoutingAlgorithmTest {
 
 	@Test
 	public void testProcessDataPacketWithKnownRoute() {
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(src);
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		settings.setCurrentDataPacketProcessingRound(3l);
@@ -408,10 +409,10 @@ public class AodvRoutingAlgorithmTest {
 		fromOtherToDest.setNextHopId(destPlayer.getId());
 		fromOtherToDest.setNodeId(otherPlayer.getId());
 		fromOtherToDest.setTimestamp(new Date().getTime());
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(fromSrcToOther, fromOtherToDest));
+		List<AodvRoutingTableEntries> allRoutingTableEntries = Arrays.asList(fromSrcToOther, fromOtherToDest);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets(allActiveNodesInRandomOrder, allRoutingTableEntries);
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setDidReachBonusGoal(null);
@@ -642,7 +643,7 @@ public class AodvRoutingAlgorithmTest {
 		settings.setCurrentDataPacketProcessingRound(currentDataRound);
 
 		makeNeighbours(src, dest, srcPlayer, destPlayer);
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(src);
 
 		AodvRoutingTableEntries entry = new AodvRoutingTableEntries();
 		entry.setDestinationId(destPlayer.getId());
@@ -652,7 +653,7 @@ public class AodvRoutingAlgorithmTest {
 		entry.setNextHopId(destPlayer.getId());
 		entry.setNodeId(srcPlayer.getId());
 		entry.setTimestamp(new Date().getTime());
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(entry));
+		List<AodvRoutingTableEntries> allRoutingTableEntries = Arrays.asList(entry);
 
 		AodvDataPackets packet = new AodvDataPackets();
 		packet.setDidReachBonusGoal(null);
@@ -667,7 +668,7 @@ public class AodvRoutingAlgorithmTest {
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packet));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets(allActiveNodesInRandomOrder, allRoutingTableEntries);
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setDidReachBonusGoal(null);
