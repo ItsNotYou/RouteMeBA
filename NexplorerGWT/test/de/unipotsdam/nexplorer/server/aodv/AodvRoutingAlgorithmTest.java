@@ -2,7 +2,6 @@ package de.unipotsdam.nexplorer.server.aodv;
 
 import static de.unipotsdam.nexplorer.testing.MapAssert.assertContains;
 import static de.unipotsdam.nexplorer.testing.RefWalker.refEq;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -467,17 +466,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
 
 		assertContains(result, PojoAction.SAVE, actual);
-
-		boolean hasMatched = false;
-		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
-			if (tmp.getKey().getClass() == rreq.getClass()) {
-				if (new RefWalker<AodvRoutingMessages>(rreq).matches(tmp.getKey())) {
-					assertEquals(PojoAction.DELETE, tmp.getValue());
-					hasMatched = true;
-				}
-			}
-		}
-		assertTrue(hasMatched);
+		assertContains(rreq, PojoAction.DELETE, actual);
 	}
 
 	@Test
@@ -579,27 +568,8 @@ public class AodvRoutingAlgorithmTest {
 		result.setSourceId(src.getId());
 		result.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
 
-		boolean hasMatched = false;
-		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
-			if (result.getClass() == tmp.getKey().getClass()) {
-				if (new RefWalker<AodvRoutingMessages>(result).matches(tmp.getKey())) {
-					assertEquals(PojoAction.SAVE, tmp.getValue());
-					hasMatched = true;
-				}
-			}
-		}
-		assertTrue(hasMatched);
-
-		hasMatched = false;
-		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
-			if (rerr.getClass() == tmp.getKey().getClass()) {
-				if (new RefWalker<AodvRoutingMessages>(rerr).matches(tmp.getKey())) {
-					assertEquals(PojoAction.DELETE, tmp.getValue());
-					hasMatched = true;
-				}
-			}
-		}
-		assertTrue(hasMatched);
+		assertContains(result, PojoAction.SAVE, actual);
+		assertContains(rerr, PojoAction.DELETE, actual);
 	}
 
 	@Test
