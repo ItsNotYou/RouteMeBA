@@ -73,11 +73,10 @@ public class AodvRoutingAlgorithm {
 		return persistables;
 	}
 
-	public Map<Object, PojoAction> aodvResetPlayerMessage(Player player) {
+	public Map<Object, PojoAction> aodvResetPlayerMessage(Player player, AodvDataPacket playerMessage) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 
 		logger.trace("Reset player message {}", player.getId());
-		AodvDataPacket playerMessage = dbAccess.getDataPacketByOwnerId(player);
 		if (playerMessage != null) {
 			playerMessage.inner().setStatus(Aodv.DATA_PACKET_STATUS_CANCELLED);
 			persistables.putAll(playerMessage.save());
