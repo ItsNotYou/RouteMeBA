@@ -39,7 +39,7 @@ public class AodvRoutingAlgorithm {
 		this.settings = null;
 	}
 
-	public Map<Object, PojoAction> aodvInsertNewMessage(Player src, Player dest, Player owner) throws PlayerDoesNotExistException {
+	public Map<Object, PojoAction> aodvInsertNewMessage(Player src, Player dest, Player owner, List<AodvRoutingTableEntries> routingTable) throws PlayerDoesNotExistException {
 		Setting gameSettings = getGameSettings();
 		logger.trace("Insert new message from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
 		AodvDataPackets newMessage = new AodvDataPackets();
@@ -51,7 +51,6 @@ public class AodvRoutingAlgorithm {
 		newMessage.setHopsDone((short) 0);
 		newMessage.setDidReachBonusGoal((byte) 0);
 
-		List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
 		return factory.create(src).enqueMessage(newMessage, routingTable, gameSettings);
 	}
 

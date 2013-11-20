@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -214,7 +215,7 @@ public class AodvRoutingAlgorithmTest {
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> result = sut.aodvInsertNewMessage(src, dest, owner);
+		Map<Object, PojoAction> result = sut.aodvInsertNewMessage(src, dest, owner, new LinkedList<AodvRoutingTableEntries>());
 
 		AodvRoutingMessages RREQ = new AodvRoutingMessages(other.getId(), Aodv.ROUTING_MESSAGE_TYPE_RREQ, src.getId(), dest.getId(), 8l, srcSequenceNumber + 1, 1l, "1", routingProcessingRound + 1);
 		AodvDataPackets dataPacket = new AodvDataPackets(destPlayer, ownerPlayer, srcPlayer, srcPlayer, (short) 0, Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE, dataProcessingRound + 1, (byte) 0);
@@ -232,10 +233,9 @@ public class AodvRoutingAlgorithmTest {
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> result = sut.aodvInsertNewMessage(src, dest, owner);
+		Map<Object, PojoAction> result = sut.aodvInsertNewMessage(src, dest, owner, new LinkedList<AodvRoutingTableEntries>());
 
 		verify(dbAccess).getSettings();
-		verify(dbAccess).getAllRoutingTableEntries();
 		verifyNoMoreInteractions(dbAccess);
 		assertTrue(result.isEmpty());
 	}
@@ -258,10 +258,8 @@ public class AodvRoutingAlgorithmTest {
 		otherRoute.setNodeId(otherPlayer.getId());
 		otherRoute.setTimestamp(new Date().getTime());
 
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(srcRoute, otherRoute));
-
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> result = sut.aodvInsertNewMessage(src, dest, owner);
+		Map<Object, PojoAction> result = sut.aodvInsertNewMessage(src, dest, owner, Arrays.asList(srcRoute, otherRoute));
 
 		AodvDataPackets packet = new AodvDataPackets();
 		packet.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);

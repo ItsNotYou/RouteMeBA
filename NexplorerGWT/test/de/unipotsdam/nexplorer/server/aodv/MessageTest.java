@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.hamcrest.Matcher;
@@ -18,6 +19,7 @@ import de.unipotsdam.nexplorer.server.di.GuiceFactory;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public class MessageTest {
@@ -53,7 +55,7 @@ public class MessageTest {
 		when(factory.create(srcPlayer)).thenReturn(srcNode);
 		Matcher<DataPacket> hasHopCount = new InitialDataPacketMatcher();
 
-		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer);
+		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer, new LinkedList<AodvRoutingTableEntries>());
 
 		verify(srcNode).enqueMessage(argThat(hasHopCount), any(List.class), any(Setting.class));
 	}

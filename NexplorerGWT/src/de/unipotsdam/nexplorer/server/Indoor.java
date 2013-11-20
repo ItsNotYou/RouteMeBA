@@ -21,6 +21,7 @@ import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.rest.dto.MarkersJSON;
 import de.unipotsdam.nexplorer.shared.DataPacketLocatable;
@@ -89,7 +90,8 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			try {
-				Map<Object, PojoAction> persistables = aodv.aodvInsertNewMessage(src, dest, owner);
+				List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+				Map<Object, PojoAction> persistables = aodv.aodvInsertNewMessage(src, dest, owner, routingTable);
 				unit.apply(persistables);
 			} catch (PlayerDoesNotExistException e) {
 				throw new PlayerNotFoundException(e);
