@@ -45,7 +45,7 @@ public class RREQDestination {
 
 			AodvNode next = factory.create(theNeighbour);
 			Link link = factory.create(theNode, next);
-			Map<Object, PojoAction> result = link.transmit(factory.create(newRREQ));
+			Map<Object, PojoAction> result = link.transmit(factory.create(newRREQ), gameSettings);
 			persistables.putAll(result);
 		}
 

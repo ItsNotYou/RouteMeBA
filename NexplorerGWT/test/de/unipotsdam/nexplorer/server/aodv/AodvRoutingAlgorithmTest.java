@@ -1,5 +1,6 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import static de.unipotsdam.nexplorer.testing.MapAssert.assertContains;
 import static de.unipotsdam.nexplorer.testing.RefWalker.refEq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -220,7 +221,7 @@ public class AodvRoutingAlgorithmTest {
 		AodvRouteRequestBufferEntries bufferEntry = new AodvRouteRequestBufferEntries(src.getId(), src.getId(), srcPlayer.getSequenceNumber());
 
 		verify(dbAccess).persist(srcPlayer);
-		verify(dbAccess).persist(refEq(RREQ));
+		assertContains(RREQ, PojoAction.SAVE, result);
 		assertTrue(result.keySet().contains(dataPacket));
 		assertTrue(result.keySet().contains(bufferEntry));
 	}
@@ -346,7 +347,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(routings));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
@@ -359,7 +360,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setPlayersBySourceId(srcPlayer);
 		result.setProcessingRound(6l);
 
-		verify(dbAccess).persist(refEq(result));
+		assertContains(result, PojoAction.SAVE, actual);
 		verify(dbAccess).delete(packets);
 	}
 
@@ -402,7 +403,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(fromSrcToOther, fromOtherToDest));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setDidReachBonusGoal(null);
@@ -415,7 +416,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setProcessingRound(4l);
 		result.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
 
-		verify(dbAccess).persist(refEq(result));
+		assertContains(result, PojoAction.SAVE, actual);
 		verify(dbAccess).delete(packets);
 	}
 
@@ -465,7 +466,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setSourceId(src.getId());
 		result.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
 
-		verify(dbAccess).persist(refEq(result));
+		assertContains(result, PojoAction.SAVE, actual);
 
 		boolean hasMatched = false;
 		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
@@ -578,9 +579,18 @@ public class AodvRoutingAlgorithmTest {
 		result.setSourceId(src.getId());
 		result.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
 
-		verify(dbAccess).persist(refEq(result));
-
 		boolean hasMatched = false;
+		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
+			if (result.getClass() == tmp.getKey().getClass()) {
+				if (new RefWalker<AodvRoutingMessages>(result).matches(tmp.getKey())) {
+					assertEquals(PojoAction.SAVE, tmp.getValue());
+					hasMatched = true;
+				}
+			}
+		}
+		assertTrue(hasMatched);
+
+		hasMatched = false;
 		for (Entry<Object, PojoAction> tmp : actual.entrySet()) {
 			if (rerr.getClass() == tmp.getKey().getClass()) {
 				if (new RefWalker<AodvRoutingMessages>(rerr).matches(tmp.getKey())) {
@@ -630,7 +640,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getNeighbour(dest.getId(), src.getId())).thenReturn(data.create(neighbour));
 
 		AodvNode sut = injector.getInstance(AodvFactory.class).create(src);
-		sut.updateNeighbourhood(Arrays.asList(data.create(neighbour), data.create(otherNeighbour)), currentRoutingRound, Arrays.asList(fromSrcToDest));
+		Map<Object, PojoAction> actual = sut.updateNeighbourhood(Arrays.asList(data.create(neighbour), data.create(otherNeighbour)), currentRoutingRound, Arrays.asList(fromSrcToDest), new Setting(settings, dbAccess));
 
 		AodvRoutingMessages rerr = new AodvRoutingMessages();
 		rerr.setCurrentNodeId(dest.getId());
@@ -644,7 +654,7 @@ public class AodvRoutingAlgorithmTest {
 		rerr.setSourceId(src.getId());
 		rerr.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
 
-		verify(dbAccess).persist(refEq(rerr));
+		assertContains(rerr, PojoAction.SAVE, actual);
 	}
 
 	@Test
@@ -678,7 +688,7 @@ public class AodvRoutingAlgorithmTest {
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packet));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setDidReachBonusGoal(null);
@@ -692,6 +702,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setStatus(Aodv.DATA_PACKET_STATUS_ARRIVED);
 
 		verify(referee).packetArrived(any(Setting.class), any(AodvDataPacket.class));
-		verify(dbAccess).persist(refEq(result));
+
+		assertContains(result, PojoAction.SAVE, actual);
 	}
 }

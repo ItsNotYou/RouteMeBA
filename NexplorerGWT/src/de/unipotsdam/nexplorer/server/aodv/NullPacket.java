@@ -1,16 +1,20 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.HashMap;
 import java.util.List;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
+import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public class NullPacket implements ProcessableDataPacket {
 
 	@Override
-	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable) {
+	public HashMap<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		return new HashMap<Object, PojoAction>();
 	}
 
 	@Override

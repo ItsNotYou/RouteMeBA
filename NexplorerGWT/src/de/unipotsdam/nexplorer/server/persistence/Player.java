@@ -112,7 +112,7 @@ public class Player implements Locatable {
 		}
 	}
 
-	public Map<Object, PojoAction> updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
+	public Map<Object, PojoAction> updateNeighbourhood(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		Collection<Player> knownNeighbours = getNeighbours();
@@ -143,7 +143,7 @@ public class Player implements Locatable {
 
 		for (Player lostNeighbour : lostNeighbours) {
 			getNeighbours().remove(lostNeighbour);
-			Map<Object, PojoAction> result = routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours, currentRoutingRound, routingTable);
+			Map<Object, PojoAction> result = routing.aodvNeighbourLost(lostNeighbour, allKnownNeighbours, currentRoutingRound, routingTable, gameSettings);
 			persistables.putAll(result);
 
 			logger.info("Node {} deleted neighbour {}", getId(), lostNeighbour.getId());
@@ -281,7 +281,7 @@ public class Player implements Locatable {
 		}
 	}
 
-	public synchronized Map<Object, PojoAction> removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
+	public synchronized Map<Object, PojoAction> removeOutdatedNeighbours(NeighbourAction routing, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		int allowedHelloLosses = 8;
@@ -298,7 +298,7 @@ public class Player implements Locatable {
 				dbAccess.persist(inner);
 				dbAccess.delete(neighbour);
 
-				Map<Object, PojoAction> result = routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours, currentRoutingRound, routingTable);
+				Map<Object, PojoAction> result = routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()), allKnownNeighbours, currentRoutingRound, routingTable, gameSettings);
 				persistables.putAll(result);
 			}
 		}

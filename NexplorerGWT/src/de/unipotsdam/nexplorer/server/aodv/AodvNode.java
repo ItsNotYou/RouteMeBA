@@ -61,19 +61,23 @@ public class AodvNode implements NeighbourAction {
 		return theNode.hasBattery();
 	}
 
-	void aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
+	Map<Object, PojoAction> aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
 		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		// ältestes Paket zuerst bearbeiten
 		DataPacketQueue packets = new DataPacketQueue(getAllDataPacketsSortedByDate(currentDataProcessingRound));
 
 		// Nur das erste Paket bearbeiten und alle anderen in Wartestellung setzen
-		packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours, routingTable);
+		HashMap<Object, PojoAction> result = packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours, routingTable, gameSettings);
+		persistables.putAll(result);
 		packets.placeContentOnHoldUntil(currentDataProcessingRound + 1);
 
 		for (ProcessableDataPacket packet : packets) {
 			logger.trace("Datenpaket mit sourceId " + packet.getSource().getId() + " und destinationId " + packet.getDestination().getId() + " in Wartestellung setzen.");
 		}
+
+		return persistables;
 	}
 
 	/**
@@ -120,19 +124,19 @@ public class AodvNode implements NeighbourAction {
 		return Lists.create(packets);
 	}
 
-	Map<Object, PojoAction> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+	Map<Object, PojoAction> aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
-		Map<Object, PojoAction> result = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
+		Map<Object, PojoAction> result = processRREQs(aodvRoutingAlgorithm, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings);
 		persistables.putAll(result);
 
-		result = processRERRs(aodvRoutingAlgorithm, nodeRERRs, allRoutingTableEntries);
+		result = processRERRs(aodvRoutingAlgorithm, nodeRERRs, allRoutingTableEntries, gameSettings);
 		persistables.putAll(result);
 
 		return persistables;
 	}
 
-	private Map<Object, PojoAction> processRERRs(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingTableEntries> routingTable) {
+	private Map<Object, PojoAction> processRERRs(AodvRoutingAlgorithm aodvRoutingAlgorithm, List<AodvRoutingMessage> nodeRERRs, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		logger.trace("***RERRs bei Knoten " + theNode.getId() + "***");
@@ -147,7 +151,8 @@ public class AodvNode implements NeighbourAction {
 				for (Player neigh : theNode.getNeighbours()) {
 					AodvNode next = factory.create(neigh);
 					Link link = factory.create(this, next);
-					link.transmit(theRERR.inner());
+					Map<Object, PojoAction> result = link.transmit(theRERR.inner(), gameSettings);
+					persistables.putAll(result);
 				}
 
 				// Routingtabelleneintrag löschen
@@ -168,19 +173,19 @@ public class AodvNode implements NeighbourAction {
 		return persistables;
 	}
 
-	private Map<Object, PojoAction> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+	private Map<Object, PojoAction> processRREQs(AodvRoutingAlgorithm aodv, List<AodvRoutingMessage> routeRequestsByNodeAndRound, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries, Setting gameSettings) {
 		logger.trace("***RREQs bei Knoten " + theNode.getId() + "***");
 
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>(100);
 		for (AodvRoutingMessage theRREQ : routeRequestsByNodeAndRound) {
-			Map<Object, PojoAction> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries, allRoutingTableEntries);
+			Map<Object, PojoAction> result = processRREQ(aodv, theRREQ, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings);
 			persistables.putAll(result);
 		}
 
 		return persistables;
 	}
 
-	private Map<Object, PojoAction> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries) {
+	private Map<Object, PojoAction> processRREQ(AodvRoutingAlgorithm aodv, AodvRoutingMessage theRREQ, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<AodvRoutingTableEntries> allRoutingTableEntries, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 		long destination = theRREQ.inner().getDestinationId();
 		if (!theRREQ.isExpired() && !hasRREQInBuffer(theRREQ, allRouteRequestBufferEntries)) {
@@ -192,7 +197,7 @@ public class AodvNode implements NeighbourAction {
 				for (Player neigh : theNode.getNeighbours()) {
 					AodvNode next = factory.create(neigh);
 					Link link = factory.create(this, next);
-					Map<Object, PojoAction> result = link.transmit(theRREQ);
+					Map<Object, PojoAction> result = link.transmit(theRREQ, gameSettings);
 					persistables.putAll(result);
 				}
 			}
@@ -249,7 +254,9 @@ public class AodvNode implements NeighbourAction {
 		return persistables;
 	}
 
-	public void sendRERRToNeighbours(Player errorPlayer, List<Neighbour> allKnownNeighbours, long currentRoutingRound) {
+	public Map<Object, PojoAction> sendRERRToNeighbours(Player errorPlayer, List<Neighbour> allKnownNeighbours, long currentRoutingRound, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		List<Neighbour> neighbours = getAllNeighboursExcept(errorPlayer, allKnownNeighbours);
 		for (Neighbour theNeighbour : neighbours) {
 			AodvRoutingMessages newRERR = new AodvRoutingMessages();
@@ -262,10 +269,13 @@ public class AodvNode implements NeighbourAction {
 
 			AodvNode next = factory.create(theNeighbour.getNeighbour());
 			Link link = factory.create(this, next);
-			link.transmit(newRERR);
+			Map<Object, PojoAction> result = link.transmit(newRERR, gameSettings);
+			persistables.putAll(result);
 
 			theNode.save();
 		}
+
+		return persistables;
 	}
 
 	private List<Neighbour> getAllNeighboursExcept(final Player errorPlayer, List<Neighbour> allKnownNeighbours) {
@@ -320,7 +330,7 @@ public class AodvNode implements NeighbourAction {
 
 			AodvNode next = factory.create(theNeighbour);
 			Link link = factory.create(this, next);
-			Map<Object, PojoAction> result = link.transmit(factory.create(newRREQ));
+			Map<Object, PojoAction> result = link.transmit(factory.create(newRREQ), gameSettings);
 			persistables.putAll(result);
 		}
 
@@ -340,9 +350,13 @@ public class AodvNode implements NeighbourAction {
 	}
 
 	@Override
-	public Map<Object, PojoAction> aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
-		sendRERRToNeighbours(exNeighbour, allKnownNeighbours, currentRoutingRound);
-		return table(routingTable).deleteRouteTo(exNeighbour.getId());
+	public Map<Object, PojoAction> aodvNeighbourLost(Player exNeighbour, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+		Map<Object, PojoAction> result = sendRERRToNeighbours(exNeighbour, allKnownNeighbours, currentRoutingRound, gameSettings);
+		persistables.putAll(result);
+		result = table(routingTable).deleteRouteTo(exNeighbour.getId());
+		persistables.putAll(result);
+		return persistables;
 	}
 
 	Map<Object, PojoAction> enqueMessage(DataPacket message, List<AodvRoutingTableEntries> routingTable) {
@@ -378,8 +392,8 @@ public class AodvNode implements NeighbourAction {
 		newMessage.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
 	}
 
-	public Map<Object, PojoAction> updateNeighbourhood(List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
-		return theNode.updateNeighbourhood(this, allKnownNeighbours, currentRoutingRound, routingTable);
+	public Map<Object, PojoAction> updateNeighbourhood(List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		return theNode.updateNeighbourhood(this, allKnownNeighbours, currentRoutingRound, routingTable, gameSettings);
 	}
 
 	public void pingNeighbourhood() {

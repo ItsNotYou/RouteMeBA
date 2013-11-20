@@ -151,7 +151,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			if (thePlayer.getDifficulty() == Game.DIFFICULTY_EASY) {
 				List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(thePlayer);
 				List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-				Map<Object, PojoAction> persistables = unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound(), routingTable);
+				Map<Object, PojoAction> persistables = unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound(), routingTable, setting);
 				for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
 					Object subject = persistable.getKey();
 					if (persistable.getValue() == PojoAction.DELETE) {

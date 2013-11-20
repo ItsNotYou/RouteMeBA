@@ -1,18 +1,22 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DataFactory;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
+import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.Aodv;
@@ -67,23 +71,31 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	@Override
-	public void process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable) {
+	public HashMap<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		HashMap<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		Byte status = inner.getStatus();
 		switch (status) {
 		case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 		case Aodv.DATA_PACKET_STATUS_NODE_BUSY:
 			// Pakete ist unterwegs oder wartet darauf versendet zu werden
-			forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound, routingTable);
+			Map<Object, PojoAction> result = forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound, routingTable, gameSettings);
+			persistables.putAll(result);
 			break;
 		case Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE:
 		case Aodv.DATA_PACKET_STATUS_ERROR:
 			// Paket ist in Wartestellung (Route war anf�nglich unbekannt)
-			checkAndForward(currentDataProcessingRound, aodvNode, routingTable);
+			result = checkAndForward(currentDataProcessingRound, aodvNode, routingTable, gameSettings);
+			persistables.putAll(result);
 			break;
 		}
+
+		return persistables;
 	}
 
-	void checkAndForward(long currentDataProcessingRound, AodvNode aodvNode, List<AodvRoutingTableEntries> routingTable) {
+	Map<Object, PojoAction> checkAndForward(long currentDataProcessingRound, AodvNode aodvNode, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		// prüfen ob mittlerweile Route zum Ziel bekannt
 		AodvNode dest = factory.create(data.create(inner.getPlayersByDestinationId()));
 		RoutingTable table = new RoutingTable(aodvNode, routingTable);
@@ -91,7 +103,8 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			// Packet weitersenden
 			AodvNode nextHop = factory.create(dbAccess.getPlayerById(table.getNextHop(dest)));
 			Link conn = factory.create(aodvNode, nextHop);
-			conn.transmit(this);
+			Map<Object, PojoAction> result = conn.transmit(this, gameSettings);
+			persistables.putAll(result);
 
 			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " l�schen, weil fertig bearbeitet.");
 
@@ -106,9 +119,13 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			inner.setProcessingRound(currentDataProcessingRound + 1);
 			save();
 		}
+
+		return persistables;
 	}
 
-	void forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
+	Map<Object, PojoAction> forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		// prüfen ob Route zum Ziel bekannt
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
@@ -117,19 +134,23 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			// Packet weitersenden
 			AodvNode nextHop = factory.create(dbAccess.getPlayerById(table.getNextHop(dest)));
 			Link conn = factory.create(aodvNode, nextHop);
-			conn.transmit(this);
+			Map<Object, PojoAction> result = conn.transmit(this, gameSettings);
+			persistables.putAll(result);
 
 			// Packet löschen
 			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
 			delete();
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
-			aodvNode.sendRERRToNeighbours(destination, allKnownNeighbours, currentRoutingRound);
+			Map<Object, PojoAction> result = aodvNode.sendRERRToNeighbours(destination, allKnownNeighbours, currentRoutingRound, gameSettings);
+			persistables.putAll(result);
 
 			logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da keine Route bekannt", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId());
 			inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
 			save();
 		}
+
+		return persistables;
 	}
 
 	public void setCurrentNode(Player player) {

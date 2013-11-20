@@ -81,17 +81,22 @@ public class AodvRoutingAlgorithm {
 		}
 	}
 
-	public void aodvProcessDataPackets() {
+	public Map<Object, PojoAction> aodvProcessDataPackets() {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
+
 		Setting gameSettings = getGameSettings();
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable);
+			Map<Object, PojoAction> result = factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings);
+			persistables.putAll(result);
 		}
 
 		gameSettings.incCurrentDataRound();
 		gameSettings.save();
+
+		return persistables;
 	}
 
 	public Map<Object, PojoAction> aodvProcessRoutingMessages() {
@@ -105,7 +110,7 @@ public class AodvRoutingAlgorithm {
 			List<AodvRoutingMessage> routeRequestsByNodeAndRound = dbAccess.getRouteRequestsByNodeAndRound(theNode);
 			List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
 			List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
-			Map<Object, PojoAction> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries);
+			Map<Object, PojoAction> result = factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings);
 			persistables.putAll(result);
 		}
 
@@ -127,11 +132,11 @@ public class AodvRoutingAlgorithm {
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			Map<Object, PojoAction> result = player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable);
+			Map<Object, PojoAction> result = player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings());
 			persistables.putAll(result);
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			Map<Object, PojoAction> result = player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable);
+			Map<Object, PojoAction> result = player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings());
 			persistables.putAll(result);
 		}
 		return persistables;

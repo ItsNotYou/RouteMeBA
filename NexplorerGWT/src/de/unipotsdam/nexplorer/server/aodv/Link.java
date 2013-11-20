@@ -11,7 +11,6 @@ import com.google.inject.assistedinject.Assisted;
 import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.Referee;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
-import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
@@ -23,23 +22,21 @@ public class Link {
 	private Logger logger;
 	private AodvNode src;
 	private AodvNode dest;
-	private DatabaseImpl dbAccess;
 	private Locator locator;
 	public AodvFactory factory;
 	private Referee referee;
 
 	@Inject
-	public Link(@Assisted("from") AodvNode src, @Assisted("to") AodvNode dest, DatabaseImpl dbAccess, Locator locator, AodvFactory factory, Referee referee) {
+	public Link(@Assisted("from") AodvNode src, @Assisted("to") AodvNode dest, Locator locator, AodvFactory factory, Referee referee) {
 		this.src = src;
 		this.dest = dest;
-		this.dbAccess = dbAccess;
 		this.locator = locator;
 		this.factory = factory;
 		this.referee = referee;
 	}
 
-	public void transmit(AodvDataPacket thePacket) {
-		Setting gameSettings = dbAccess.getSettings();
+	public Map<Object, PojoAction> transmit(AodvDataPacket thePacket, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
@@ -57,7 +54,7 @@ public class Link {
 				arrivedPacket.inner().setStatus(Aodv.DATA_PACKET_STATUS_ARRIVED);
 				referee.packetArrived(gameSettings, arrivedPacket);
 			}
-			dbAccess.persist(newPacket);
+			persistables.put(newPacket, PojoAction.SAVE);
 
 			src.player().increaseScoreBy(100);
 			src.player().decreaseBatteryBy(.5);
@@ -65,10 +62,12 @@ public class Link {
 		} else {
 			logger.trace("Datenpaket mit sourceId " + thePacket.inner().getPlayersBySourceId().getId() + " und destinationId " + thePacket.inner().getPlayersByDestinationId().getId() + " konnte nicht an Nachbarn mit ID " + dest.getId() + " gesenden werden.");
 		}
+
+		return persistables;
 	}
 
-	public void transmit(AodvRoutingMessages theError) {
-		Setting gameSettings = dbAccess.getSettings();
+	public Map<Object, PojoAction> transmit(AodvRoutingMessages theError, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
@@ -85,15 +84,16 @@ public class Link {
 			nodes.add(src.getId());
 			theNewRERR.setPassedNodes(nodes.persistable());
 
-			dbAccess.persist(theNewRERR);
+			persistables.put(theNewRERR, PojoAction.SAVE);
 		} else {
 			logger.trace("RERR mit sourceId " + theError.getSourceId() + " und destinationId " + theError.getDestinationId() + " konnte nicht an Nachbarn mit ID " + dest.getId() + " gesenden werden.\n");
 		}
+
+		return persistables;
 	}
 
-	public Map<Object, PojoAction> transmit(AodvRoutingMessage theRequest) {
+	public Map<Object, PojoAction> transmit(AodvRoutingMessage theRequest, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
-		Setting gameSettings = dbAccess.getSettings();
 
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
@@ -113,7 +113,7 @@ public class Link {
 			nodes.add(src.getId());
 			theNewRREQ.setPassedNodes(nodes.persistable());
 
-			dbAccess.persist(theNewRREQ);
+			persistables.put(theNewRREQ, PojoAction.SAVE);
 		} else {
 			logger.trace("RREQ mit sourceId " + theRequest.inner().getSourceId() + " und sequenceNumber " + theRequest.inner().getSequenceNumber() + " konnte nicht an Nachbarn mit ID " + dest.player().getId() + " gesenden werden.\n");
 		}
