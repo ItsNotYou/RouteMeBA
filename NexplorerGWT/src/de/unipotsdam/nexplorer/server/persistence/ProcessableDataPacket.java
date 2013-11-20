@@ -11,7 +11,7 @@ import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public interface ProcessableDataPacket {
 
-	public abstract Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages);
+	public abstract Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages, List<Player> allPlayers);
 
 	public abstract void setOnHoldUntil(long dataProcessingRound);
 

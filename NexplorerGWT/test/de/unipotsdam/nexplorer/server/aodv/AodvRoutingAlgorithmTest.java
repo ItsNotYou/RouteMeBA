@@ -182,6 +182,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getPlayerById(2l)).thenReturn(dest);
 		when(dbAccess.getPlayerById(3l)).thenReturn(owner);
 		when(dbAccess.getPlayerById(4l)).thenReturn(other);
+		when(dbAccess.getAllPlayers()).thenReturn(Arrays.asList(src, dest, owner, other));
 
 		factory = injector.getInstance(AodvFactory.class);
 	}

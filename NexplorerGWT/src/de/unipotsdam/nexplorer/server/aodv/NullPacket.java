@@ -6,6 +6,7 @@ import java.util.Map;
 import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
+import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
@@ -15,7 +16,7 @@ import de.unipotsdam.nexplorer.shared.DataPacket;
 public class NullPacket implements ProcessableDataPacket {
 
 	@Override
-	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages) {
+	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages, List<Player> allPlayers) {
 		return Maps.empty();
 	}
 

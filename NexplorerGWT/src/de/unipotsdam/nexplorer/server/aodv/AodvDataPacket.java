@@ -13,9 +13,9 @@ import com.google.inject.assistedinject.Assisted;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
 import de.unipotsdam.nexplorer.server.data.Maps;
+import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DataFactory;
-import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
@@ -30,14 +30,12 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	@InjectLogger
 	private Logger logger;
 	private final AodvDataPackets inner;
-	private final DatabaseImpl dbAccess;
 	private final AodvFactory factory;
 	private DataFactory data;
 
 	@Inject
-	public AodvDataPacket(@Assisted AodvDataPackets inner, DatabaseImpl dbAccess, AodvFactory factory, DataFactory data) {
+	public AodvDataPacket(@Assisted AodvDataPackets inner, AodvFactory factory, DataFactory data) {
 		this.inner = inner;
-		this.dbAccess = dbAccess;
 		this.factory = factory;
 		this.data = data;
 	}
@@ -75,7 +73,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 	}
 
 	@Override
-	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages) {
+	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages, List<Player> allPlayers) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 
 		Byte status = inner.getStatus();
@@ -83,19 +81,19 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		case Aodv.DATA_PACKET_STATUS_UNDERWAY:
 		case Aodv.DATA_PACKET_STATUS_NODE_BUSY:
 			// Pakete ist unterwegs oder wartet darauf versendet zu werden
-			persistables.putAll(forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound, routingTable, gameSettings));
+			persistables.putAll(forwardPacket(aodvNode, allKnownNeighbours, currentRoutingRound, routingTable, gameSettings, allPlayers));
 			break;
 		case Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE:
 		case Aodv.DATA_PACKET_STATUS_ERROR:
 			// Paket ist in Wartestellung (Route war anf�nglich unbekannt)
-			persistables.putAll(checkAndForward(currentDataProcessingRound, aodvNode, routingTable, gameSettings, allRoutingMessages));
+			persistables.putAll(checkAndForward(currentDataProcessingRound, aodvNode, routingTable, gameSettings, allRoutingMessages, allPlayers));
 			break;
 		}
 
 		return persistables;
 	}
 
-	Map<Object, PojoAction> checkAndForward(long currentDataProcessingRound, AodvNode aodvNode, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages) {
+	Map<Object, PojoAction> checkAndForward(long currentDataProcessingRound, AodvNode aodvNode, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages, List<Player> allPlayers) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 
 		// prüfen ob mittlerweile Route zum Ziel bekannt
@@ -103,7 +101,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		RoutingTable table = new RoutingTable(aodvNode, routingTable);
 		if (table.hasRouteTo(dest)) {
 			// Packet weitersenden
-			AodvNode nextHop = factory.create(dbAccess.getPlayerById(table.getNextHop(dest)));
+			AodvNode nextHop = factory.create(getPlayerById(table.getNextHop(dest), allPlayers));
 			Link conn = factory.create(aodvNode, nextHop);
 			Map<Object, PojoAction> result = conn.transmit(this, gameSettings);
 			persistables.putAll(result);
@@ -146,7 +144,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		}).size();
 	}
 
-	Map<Object, PojoAction> forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+	Map<Object, PojoAction> forwardPacket(AodvNode aodvNode, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<Player> allPlayers) {
 		Map<Object, PojoAction> persistables = new HashMap<Object, PojoAction>();
 
 		// prüfen ob Route zum Ziel bekannt
@@ -155,7 +153,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		RoutingTable table = new RoutingTable(aodvNode, routingTable);
 		if (table.hasRouteTo(dest)) {
 			// Packet weitersenden
-			AodvNode nextHop = factory.create(dbAccess.getPlayerById(table.getNextHop(dest)));
+			AodvNode nextHop = factory.create(getPlayerById(table.getNextHop(dest), allPlayers));
 			Link conn = factory.create(aodvNode, nextHop);
 			Map<Object, PojoAction> result = conn.transmit(this, gameSettings);
 			persistables.putAll(result);
@@ -176,6 +174,16 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		}
 
 		return persistables;
+	}
+
+	private Player getPlayerById(long playerId, List<Player> allPlayers) {
+		for (Player player : allPlayers) {
+			if (player.getId() == playerId) {
+				return player;
+			}
+		}
+
+		throw new PlayerDoesNotExistException();
 	}
 
 	public void setCurrentNode(Player player) {

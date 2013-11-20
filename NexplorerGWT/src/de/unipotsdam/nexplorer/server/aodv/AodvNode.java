@@ -61,7 +61,7 @@ public class AodvNode implements NeighbourAction {
 		return theNode.hasBattery();
 	}
 
-	Map<Object, PojoAction> aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages) {
+	Map<Object, PojoAction> aodvProcessDataPackets(long currentDataProcessingRound, List<Neighbour> allKnownNeighbours, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages, List<Player> allPlayers) {
 		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
 		Map<Object, PojoAction> persistables = Maps.empty();
 
@@ -69,7 +69,7 @@ public class AodvNode implements NeighbourAction {
 		DataPacketQueue packets = new DataPacketQueue(getAllDataPacketsSortedByDate(currentDataProcessingRound));
 
 		// Nur das erste Paket bearbeiten und alle anderen in Wartestellung setzen
-		persistables.putAll(packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours, routingTable, gameSettings, allRoutingMessages));
+		persistables.putAll(packets.poll().process(currentDataProcessingRound, currentRoutingRound, this, allKnownNeighbours, routingTable, gameSettings, allRoutingMessages, allPlayers));
 		persistables.putAll(packets.placeContentOnHoldUntil(currentDataProcessingRound + 1));
 
 		for (ProcessableDataPacket packet : packets) {

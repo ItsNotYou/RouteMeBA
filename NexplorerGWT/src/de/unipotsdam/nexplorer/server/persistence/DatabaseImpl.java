@@ -15,6 +15,8 @@ import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 
 import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
@@ -322,6 +324,19 @@ public class DatabaseImpl {
 
 	public List<AodvRoutingMessages> getAllRoutingMessages() {
 		return session.createCriteria(AodvRoutingMessages.class).list();
+	}
+
+	public List<Player> getAllPlayers() {
+		List<Players> result = session.createCriteria(Players.class).list();
+		final DataFactory data = this.data;
+		Function<Players, Player> apply = new Function<Players, Player>() {
+
+			@Override
+			public Player apply(Players arg0) {
+				return data.create(arg0);
+			}
+		};
+		return new LinkedList<Player>(Collections2.transform(result, apply));
 	}
 
 	public List<Player> getNeighboursWithinRange(Player center) {

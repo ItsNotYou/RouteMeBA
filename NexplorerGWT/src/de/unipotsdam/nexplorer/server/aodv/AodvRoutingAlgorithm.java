@@ -97,7 +97,8 @@ public class AodvRoutingAlgorithm {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
 			List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
-			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings, allRoutingMessages));
+			List<Player> allPlayers = dbAccess.getAllPlayers();
+			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings, allRoutingMessages, allPlayers));
 		}
 
 		gameSettings.incCurrentDataRound();
