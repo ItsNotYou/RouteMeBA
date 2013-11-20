@@ -320,6 +320,10 @@ public class DatabaseImpl {
 		return session.createCriteria(AodvRoutingTableEntries.class).list();
 	}
 
+	public List<AodvRoutingMessages> getAllRoutingMessages() {
+		return session.createCriteria(AodvRoutingMessages.class).list();
+	}
+
 	public List<Player> getNeighboursWithinRange(Player center) {
 		// query.having("distance <= ".gameSettings.baseNodeRange / 1000);
 		// //FIMI ? warum baseNodeRange durch 1000

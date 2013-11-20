@@ -294,10 +294,15 @@ public class AodvRoutingAlgorithmTest {
 		packets.setProcessingRound(5l);
 
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
-		when(dbAccess.getRouteRequestCount(packets)).thenReturn(1);
+
+		AodvRoutingMessages message = new AodvRoutingMessages();
+		message.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
+		message.setSourceId(srcPlayer.getId());
+		message.setDestinationId(destPlayer.getId());
+		when(dbAccess.getAllRoutingMessages()).thenReturn(Arrays.asList(message));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		sut.aodvProcessDataPackets();
+		Map<Object, PojoAction> actual = sut.aodvProcessDataPackets();
 
 		AodvDataPackets result = new AodvDataPackets();
 		result.setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
@@ -310,7 +315,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setPlayersBySourceId(srcPlayer);
 		result.setProcessingRound(6l);
 
-		verify(dbAccess).persist(refEq(result));
+		assertContains(result, PojoAction.SAVE, actual);
 	}
 
 	@Test
@@ -341,8 +346,13 @@ public class AodvRoutingAlgorithmTest {
 		routings.setNodeId(srcPlayer.getId());
 		routings.setTimestamp(new Date().getTime());
 
+		AodvRoutingMessages message = new AodvRoutingMessages();
+		message.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
+		message.setSourceId(srcPlayer.getId());
+		message.setDestinationId(destPlayer.getId());
+
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(Sets.newHashSet(packets));
-		when(dbAccess.getRouteRequestCount(packets)).thenReturn(1);
+		when(dbAccess.getAllRoutingMessages()).thenReturn(Arrays.asList(message));
 		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(routings));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
@@ -360,7 +370,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setProcessingRound(6l);
 
 		assertContains(result, PojoAction.SAVE, actual);
-		verify(dbAccess).delete(packets);
+		assertContains(packets, PojoAction.DELETE, actual);
 	}
 
 	@Test
@@ -416,7 +426,7 @@ public class AodvRoutingAlgorithmTest {
 		result.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
 
 		assertContains(result, PojoAction.SAVE, actual);
-		verify(dbAccess).delete(packets);
+		assertContains(packets, PojoAction.DELETE, actual);
 	}
 
 	@Test

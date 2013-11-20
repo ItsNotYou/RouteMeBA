@@ -52,7 +52,7 @@ public class Link {
 				AodvDataPacket arrivedPacket = factory.create(newPacket);
 				logger.trace("Datenpaket mit sourceId " + arrivedPacket.inner().getPlayersBySourceId().getId() + " und destinationId " + arrivedPacket.inner().getPlayersByDestinationId().getId() + " hat sein Ziel erreicht.");
 				arrivedPacket.inner().setStatus(Aodv.DATA_PACKET_STATUS_ARRIVED);
-				referee.packetArrived(gameSettings, arrivedPacket);
+				persistables.putAll(referee.packetArrived(gameSettings, arrivedPacket));
 			}
 			persistables.put(newPacket, PojoAction.SAVE);
 

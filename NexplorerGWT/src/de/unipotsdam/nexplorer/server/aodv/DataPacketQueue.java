@@ -4,7 +4,10 @@ import java.util.AbstractQueue;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import de.unipotsdam.nexplorer.server.PojoAction;
+import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
 
 public class DataPacketQueue extends AbstractQueue<ProcessableDataPacket> {
@@ -27,11 +30,15 @@ public class DataPacketQueue extends AbstractQueue<ProcessableDataPacket> {
 		return true;
 	}
 
-	public void placeContentOnHoldUntil(long dataProcessingRound) {
+	public Map<Object, PojoAction> placeContentOnHoldUntil(long dataProcessingRound) {
+		Map<Object, PojoAction> persistables = Maps.empty();
+
 		for (ProcessableDataPacket packet : this) {
 			packet.setOnHoldUntil(dataProcessingRound);
-			packet.save();
+			persistables.putAll(packet.save());
 		}
+
+		return persistables;
 	}
 
 	@Override

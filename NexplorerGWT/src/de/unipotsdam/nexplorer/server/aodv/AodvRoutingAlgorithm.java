@@ -20,6 +20,7 @@ import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRouteRequestBufferEntries;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.Aodv;
 
@@ -55,6 +56,8 @@ public class AodvRoutingAlgorithm {
 	}
 
 	public Map<Object, PojoAction> aodvResendRouteRequest(Player owner, Setting gameSettings) {
+		Map<Object, PojoAction> persistables = Maps.empty();
+
 		AodvDataPacket thePacket = dbAccess.getDataPacketByOwnerId(owner);
 		if (thePacket == null) {
 			logger.warn("Trying to resend route request, but no data packet found (owner {})", owner.getId());
@@ -65,20 +68,24 @@ public class AodvRoutingAlgorithm {
 		AodvNode dest = thePacket.getDestination();
 
 		logger.trace("Resend route request from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
-		Map<Object, PojoAction> persistables = thePacket.getSource().sendRREQToNeighbours(dest.player(), gameSettings);
+		persistables.putAll(thePacket.getSource().sendRREQToNeighbours(dest.player(), gameSettings));
 		thePacket.inner().setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
-		thePacket.save();
+		persistables.putAll(thePacket.save());
 
 		return persistables;
 	}
 
-	public void aodvResetPlayerMessage(Player player) {
+	public Map<Object, PojoAction> aodvResetPlayerMessage(Player player) {
+		Map<Object, PojoAction> persistables = Maps.empty();
+
 		logger.trace("Reset player message {}", player.getId());
 		AodvDataPacket playerMessage = dbAccess.getDataPacketByOwnerId(player);
 		if (playerMessage != null) {
 			playerMessage.inner().setStatus(Aodv.DATA_PACKET_STATUS_CANCELLED);
-			playerMessage.save();
+			persistables.putAll(playerMessage.save());
 		}
+
+		return persistables;
 	}
 
 	public Map<Object, PojoAction> aodvProcessDataPackets() {
@@ -89,7 +96,8 @@ public class AodvRoutingAlgorithm {
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings));
+			List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
+			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings, allRoutingMessages));
 		}
 
 		gameSettings.incCurrentDataRound();

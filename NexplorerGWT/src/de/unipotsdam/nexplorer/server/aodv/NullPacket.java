@@ -8,13 +8,14 @@ import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.ProcessableDataPacket;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
 public class NullPacket implements ProcessableDataPacket {
 
 	@Override
-	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+	public Map<Object, PojoAction> process(long currentDataProcessingRound, long currentRoutingRound, AodvNode aodvNode, List<Neighbour> allKnownNeighbours, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages) {
 		return Maps.empty();
 	}
 
