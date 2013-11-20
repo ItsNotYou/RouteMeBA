@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,14 +90,7 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			try {
 				Map<Object, PojoAction> persistables = aodv.aodvInsertNewMessage(src, dest, owner);
-				for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
-					Object subject = persistable.getKey();
-					if (persistable.getValue() == PojoAction.DELETE) {
-						dbAccess.deleteObject(subject);
-					} else {
-						dbAccess.persistObject(subject);
-					}
-				}
+				unit.apply(persistables);
 			} catch (PlayerDoesNotExistException e) {
 				throw new PlayerNotFoundException(e);
 			}
@@ -126,14 +118,7 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Map<Object, PojoAction> persistables = aodv.aodvResendRouteRequest(owner, settings);
-			for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
-				Object subject = persistable.getKey();
-				if (persistable.getValue() == PojoAction.DELETE) {
-					dbAccess.deleteObject(subject);
-				} else {
-					dbAccess.persistObject(subject);
-				}
-			}
+			unit.apply(persistables);
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);

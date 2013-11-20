@@ -3,7 +3,6 @@ package de.unipotsdam.nexplorer.server;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.ws.rs.WebApplicationException;
 
@@ -92,14 +91,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			Setting setting = dbAccess.getSettings();
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
 			Map<Object, PojoAction> persistables = aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound(), routingTable);
-			for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
-				Object subject = persistable.getKey();
-				if (persistable.getValue() == PojoAction.DELETE) {
-					dbAccess.deleteObject(subject);
-				} else {
-					dbAccess.persistObject(subject);
-				}
-			}
+			unit.apply(persistables);
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);
@@ -152,14 +144,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 				List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(thePlayer);
 				List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
 				Map<Object, PojoAction> persistables = unit.resolve(AodvFactory.class).create(thePlayer).updateNeighbourhood(allKnownNeighbours, setting.getCurrentRoutingRound(), routingTable, setting);
-				for (Entry<Object, PojoAction> persistable : persistables.entrySet()) {
-					Object subject = persistable.getKey();
-					if (persistable.getValue() == PojoAction.DELETE) {
-						dbAccess.deleteObject(subject);
-					} else {
-						dbAccess.persistObject(subject);
-					}
-				}
+				unit.apply(persistables);
 			}
 		} catch (Exception e) {
 			unit.cancel();

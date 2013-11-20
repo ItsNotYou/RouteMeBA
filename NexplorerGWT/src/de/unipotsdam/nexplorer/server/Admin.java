@@ -266,16 +266,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		try {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets();
-
-			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
-			for (Map.Entry<Object, PojoAction> persistable : result.entrySet()) {
-				Object subject = persistable.getKey();
-				if (persistable.getValue() == PojoAction.DELETE) {
-					dbAccess.deleteObject(subject);
-				} else {
-					dbAccess.persistObject(subject);
-				}
-			}
+			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);
@@ -293,16 +284,8 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		Unit unit = new Unit();
 		try {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages();
-			for (Map.Entry<Object, PojoAction> persistable : result.entrySet()) {
-				Object subject = persistable.getKey();
-				if (persistable.getValue() == PojoAction.DELETE) {
-					dbAccess.deleteObject(subject);
-				} else {
-					dbAccess.persistObject(subject);
-				}
-			}
+			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);
