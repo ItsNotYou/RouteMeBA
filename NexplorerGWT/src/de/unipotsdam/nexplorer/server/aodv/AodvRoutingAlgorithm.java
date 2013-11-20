@@ -54,10 +54,9 @@ public class AodvRoutingAlgorithm {
 		return factory.create(src).enqueMessage(newMessage, routingTable, gameSettings);
 	}
 
-	public Map<Object, PojoAction> aodvResendRouteRequest(Player owner, Setting gameSettings) {
+	public Map<Object, PojoAction> aodvResendRouteRequest(Player owner, Setting gameSettings, AodvDataPacket thePacket) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 
-		AodvDataPacket thePacket = dbAccess.getDataPacketByOwnerId(owner);
 		if (thePacket == null) {
 			logger.warn("Trying to resend route request, but no data packet found (owner {})", owner.getId());
 			return Maps.empty();
