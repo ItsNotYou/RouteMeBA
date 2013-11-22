@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +40,6 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 import de.unipotsdam.nexplorer.shared.Aodv;
-import de.unipotsdam.nexplorer.testing.RefWalker;
 
 public class AodvRoutingAlgorithmTest {
 
@@ -521,14 +519,7 @@ public class AodvRoutingAlgorithmTest {
 		expected.setNextHopId(dest.getId());
 		expected.setNodeId(src.getId());
 
-		boolean isFound = false;
-		for (Entry<Object, PojoAction> r : result.entrySet()) {
-			if (r.getKey() instanceof AodvRoutingTableEntries) {
-				assertTrue(new RefWalker(expected, "timestamp").matches(r.getKey()));
-				isFound = true;
-			}
-		}
-		assertTrue(isFound);
+		assertContains(expected, new String[] { "timestamp" }, PojoAction.SAVE, result);
 	}
 
 	@Test

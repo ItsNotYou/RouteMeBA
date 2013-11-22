@@ -14,9 +14,13 @@ import java.util.Map.Entry;
 public class MapAssert {
 
 	public static void assertContains(Object expectedKey, Object expectedValue, Map<? extends Object, ? extends Object> actual) {
+		assertContains(expectedKey, new String[0], expectedValue, actual);
+	}
+
+	public static void assertContains(Object expectedKey, String[] excludeFields, Object expectedValue, Map<? extends Object, ? extends Object> actual) {
 		boolean hasMatched = false;
 		for (Entry<? extends Object, ? extends Object> tmp : actual.entrySet()) {
-			if (expectedKey.getClass() == tmp.getKey().getClass() && matches(expectedKey, tmp.getKey())) {
+			if (expectedKey.getClass() == tmp.getKey().getClass() && matches(expectedKey, tmp.getKey(), excludeFields)) {
 				assertEquals("Expected value does not match", expectedValue, tmp.getValue());
 				hasMatched = true;
 			}
@@ -37,11 +41,16 @@ public class MapAssert {
 		return result;
 	}
 
-	private static boolean shouldIgnore(Field field) {
+	private static boolean shouldIgnore(Field field, String... except) {
+		for (int count = 0; count < except.length; count++) {
+			if (field.getName().equals(except[count])) {
+				return true;
+			}
+		}
 		return false;
 	}
 
-	private static boolean matches(Object sample, Object other) {
+	private static boolean matches(Object sample, Object other, String... excludes) {
 		if (other == null) {
 			if (sample == null) {
 				return true;
@@ -52,7 +61,7 @@ public class MapAssert {
 
 		Collection<Field> fields = getAvailableFields(sample.getClass());
 		for (Field field : fields) {
-			if (shouldIgnore(field)) {
+			if (shouldIgnore(field, excludes)) {
 				continue;
 			}
 
