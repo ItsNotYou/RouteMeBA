@@ -89,11 +89,12 @@ public class AodvRoutingAlgorithm {
 		Map<Object, PojoAction> persistables = Maps.empty();
 
 		Setting gameSettings = getGameSettings();
+		List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
+		List<Player> allPlayers = dbAccess.getAllPlayers();
+
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : allActiveNodeInRandomOrder) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
-			List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
-			List<Player> allPlayers = dbAccess.getAllPlayers();
 			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings, allRoutingMessages, allPlayers));
 		}
 
@@ -105,6 +106,9 @@ public class AodvRoutingAlgorithm {
 
 	public Map<Object, PojoAction> aodvProcessRoutingMessages() {
 		Setting gameSettings = getGameSettings();
+		List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
+		List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
+
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingMessages Runde " + gameSettings.getCurrentDataRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
 
@@ -112,8 +116,6 @@ public class AodvRoutingAlgorithm {
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
 			List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
 			List<AodvRoutingMessage> routeRequestsByNodeAndRound = dbAccess.getRouteRequestsByNodeAndRound(theNode);
-			List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
-			List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
 			persistables.putAll(factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings));
 		}
 
