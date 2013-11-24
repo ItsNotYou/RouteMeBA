@@ -34,17 +34,14 @@ public class AodvRoutingAlgorithm {
 	private Logger logger;
 	private final AodvFactory factory;
 	private final DatabaseImpl dbAccess;
-	private Setting settings;
 
 	@Inject
 	public AodvRoutingAlgorithm(AodvFactory factory, DatabaseImpl dbAccess, Locator locator) {
 		this.factory = factory;
 		this.dbAccess = dbAccess;
-		this.settings = null;
 	}
 
-	public Map<Object, PojoAction> aodvInsertNewMessage(Player src, Player dest, Player owner, List<AodvRoutingTableEntries> routingTable) throws PlayerDoesNotExistException {
-		Setting gameSettings = getGameSettings();
+	public Map<Object, PojoAction> aodvInsertNewMessage(Player src, Player dest, Player owner, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) throws PlayerDoesNotExistException {
 		logger.trace("Insert new message from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
 		AodvDataPackets newMessage = new AodvDataPackets();
 		dest.execute(new AsDestination(newMessage));
@@ -89,10 +86,9 @@ public class AodvRoutingAlgorithm {
 		return persistables;
 	}
 
-	public Map<Object, PojoAction> aodvProcessDataPackets(List<Player> allActiveNodeInRandomOrder, List<AodvRoutingTableEntries> routingTable) {
+	public Map<Object, PojoAction> aodvProcessDataPackets(List<Player> allActiveNodeInRandomOrder, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 
-		Setting gameSettings = getGameSettings();
 		List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
 		List<Player> allPlayers = dbAccess.getAllPlayers();
 		List<Neighbour> allNeighbours = dbAccess.getAllNeighbours();
@@ -125,8 +121,7 @@ public class AodvRoutingAlgorithm {
 		return new ArrayList<Neighbour>(result);
 	}
 
-	public Map<Object, PojoAction> aodvProcessRoutingMessages() {
-		Setting gameSettings = getGameSettings();
+	public Map<Object, PojoAction> aodvProcessRoutingMessages(Setting gameSettings) {
 		List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
 		List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
 		List<Player> allActiveNodesInRandomOrder = dbAccess.getAllActiveNodesInRandomOrder();
@@ -188,23 +183,16 @@ public class AodvRoutingAlgorithm {
 	 * @param routingTable
 	 * @return
 	 */
-	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable) {
+	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting settings) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			persistables.putAll(player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings()));
+			persistables.putAll(player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable, settings));
 		} else if (player.getDifficulty() == 2) {
 			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
-			persistables.putAll(player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable, getGameSettings()));
+			persistables.putAll(player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable, settings));
 		}
 		return persistables;
-	}
-
-	private Setting getGameSettings() {
-		if (settings == null) {
-			settings = dbAccess.getSettings();
-		}
-		return settings;
 	}
 }

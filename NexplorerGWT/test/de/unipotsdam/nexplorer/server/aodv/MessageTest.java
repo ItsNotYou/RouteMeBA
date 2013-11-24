@@ -55,7 +55,7 @@ public class MessageTest {
 		when(factory.create(srcPlayer)).thenReturn(srcNode);
 		Matcher<DataPacket> hasHopCount = new InitialDataPacketMatcher();
 
-		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer, new LinkedList<AodvRoutingTableEntries>());
+		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer, new LinkedList<AodvRoutingTableEntries>(), setting);
 
 		verify(srcNode).enqueMessage(argThat(hasHopCount), any(List.class), any(Setting.class));
 	}

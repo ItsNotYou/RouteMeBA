@@ -268,9 +268,10 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			List<Player> allActiveNodesInRandomOrder = dbAccess.getAllActiveNodesInRandomOrder();
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
+			Setting settings = dbAccess.getSettings();
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets(allActiveNodesInRandomOrder, routingTable);
+			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets(allActiveNodesInRandomOrder, routingTable, settings);
 			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();
@@ -288,8 +289,11 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 
 		Unit unit = new Unit();
 		try {
+			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages();
+
+			Setting settings = dbAccess.getSettings();
+			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages(settings);
 			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();

@@ -87,11 +87,12 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 			Player src = dbAccess.getPlayerById(request.getSourceNodeId());
 			Player dest = dbAccess.getPlayerById(request.getDestinationNodeId());
 			Player owner = dbAccess.getPlayerById(request.getOwnerId());
+			Setting settings = dbAccess.getSettings();
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			try {
 				List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-				Map<Object, PojoAction> persistables = aodv.aodvInsertNewMessage(src, dest, owner, routingTable);
+				Map<Object, PojoAction> persistables = aodv.aodvInsertNewMessage(src, dest, owner, routingTable, settings);
 				unit.apply(persistables);
 			} catch (PlayerDoesNotExistException e) {
 				throw new PlayerNotFoundException(e);

@@ -90,7 +90,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			Player player = dbAccess.getPlayerById(playerId);
 			Setting setting = dbAccess.getSettings();
 			List<AodvRoutingTableEntries> routingTable = dbAccess.getAllRoutingTableEntries();
-			Map<Object, PojoAction> persistables = aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound(), routingTable);
+			Map<Object, PojoAction> persistables = aodv.updateNeighbourhood(player, setting.getCurrentRoutingRound(), routingTable, setting);
 			unit.apply(persistables);
 		} catch (Exception e) {
 			unit.cancel();
