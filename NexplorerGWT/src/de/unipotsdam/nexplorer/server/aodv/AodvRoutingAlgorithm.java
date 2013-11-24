@@ -86,12 +86,8 @@ public class AodvRoutingAlgorithm {
 		return persistables;
 	}
 
-	public Map<Object, PojoAction> aodvProcessDataPackets(List<Player> allActiveNodeInRandomOrder, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) {
+	public Map<Object, PojoAction> aodvProcessDataPackets(List<Player> allActiveNodeInRandomOrder, List<AodvRoutingTableEntries> routingTable, Setting gameSettings, List<AodvRoutingMessages> allRoutingMessages, List<Player> allPlayers, List<Neighbour> allNeighbours) {
 		Map<Object, PojoAction> persistables = Maps.empty();
-
-		List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
-		List<Player> allPlayers = dbAccess.getAllPlayers();
-		List<Neighbour> allNeighbours = dbAccess.getAllNeighbours();
 
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : allActiveNodeInRandomOrder) {

@@ -27,9 +27,11 @@ import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.data.Unit;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Item;
+import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.HibernateSessions;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
@@ -271,7 +273,10 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			Setting settings = dbAccess.getSettings();
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
-			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets(allActiveNodesInRandomOrder, routingTable, settings);
+			List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
+			List<Player> allPlayers = dbAccess.getAllPlayers();
+			List<Neighbour> allNeighbours = dbAccess.getAllNeighbours();
+			Map<Object, PojoAction> result = aodv.aodvProcessDataPackets(allActiveNodesInRandomOrder, routingTable, settings, allRoutingMessages, allPlayers, allNeighbours);
 			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();
