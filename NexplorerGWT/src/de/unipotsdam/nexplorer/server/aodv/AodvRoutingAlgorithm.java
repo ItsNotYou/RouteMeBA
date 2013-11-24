@@ -181,16 +181,16 @@ public class AodvRoutingAlgorithm {
 	 * 
 	 * @param player
 	 * @param routingTable
+	 * @param allKnownNeighbours
+	 *            TODO
 	 * @return
 	 */
-	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting settings) {
+	public Map<Object, PojoAction> updateNeighbourhood(Player player, long currentRoutingRound, List<AodvRoutingTableEntries> routingTable, Setting settings, List<Neighbour> allKnownNeighbours) {
 		Map<Object, PojoAction> persistables = Maps.empty();
 		NeighbourAction routing = factory.create(player);
 		if (player.getDifficulty() == 1) {
-			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
 			persistables.putAll(player.updateNeighbourhood(routing, allKnownNeighbours, currentRoutingRound, routingTable, settings));
 		} else if (player.getDifficulty() == 2) {
-			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(player);
 			persistables.putAll(player.removeOutdatedNeighbours(routing, allKnownNeighbours, currentRoutingRound, routingTable, settings));
 		}
 		return persistables;
