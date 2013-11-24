@@ -1,12 +1,16 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 
 import de.unipotsdam.nexplorer.server.PojoAction;
@@ -91,10 +95,11 @@ public class AodvRoutingAlgorithm {
 		Setting gameSettings = getGameSettings();
 		List<AodvRoutingMessages> allRoutingMessages = dbAccess.getAllRoutingMessages();
 		List<Player> allPlayers = dbAccess.getAllPlayers();
+		List<Neighbour> allNeighbours = dbAccess.getAllNeighbours();
 
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : allActiveNodeInRandomOrder) {
-			List<Neighbour> allKnownNeighbours = dbAccess.getAllNeighbours(theNode);
+			List<Neighbour> allKnownNeighbours = getAllNeighbours(theNode, allNeighbours);
 			persistables.putAll(factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound(), allKnownNeighbours, gameSettings.getCurrentRoutingRound(), routingTable, gameSettings, allRoutingMessages, allPlayers));
 		}
 
@@ -104,18 +109,37 @@ public class AodvRoutingAlgorithm {
 		return persistables;
 	}
 
+	private List<Neighbour> getAllNeighbours(final Player theNode, List<Neighbour> allNeighbours) {
+		Collection<Neighbour> result = Collections2.filter(allNeighbours, new Predicate<Neighbour>() {
+
+			@Override
+			public boolean apply(Neighbour arg0) {
+				if (arg0.getNode().getId() == theNode.getId()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
+
+		return new ArrayList<Neighbour>(result);
+	}
+
 	public Map<Object, PojoAction> aodvProcessRoutingMessages() {
 		Setting gameSettings = getGameSettings();
 		List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
 		List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
+		List<Player> allActiveNodesInRandomOrder = dbAccess.getAllActiveNodesInRandomOrder();
+		List<AodvRoutingMessage> allRoutingErrors = dbAccess.getRoutingErrors();
+		List<AodvRoutingMessage> allRouteRequests = dbAccess.getRouteRequestsByRound();
 
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingMessages Runde " + gameSettings.getCurrentDataRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
 
 		Map<Object, PojoAction> persistables = Maps.empty();
-		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
-			List<AodvRoutingMessage> nodeRERRs = dbAccess.getRoutingErrors(theNode);
-			List<AodvRoutingMessage> routeRequestsByNodeAndRound = dbAccess.getRouteRequestsByNodeAndRound(theNode);
+		for (Player theNode : allActiveNodesInRandomOrder) {
+			List<AodvRoutingMessage> nodeRERRs = getRoutingErrors(theNode, allRoutingErrors);
+			List<AodvRoutingMessage> routeRequestsByNodeAndRound = getRouteRequestsByNodeAndRound(theNode, allRouteRequests);
 			persistables.putAll(factory.create(theNode).aodvProcessRoutingMessages(this, nodeRERRs, routeRequestsByNodeAndRound, allRouteRequestBufferEntries, allRoutingTableEntries, gameSettings));
 		}
 
@@ -123,6 +147,38 @@ public class AodvRoutingAlgorithm {
 		gameSettings.save();
 
 		return persistables;
+	}
+
+	private List<AodvRoutingMessage> getRoutingErrors(final Player theNode, List<AodvRoutingMessage> allRoutingErrors) {
+		Collection<AodvRoutingMessage> result = Collections2.filter(allRoutingErrors, new Predicate<AodvRoutingMessage>() {
+
+			@Override
+			public boolean apply(AodvRoutingMessage arg0) {
+				if (arg0.inner().getCurrentNodeId() == theNode.getId()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
+
+		return new ArrayList<AodvRoutingMessage>(result);
+	}
+
+	private List<AodvRoutingMessage> getRouteRequestsByNodeAndRound(final Player theNode, List<AodvRoutingMessage> allRouteRequestsByRound) {
+		Collection<AodvRoutingMessage> result = Collections2.filter(allRouteRequestsByRound, new Predicate<AodvRoutingMessage>() {
+
+			@Override
+			public boolean apply(AodvRoutingMessage arg0) {
+				if (arg0.inner().getCurrentNodeId() == theNode.getId()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
+
+		return new ArrayList<AodvRoutingMessage>(result);
 	}
 
 	/**

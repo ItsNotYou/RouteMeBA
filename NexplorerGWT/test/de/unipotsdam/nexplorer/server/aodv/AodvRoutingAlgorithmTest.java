@@ -456,7 +456,7 @@ public class AodvRoutingAlgorithmTest {
 		rreq.setSequenceNumber(12l);
 		rreq.setSourceId(src.getId());
 		rreq.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
-		when(dbAccess.getRouteRequestsByNodeAndRound(src)).thenReturn(Arrays.asList(factory.create(rreq)));
+		when(dbAccess.getRouteRequestsByRound()).thenReturn(Arrays.asList(factory.create(rreq)));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages();
@@ -506,7 +506,7 @@ public class AodvRoutingAlgorithmTest {
 		rreq.setSequenceNumber(12l);
 		rreq.setSourceId(src.getId());
 		rreq.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
-		when(dbAccess.getRouteRequestsByNodeAndRound(dest)).thenReturn(Arrays.asList(factory.create(rreq)));
+		when(dbAccess.getRouteRequestsByRound()).thenReturn(Arrays.asList(factory.create(rreq)));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		Map<Object, PojoAction> result = sut.aodvProcessRoutingMessages();
@@ -552,7 +552,7 @@ public class AodvRoutingAlgorithmTest {
 		rerr.setSequenceNumber(3l);
 		rerr.setSourceId(src.getId());
 		rerr.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
-		when(dbAccess.getRoutingErrors(src)).thenReturn(Arrays.asList(factory.create(rerr)));
+		when(dbAccess.getRoutingErrors()).thenReturn(Arrays.asList(factory.create(rerr)));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages();

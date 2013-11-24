@@ -117,6 +117,17 @@ public class DatabaseImpl {
 		return result;
 	}
 
+	public List<AodvRoutingMessage> getRouteRequestsByRound() {
+		Setting gameSettings = getSettings();
+		List<AodvRoutingMessages> messages = session.createCriteria(AodvRoutingMessages.class).add(eq("type", Aodv.ROUTING_MESSAGE_TYPE_RREQ)).add(eq("processingRound", gameSettings.getCurrentRoutingRound())).list();
+
+		List<AodvRoutingMessage> result = new LinkedList<AodvRoutingMessage>();
+		for (AodvRoutingMessages message : messages) {
+			result.add(factory.create(message));
+		}
+		return result;
+	}
+
 	public AodvRouteRequestBufferEntry getAODVRouteRequestBufferEntry(Player theNode, AodvRoutingMessage theRREQ) {
 		List<AodvRouteRequestBufferEntries> entries = session.createCriteria(AodvRouteRequestBufferEntries.class).add(eq("nodeId", theNode.getId())).add(eq("sourceId", theRREQ.inner().getSourceId())).add(eq("sequenceNumber", theRREQ.inner().getSequenceNumber())).list();
 
@@ -130,6 +141,17 @@ public class DatabaseImpl {
 	public List<AodvRoutingMessage> getRoutingErrors(Player theNode) {
 		Setting gameSettings = getSettings();
 		List<AodvRoutingMessages> messages = session.createCriteria(AodvRoutingMessages.class).add(eq("currentNodeId", theNode.getId())).add(eq("type", Aodv.ROUTING_MESSAGE_TYPE_RERR)).add(eq("processingRound", gameSettings.getCurrentRoutingRound())).list();
+
+		List<AodvRoutingMessage> result = new LinkedList<AodvRoutingMessage>();
+		for (AodvRoutingMessages message : messages) {
+			result.add(factory.create(message));
+		}
+		return result;
+	}
+
+	public List<AodvRoutingMessage> getRoutingErrors() {
+		Setting gameSettings = getSettings();
+		List<AodvRoutingMessages> messages = session.createCriteria(AodvRoutingMessages.class).add(eq("type", Aodv.ROUTING_MESSAGE_TYPE_RERR)).add(eq("processingRound", gameSettings.getCurrentRoutingRound())).list();
 
 		List<AodvRoutingMessage> result = new LinkedList<AodvRoutingMessage>();
 		for (AodvRoutingMessages message : messages) {
