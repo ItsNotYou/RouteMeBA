@@ -430,7 +430,7 @@ public class AodvRoutingAlgorithmTest {
 		settings.setCurrentRoutingMessageProcessingRound(currentRoutingRound);
 
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(src);
 
 		AodvRoutingTableEntries entry = new AodvRoutingTableEntries();
 		entry.setDestinationId(other.getId());
@@ -440,7 +440,7 @@ public class AodvRoutingAlgorithmTest {
 		entry.setNextHopId(other.getId());
 		entry.setNodeId(src.getId());
 		entry.setTimestamp(new Date().getTime());
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(entry));
+		List<AodvRoutingTableEntries> allRoutingTableEntries = Arrays.asList(entry);
 
 		AodvRoutingMessages rreq = new AodvRoutingMessages();
 		rreq.setCurrentNodeId(src.getId());
@@ -453,10 +453,10 @@ public class AodvRoutingAlgorithmTest {
 		rreq.setSequenceNumber(12l);
 		rreq.setSourceId(src.getId());
 		rreq.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
-		when(dbAccess.getRouteRequestsByRound()).thenReturn(Arrays.asList(factory.create(rreq)));
+		List<AodvRoutingMessage> allRouteRequestsByRound = Arrays.asList(factory.create(rreq));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages(new Setting(settings, dbAccess));
+		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages(new Setting(settings, dbAccess), allRoutingTableEntries, new LinkedList<AodvRouteRequestBufferEntries>(), allActiveNodesInRandomOrder, new LinkedList<AodvRoutingMessage>(), allRouteRequestsByRound);
 
 		AodvRoutingMessages result = new AodvRoutingMessages();
 		result.setCurrentNodeId(other.getId());
@@ -480,7 +480,7 @@ public class AodvRoutingAlgorithmTest {
 		settings.setCurrentRoutingMessageProcessingRound(currentRoutingRound);
 
 		makeNeighbours(src, dest, srcPlayer, destPlayer);
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(dest));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(dest);
 
 		AodvRoutingTableEntries entry = new AodvRoutingTableEntries();
 		entry.setDestinationId(src.getId());
@@ -490,7 +490,7 @@ public class AodvRoutingAlgorithmTest {
 		entry.setNextHopId(src.getId());
 		entry.setNodeId(dest.getId());
 		entry.setTimestamp(new Date().getTime());
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(entry));
+		List<AodvRoutingTableEntries> allRoutingTableEntries = Arrays.asList(entry);
 
 		AodvRoutingMessages rreq = new AodvRoutingMessages();
 		rreq.setCurrentNodeId(dest.getId());
@@ -503,10 +503,10 @@ public class AodvRoutingAlgorithmTest {
 		rreq.setSequenceNumber(12l);
 		rreq.setSourceId(src.getId());
 		rreq.setType(Aodv.ROUTING_MESSAGE_TYPE_RREQ);
-		when(dbAccess.getRouteRequestsByRound()).thenReturn(Arrays.asList(factory.create(rreq)));
+		List<AodvRoutingMessage> allRouteRequestsByRound = Arrays.asList(factory.create(rreq));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> result = sut.aodvProcessRoutingMessages(new Setting(settings, dbAccess));
+		Map<Object, PojoAction> result = sut.aodvProcessRoutingMessages(new Setting(settings, dbAccess), allRoutingTableEntries, new LinkedList<AodvRouteRequestBufferEntries>(), allActiveNodesInRandomOrder, new LinkedList<AodvRoutingMessage>(), allRouteRequestsByRound);
 
 		AodvRoutingTableEntries expected = new AodvRoutingTableEntries();
 		expected.setDestinationId(dest.getId());
@@ -526,7 +526,7 @@ public class AodvRoutingAlgorithmTest {
 
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 		makeNeighbours(other, dest, otherPlayer, destPlayer);
-		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		List<Player> allActiveNodesInRandomOrder = Arrays.asList(src);
 
 		AodvRoutingTableEntries entry = new AodvRoutingTableEntries();
 		entry.setDestinationId(destPlayer.getId());
@@ -536,7 +536,7 @@ public class AodvRoutingAlgorithmTest {
 		entry.setNextHopId(otherPlayer.getId());
 		entry.setNodeId(srcPlayer.getId());
 		entry.setTimestamp(new Date().getTime());
-		when(dbAccess.getAllRoutingTableEntries()).thenReturn(Arrays.asList(entry));
+		List<AodvRoutingTableEntries> allRoutingTableEntries = Arrays.asList(entry);
 
 		AodvRoutingMessages rerr = new AodvRoutingMessages();
 		rerr.setCurrentNodeId(src.getId());
@@ -549,10 +549,10 @@ public class AodvRoutingAlgorithmTest {
 		rerr.setSequenceNumber(3l);
 		rerr.setSourceId(src.getId());
 		rerr.setType(Aodv.ROUTING_MESSAGE_TYPE_RERR);
-		when(dbAccess.getRoutingErrors()).thenReturn(Arrays.asList(factory.create(rerr)));
+		List<AodvRoutingMessage> allRoutingErrors = Arrays.asList(factory.create(rerr));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages(new Setting(settings, dbAccess));
+		Map<Object, PojoAction> actual = sut.aodvProcessRoutingMessages(new Setting(settings, dbAccess), allRoutingTableEntries, new LinkedList<AodvRouteRequestBufferEntries>(), allActiveNodesInRandomOrder, allRoutingErrors, new LinkedList<AodvRoutingMessage>());
 
 		AodvRoutingMessages result = new AodvRoutingMessages();
 		result.setCurrentNodeId(other.getId());

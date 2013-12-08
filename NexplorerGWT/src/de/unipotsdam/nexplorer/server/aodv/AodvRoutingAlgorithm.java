@@ -18,7 +18,6 @@ import de.unipotsdam.nexplorer.server.data.Maps;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
-import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
@@ -33,12 +32,10 @@ public class AodvRoutingAlgorithm {
 	@InjectLogger
 	private Logger logger;
 	private final AodvFactory factory;
-	private final DatabaseImpl dbAccess;
 
 	@Inject
-	public AodvRoutingAlgorithm(AodvFactory factory, DatabaseImpl dbAccess, Locator locator) {
+	public AodvRoutingAlgorithm(AodvFactory factory, Locator locator) {
 		this.factory = factory;
-		this.dbAccess = dbAccess;
 	}
 
 	public Map<Object, PojoAction> aodvInsertNewMessage(Player src, Player dest, Player owner, List<AodvRoutingTableEntries> routingTable, Setting gameSettings) throws PlayerDoesNotExistException {
@@ -117,13 +114,7 @@ public class AodvRoutingAlgorithm {
 		return new ArrayList<Neighbour>(result);
 	}
 
-	public Map<Object, PojoAction> aodvProcessRoutingMessages(Setting gameSettings) {
-		List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
-		List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
-		List<Player> allActiveNodesInRandomOrder = dbAccess.getAllActiveNodesInRandomOrder();
-		List<AodvRoutingMessage> allRoutingErrors = dbAccess.getRoutingErrors();
-		List<AodvRoutingMessage> allRouteRequests = dbAccess.getRouteRequestsByRound();
-
+	public Map<Object, PojoAction> aodvProcessRoutingMessages(Setting gameSettings, List<AodvRoutingTableEntries> allRoutingTableEntries, List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries, List<Player> allActiveNodesInRandomOrder, List<AodvRoutingMessage> allRoutingErrors, List<AodvRoutingMessage> allRouteRequests) {
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingMessages Runde " + gameSettings.getCurrentDataRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
 

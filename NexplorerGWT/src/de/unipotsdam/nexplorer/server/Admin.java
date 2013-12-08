@@ -21,6 +21,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.unipotsdam.nexplorer.client.AdminService;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingAlgorithm;
+import de.unipotsdam.nexplorer.server.aodv.AodvRoutingMessage;
 import de.unipotsdam.nexplorer.server.data.ItemPlacer;
 import de.unipotsdam.nexplorer.server.data.NodeMapper;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
@@ -31,6 +32,7 @@ import de.unipotsdam.nexplorer.server.persistence.Neighbour;
 import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.HibernateSessions;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRouteRequestBufferEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
@@ -298,7 +300,12 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 
 			Setting settings = dbAccess.getSettings();
-			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages(settings);
+			List<AodvRoutingTableEntries> allRoutingTableEntries = dbAccess.getAllRoutingTableEntries();
+			List<AodvRouteRequestBufferEntries> allRouteRequestBufferEntries = dbAccess.getAllRouteRequestBufferEntries();
+			List<Player> allActiveNodesInRandomOrder = dbAccess.getAllActiveNodesInRandomOrder();
+			List<AodvRoutingMessage> allRoutingErrors = dbAccess.getRoutingErrors();
+			List<AodvRoutingMessage> allRouteRequests = dbAccess.getRouteRequestsByRound();
+			Map<Object, PojoAction> result = aodv.aodvProcessRoutingMessages(settings, allRoutingTableEntries, allRouteRequestBufferEntries, allActiveNodesInRandomOrder, allRoutingErrors, allRouteRequests);
 			unit.apply(result);
 		} catch (Exception e) {
 			unit.cancel();
