@@ -26,7 +26,7 @@ import de.unipotsdam.nexplorer.server.aodv.AodvRoutingMessage;
 import de.unipotsdam.nexplorer.server.aodv.Locator;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
-import de.unipotsdam.nexplorer.server.persistence.hibernate.TruncateTables;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.TruncateGameTables;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRouteRequestBufferEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
@@ -220,8 +220,8 @@ public class DatabaseImpl {
 		return result;
 	}
 
-	public void resetDatabase() {
-		session.doWork(new TruncateTables());
+	public void resetGameDatabase() {
+		session.doWork(new TruncateGameTables());
 	}
 
 	public void persist(Players data) {

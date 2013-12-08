@@ -60,7 +60,7 @@ public class LazyQueryTest {
 
 	@AfterClass
 	public static void tearDown() {
-		// HibernateSessions.forceNewSessionFactory();
+		HibernateSessions.clearDatabase();
 	}
 
 	@Test

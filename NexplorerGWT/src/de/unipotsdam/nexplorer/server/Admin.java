@@ -344,7 +344,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		Unit unit = new Unit();
 		try {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
-			dbAccess.resetDatabase();
+			dbAccess.resetGameDatabase();
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);

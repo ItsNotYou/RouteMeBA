@@ -55,6 +55,23 @@ public class HibernateSessions {
 		sessionFactory = initSessionFactory();
 	}
 
+	public static synchronized void clearDatabase() {
+		Session session = getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		try {
+			session.doWork(new TruncateGameTables());
+			session.doWork(new TruncatePerformanceTables());
+
+			session.flush();
+			transaction.commit();
+		} catch (HibernateException e) {
+			transaction.rollback();
+			throw new RuntimeException(e);
+		} finally {
+			session.close();
+		}
+	}
+
 	public synchronized static void insertDebugPlayer() {
 		// debug player
 		if (HibernateSessions.firstTime && DEBUG_MODE) {

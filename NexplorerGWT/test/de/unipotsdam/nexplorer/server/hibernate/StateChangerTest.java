@@ -2,15 +2,24 @@ package de.unipotsdam.nexplorer.server.hibernate;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.unipotsdam.nexplorer.server.Admin;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.HibernateSessions;
 import de.unipotsdam.nexplorer.server.rest.GameImpl;
 import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.GameStatus;
 
 public class StateChangerTest {
 
+	@AfterClass
+	public static void tearDown() {
+		HibernateSessions.clearDatabase();
+	}
+
+	@Ignore
 	@Test
 	public void switchResumePaused() throws InterruptedException {
 		Admin admin = new Admin();

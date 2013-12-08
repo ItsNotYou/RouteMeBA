@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.persistence.hibernate;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,8 +29,6 @@ public class DatabaseImplTest {
 
 	@BeforeClass
 	public static void setUp() {
-		HibernateSessions.forceNewSessionFactory();
-
 		Settings settings = new Settings();
 		settings.setBaseNodeRange(3l);
 		settings.setCurrentDataPacketProcessingRound(1l);
@@ -60,6 +59,11 @@ public class DatabaseImplTest {
 	@After
 	public void after() {
 		unit.close();
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		HibernateSessions.clearDatabase();
 	}
 
 	@Test

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,25 +25,26 @@ public class DatabaseLocatorTest {
 		Settings settings = new Admin().getDefaultGameStats();
 		settings.setBaseNodeRange(9l);
 
+		Players one = null;
 		Unit unit = new Unit();
 		try {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			dbAccess.persist(settings);
 
-			Players players = new Players();
-			players.setBattery(100d);
-			players.setHasSignalRangeBooster(0l);
-			players.setHasSignalStrengthBooster(null);
+			one = new Players();
+			one.setBattery(100d);
+			one.setHasSignalRangeBooster(0l);
+			one.setHasSignalStrengthBooster(null);
 			Date now = new Date();
-			players.setLastPositionUpdate(now.getTime());
-			players.setLatitude(52.3935);
-			players.setLongitude(13.130513);
-			players.setName("testplayer");
-			players.setRole((byte) 2);
-			players.setScore(0l);
-			players.setSequenceNumber(1l);
-			players.setBaseNodeRange(settings.getBaseNodeRange());
-			dbAccess.persist(players);
+			one.setLastPositionUpdate(now.getTime());
+			one.setLatitude(52.3935);
+			one.setLongitude(13.130513);
+			one.setName("testplayer");
+			one.setRole((byte) 2);
+			one.setScore(0l);
+			one.setSequenceNumber(1l);
+			one.setBaseNodeRange(settings.getBaseNodeRange());
+			dbAccess.persist(one);
 
 			Players two = new Players();
 			two.setBattery(100.);
@@ -74,8 +76,16 @@ public class DatabaseLocatorTest {
 		} finally {
 			unit.close();
 		}
+
+		firstId = one.getId();
 	}
 
+	@AfterClass
+	public static void tearDown() {
+		HibernateSessions.clearDatabase();
+	}
+
+	private static long firstId;
 	private Unit unit;
 	private DatabaseImpl dbAccess;
 
@@ -92,7 +102,7 @@ public class DatabaseLocatorTest {
 
 	@Test
 	public void testAreWithinRange() {
-		Player one = dbAccess.getPlayerById(1);
+		Player one = dbAccess.getPlayerById(firstId);
 
 		List<Player> result = dbAccess.getNeighboursWithinRange(one);
 

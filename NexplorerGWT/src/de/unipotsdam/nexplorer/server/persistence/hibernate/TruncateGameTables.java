@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 import org.hibernate.jdbc.Work;
 
-public class TruncateTables implements Work {
+public class TruncateGameTables implements Work {
 
 	@Override
 	public void execute(Connection conn) throws SQLException {

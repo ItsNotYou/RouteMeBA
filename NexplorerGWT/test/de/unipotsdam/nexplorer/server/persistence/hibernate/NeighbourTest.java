@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import de.unipotsdam.nexplorer.server.data.Unit;
@@ -20,9 +20,9 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 
 public class NeighbourTest {
 
-	@Before
-	public void before() {
-		HibernateSessions.forceNewSessionFactory();
+	@AfterClass
+	public static void tearDown() {
+		HibernateSessions.clearDatabase();
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class NeighbourTest {
 		assertTrue(players3.getNeighbourses().isEmpty());
 		unit3.close();
 	}
-	
+
 	@Test
 	public void shouldDeleteNeighbour() {
 		Unit unit = new Unit();
@@ -140,23 +140,23 @@ public class NeighbourTest {
 		dbAccess.persist(two);
 		dbAccess.persist(neigh);
 		unit.close();
-		
+
 		unit = new Unit();
 		dbAccess = unit.resolve(DatabaseImpl.class);
 		DataFactory factory = unit.resolve(DataFactory.class);
 		Players inner = dbAccess.getRawById(one.getId());
-		
+
 		NeighbourSet sut = new NeighbourSet(inner, dbAccess, factory);
 		Player first = sut.iterator().next();
 		sut.remove(first);
 		unit.close();
-		
+
 		unit = new Unit();
 		dbAccess = unit.resolve(DatabaseImpl.class);
 		Player result = dbAccess.getPlayerById(one.getId());
 		int size = result.getNeighbours().size();
 		unit.close();
-		
+
 		assertEquals(0, size);
 	}
 }
